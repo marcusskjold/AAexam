@@ -11,4 +11,7 @@ public record TestData(int id, int value) implements Comparable<TestData> {
     @Override public int compareTo(TestData t) {
         return Integer.compare(this.value, t.value);
     }
+    @Override public String toString() {
+        return id + " " + value;
+    }
 }

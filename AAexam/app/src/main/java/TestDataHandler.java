@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.random.RandomGenerator;
 
 /**
  * DataGenerator
@@ -40,10 +41,53 @@ public class TestDataHandler {
     // ============================= HANDLING ====================================
 
     /** Returns a new, shuffled copy of the input list. */
-    public static List<TestData> randomizeData(List<TestData> t) {
-        List<TestData> x = new ArrayList<>(t);
+    public static List<TestData> randomizeData(List<TestData> data) {
+        List<TestData> x = new ArrayList<>(data);
         Collections.shuffle(x, r);
         return x;
+    }
+
+    public static TestData[] randomizeData(List<TestData> data, int percentage) {
+        if (percentage < 0 || percentage > 100) 
+            throw new IllegalArgumentException("Percentage must be between 0-100");
+        int n, m, i, a, b;
+        n = data.size();
+        System.out.println(n);
+        m = (data.size() * percentage) / 100;
+        System.out.println(m);
+
+        TestData[] x = data.toArray(new TestData[n]);
+
+        // Generate a random sequence of indices
+        int[] seq = new int[n];
+        i = 0;
+        while (i < n) {
+            seq[i] = i;
+            i++;
+        }
+        for (int v = 0; v < n; v++) System.out.print(seq[v]);
+        System.out.println();
+        
+        while (i > 0) {
+            int k = r.nextInt(i);
+            i--;
+            int j = seq[i]; seq[i] = seq[k]; seq[k] = j;
+        }
+        for (int v : seq) System.out.print(v);
+        System.out.println();
+
+        // TODO: Shuffle the sequence and use it so there are no repetitions
+        while (i < m+1) {
+            // Find random indices.
+            a = seq[i];
+            i++;
+            b = seq[i];
+            // Swap
+            TestData t = x[a];
+            x[a] = x[b];
+            x[b] = t;
+        }
+        return x; 
     }
 
     // ============================= I/O ======================================
@@ -108,17 +152,22 @@ public class TestDataHandler {
 
     /** Manual sanity check tests*/
     public static void main(String[] args) {
-        System.out.println("Writing testdata to file");
-        List<TestData> genData = seqGen(-2, 4);
+        //System.out.println("Writing testdata to file");
+        //List<TestData> genData = seqGen(-2, 4);
+        //System.out.println(genData);
+        //writeToFile("test.data", genData);
+        //System.out.println("Reading testdata to file");
+        //List<TestData> readData = readFile("test.data");
+        //System.out.println(readData);
+        //assert(genData.equals(readData));
+        //List<TestData> randomized = randomizeData(readData);
+        //System.out.println(randomized);
+        //assert(!randomized.equals(readData));
+        //seqGen(2, 2);
+        List<TestData> genData = seqGen(-5,5);
         System.out.println(genData);
-        writeToFile("test.data", genData);
-        System.out.println("Reading testdata to file");
-        List<TestData> readData = readFile("test.data");
-        System.out.println(readData);
-        assert(genData.equals(readData));
-        List<TestData> randomized = randomizeData(readData);
-        System.out.println(randomized);
-        assert(!randomized.equals(readData));
-        seqGen(2, 2);
+        for (TestData t : randomizeData(genData, 20)) {
+            System.out.print(t + ", ");
+        }
     }
 }
