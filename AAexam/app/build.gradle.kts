@@ -35,9 +35,11 @@ java {
 application {
     // Define the main class for the application.
     mainClass = "TestData"
+    applicationDefaultJvmArgs = listOf("-ea")
 }
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+

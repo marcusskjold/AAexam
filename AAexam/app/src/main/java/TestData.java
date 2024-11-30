@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -69,7 +70,7 @@ public record TestData(int id, int value) implements Comparable<TestData> {
      * this also means that no swaps will happen if the percentage translates to less than two elements
      * swapped.
      * In other words the number of elements swapped is the nearest integer n where
-     * {@code 1 < n < percentage / data.length}
+     * {@code 1 < n <= percentage / data.length}
      * @param data The array to produce a shuffled copy of.
      * @param percentage The percentage expressed as a number between 0 and 100.
      * @return An array containing the input data with the given percentage of elements randomly swapped.
@@ -97,6 +98,8 @@ public record TestData(int id, int value) implements Comparable<TestData> {
             x[b]   = t;
             a      = b;
         }
+
+        assert(differenceBetween(data, x) == m || m < 2);
         return x; 
     }
 
@@ -114,10 +117,9 @@ public record TestData(int id, int value) implements Comparable<TestData> {
         try {
             BufferedWriter fw = new BufferedWriter( new FileWriter(f));
             for (TestData td : data) {
-                fw.write(td.id() + " " + td.value());
+                fw.write(td.toString());
                 fw.newLine();
-            }
-            fw.close();
+            }   fw.close();
         } catch (IOException e) { e.printStackTrace(); return false;}
         return true;
     }
@@ -173,21 +175,30 @@ public record TestData(int id, int value) implements Comparable<TestData> {
 
     /** Manual sanity check tests*/
     public static void main(String[] args) {
-        //System.out.println("Writing testdata to file");
         TestData[] genData = seqGen(-2, 4);
-        //System.out.println(genData);
+
+        System.out.println("Writing testdata to file");
+        System.out.println(genData);
         writeToFile("test.data", genData);
-        //System.out.println("Reading testdata to file");
+
+        System.out.println("Reading testdata to file");
         TestData[] readData = readFile("test.data");
-        //System.out.println(readData);
-        assert(genData.equals(readData));
+        System.out.println(Arrays.toString(readData));
+        assert(Arrays.equals(genData, readData));
+
+        System.out.println("Randomizing data");
         TestData[] randomized = randomize(readData);
-        //System.out.println(randomized);
-        assert(!randomized.equals(readData));
+        System.out.println(Arrays.toString(randomized));
+        assert(!Arrays.equals(genData, randomized));
+
+        // No issues making a zero sized array
         seqGen(2, 2);
+
+
+        System.out.println("Randomizing data");
         genData = seqGen(0, 100);
         int n = genData.length;
-        randomized = randomize(genData, 45);
+        randomized = randomize(genData, 1);
         int m = differenceBetween(genData, randomized);
         System.out.println(n + " " + m + " ~ " + ((double) m / (double) n));
 
