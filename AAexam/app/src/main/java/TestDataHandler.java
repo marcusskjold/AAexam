@@ -7,11 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-import java.util.random.RandomGenerator;
+import java.util.stream.IntStream;
 
 /**
  * DataGenerator
@@ -30,10 +27,11 @@ public class TestDataHandler {
      * @param to the highest value.
      * @throws IllegalArgumentException if {@code from} is larger than {@code to}.
      */
-    public static List<TestData> seqGen(int from, int to) {
-        ArrayList<TestData> x = new ArrayList<>(to-from);
-        for (int i = from; i < to; i++) {
-            x.add(new TestData(r.nextInt(), i));
+    public static TestData[] seqGen(int from, int to) {
+        int n = to-from;
+        TestData[] x = new TestData[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = new TestData(r.nextInt(), i+from);
         }
         return x;
     }
@@ -41,51 +39,52 @@ public class TestDataHandler {
     // ============================= HANDLING ====================================
 
     /** Returns a new, shuffled copy of the input list. */
-    public static List<TestData> randomizeData(List<TestData> data) {
-        List<TestData> x = new ArrayList<>(data);
-        Collections.shuffle(x, r);
+    public static <T extends Comparable<? super T>> T[] randomizeData(T[] data) {
+        T[] x = data.clone();
+        int n = data.length;
+        for (int i = 0; i < n; i++) {
+            T t    = x[i];
+            int j  = r.nextInt(n);
+            x[i]   = x[j];
+            x[j]   = t;
+        }
         return x;
     }
 
-    public static TestData[] randomizeData(List<TestData> data, int percentage) {
+    /** Returns a new copy of the input with the specified percentage of elements shuffled.
+     * The randomizer ensures that there are no duplicate swaps, such that the percentage
+     * of shuffled elements as closely matches the percentage given as possible.
+     * The integer rounding is always downwards to prevent indexing out of bounds, 
+     * this also means that no swaps will happen if the percentage translates to less than two elements
+     * swapped.
+     * In other words the number of elements swapped is the nearest integer n where
+     * {@code 1 < n < percentage / data.length}
+     * @param data The array to produce a shuffled copy of.
+     * @param percentage The percentage expressed as a number between 0 and 100.
+     * @return An array containing the input data with the given percentage of elements randomly swapped.
+     */
+    public static <T extends Comparable<? super T>> T[] randomizeData(T[] data, int percentage) {
         if (percentage < 0 || percentage > 100) 
             throw new IllegalArgumentException("Percentage must be between 0-100");
-        int n, m, i, a, b;
-        n = data.size();
-        System.out.println(n);
-        m = (data.size() * percentage) / 100;
-        System.out.println(m);
-
-        TestData[] x = data.toArray(new TestData[n]);
-
-        // Generate a random sequence of indices
-        int[] seq = new int[n];
-        i = 0;
-        while (i < n) {
-            seq[i] = i;
-            i++;
-        }
-        for (int v = 0; v < n; v++) System.out.print(seq[v]);
-        System.out.println();
+        int n        = data.length;
+        int m        = (n * percentage) / 100;
+        T[] x = data.clone();
+        int[] seq    = IntStream.range(0, n).toArray(); // Generate a random sequence of indices
         
-        while (i > 0) {
-            int k = r.nextInt(i);
-            i--;
-            int j = seq[i]; seq[i] = seq[k]; seq[k] = j;
+        for (int i = n-1; i > 0; i--) {
+            int k  = r.nextInt(i+1);
+            int j  = seq[i];
+            seq[i] = seq[k];
+            seq[k] = j;
         }
-        for (int v : seq) System.out.print(v);
-        System.out.println();
 
-        // TODO: Shuffle the sequence and use it so there are no repetitions
-        while (i < m+1) {
-            // Find random indices.
-            a = seq[i];
-            i++;
-            b = seq[i];
-            // Swap
-            TestData t = x[a];
-            x[a] = x[b];
-            x[b] = t;
+        int a = seq[0];
+        for (int i = 1; i < m; i++) {      // Randomize the output array
+            int b  = seq[i];
+            T t    = x[a]; // Swap
+            x[a]   = x[b];
+            x[b]   = t;
+            a      = b;
         }
         return x; 
     }
@@ -99,7 +98,7 @@ public class TestDataHandler {
      * @param data the list of {@code TestData} to write.
      * @return if there was no errors writing the data to file.
      */
-    public static boolean writeToFile(String filename, List<TestData> data) {
+    public static boolean writeToFile(String filename, TestData[] data) {
         File f = new File("data/" + filename);
         try {
             BufferedWriter fw = new BufferedWriter( new FileWriter(f));
@@ -117,25 +116,36 @@ public class TestDataHandler {
      * @return The resulting TestData
      * @param filename the file to be read from the data folder.
      */
-    public static List<TestData> readFile(String filename) {
+    public static TestData[] readFile(String filename) {
         try {
             InputStream i = new FileInputStream(new File("data/" + filename));
-            System.out.println("File found!");
             return readData(i);
         } catch(FileNotFoundException e) {
-            System.out.println("File not found");
             return null;
         }
     }
 
     // ==================================== Helper methods ===========================
+    
+    /** Counts the number of different index values in the two arrays */
+    public static <T extends Comparable<? super T>> int arrayDifference(T[] either, T[] other) {
+        if (either.length != other.length)
+            throw new IllegalArgumentException("The arrays must be of same size.");
+        int n = either.length;
+        int m = 0;
+        for (int i = 0; i < n; i++) {
+            if (either[i] != other[i]) m++;
+        }
+        return m;
+
+    }
 
     /** Reads TestData from an input stream. */
-    public static List<TestData> readData(InputStream stream) {
-        return new BufferedReader(new InputStreamReader(stream))
+    public static TestData[] readData(InputStream stream) {
+        return (TestData[]) new BufferedReader(new InputStreamReader(stream))
             .lines()
             .map(s -> testDataFrom(s))
-            .toList();
+            .toArray(TestData[]::new);
     }
 
     /** Generates a TestData object from a plain text description.
@@ -153,21 +163,25 @@ public class TestDataHandler {
     /** Manual sanity check tests*/
     public static void main(String[] args) {
         //System.out.println("Writing testdata to file");
-        //List<TestData> genData = seqGen(-2, 4);
+        TestData[] genData = seqGen(-2, 4);
         //System.out.println(genData);
-        //writeToFile("test.data", genData);
+        writeToFile("test.data", genData);
         //System.out.println("Reading testdata to file");
-        //List<TestData> readData = readFile("test.data");
+        TestData[] readData = readFile("test.data");
         //System.out.println(readData);
-        //assert(genData.equals(readData));
-        //List<TestData> randomized = randomizeData(readData);
+        assert(genData.equals(readData));
+        TestData[] randomized = randomizeData(readData);
         //System.out.println(randomized);
-        //assert(!randomized.equals(readData));
-        //seqGen(2, 2);
-        List<TestData> genData = seqGen(-5,5);
-        System.out.println(genData);
-        for (TestData t : randomizeData(genData, 20)) {
-            System.out.print(t + ", ");
+        assert(!randomized.equals(readData));
+        seqGen(2, 2);
+        genData = seqGen(0, 100);
+        int n = genData.length;
+        randomized = randomizeData(genData, 45);
+        int m = 0;
+        for (int i = 0; i < n; i++) {
+            if (genData[i] != randomized[i]) m++;
         }
+        System.out.println(n + " " + m + " ~ " + ((double) m / (double) n));
+
     }
 }
