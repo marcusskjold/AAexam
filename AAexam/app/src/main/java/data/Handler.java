@@ -18,15 +18,45 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * Handler
+/** A collection of functions to handle data objects
+ *
+ *  All methods depending on randomness use a final static Random objecy by default,
+ *  however, another instance can be given as a parameter.
+ *
+ *  Functions are written to be as generic as possible.
+ *
+ *  The main categories of functions are:
+ *  - Data generation functions.
+ *  - Data array manipulation functions.
+ *  - I/O functions.
+ *  - Helper / analysis functions.
+ *
+ *  Further, there is a file I/O read-write test function.
+ *
+ *  Finally, the main methods is used to specify all the desired data files for the current project.
+ *
+ *  When using this class for writing data to disk, it is recommended to use the local enums
+ *  Cat and Ext, to specify the category of data (corresponding to an existing directory),
+ *  and the extension (currently only "in" or "out" to match kattis/codegrade logic).
+ *  It is easier to use if they are statically imported (e.g. {@code import static data.Handler.Cat}).
+ *
  */
 public class Handler {
     private static final long DEFAULT_SEED = 298092841098572l;
-    private static final Random r          = new Random(DEFAULT_SEED);
+    public static final Random RANDOM     = new Random(DEFAULT_SEED);
+
+    public enum Cat { UNITTEST, SMALL, MEDIUM, LARGE, OTHER }
+    public enum Ext { IN, OUT }
 
     // ============================== Data generation ===================================
 
+    /** Generates a sorted array of elements from the generator function.
+     * Returns a sorted output if the generator function intrinsically generates output of higher
+     * value relative to the integer input.
+     * @param n the number of elements.
+     * @param generator a supplier function.
+     * @return an array of elements.
+     */
     @SuppressWarnings("unchecked")
     public static <T> T[] generate(int n, Function<Integer, T> generator) {
         @SuppressWarnings("rawtypes") Class c = generator.apply(0).getClass();
@@ -36,43 +66,40 @@ public class Handler {
 
     }
 
+    /** Generates a sorted array of elements from the supplier function
+     * Useful for making lists of random or constant elements.
+     * @param n the number of elements.
+     * @param supplier a supplier function.
+     * @param <T> Must be comparable, as the array is sorted before being returned.
+     * @return an array of comparable elements.
+     */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<? super T>> T[] generate(int n, Supplier<T> generator) {
-        @SuppressWarnings("rawtypes") Class c = generator.get().getClass();
+    public static <T extends Comparable<? super T>> T[] generate(int n, Supplier<T> supplier) {
+        @SuppressWarnings("rawtypes") Class c = supplier.get().getClass();
         return (T[]) Stream
-            .generate(generator)
+            .generate(supplier)
             .limit(n)
             .sorted()
             .toArray(i -> (T[]) Array.newInstance(c, i));
 
     }
 
-    public static TestData testDataGen(int start, int i, int repeat, int increment) {
-        return new TestData(r.nextInt(), start + ((i / repeat) * increment));
-    }
-
-    public static String randomString(int length) {
+    /** Creates a random alphanumeric string of the specified length */
+    public static String randomString(int length, Random r) {
         final char[] chars = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ ".toCharArray();
         final StringBuilder b = new StringBuilder(length);;
         for (int i = 0; i < length; i++) b.append(chars[r.nextInt(chars.length)]);
         return b.toString();
     }
 
-    /** Generates a TestData object from a plain text description.
-     * @param string must contain first the ID as an integer, then an integer value.
-     * @throws IllegalArgumentException if the string does not contain exactly two tokens.
-     * @throws NumberFormatException if either of the tokens are not readable as integers.
-     */
-    public static TestData testDataFrom(String string) {
-        String[] split = string.split(" ");
-        if (!(split.length == 2)) throw new IllegalArgumentException("Wrong string content");
-        return new TestData(Integer.parseInt(split[0]), Integer.parseInt(split[1])); }
+    /** Creates a random alphanumeric string of the specified length */
+    public static String randomString(int length) { return randomString(length, RANDOM); }
 
 
     // ============================= Data array manipulation ====================================
 
     /** Returns a new, shuffled copy of the input array. */
-    public static <T> T[] randomize(T[] data) {
+    public static <T> T[] randomize(T[] data, Random r) {
         T[] x = data.clone();
         int n = data.length;
         for (int i = 0; i < n; i++) {
@@ -85,6 +112,9 @@ public class Handler {
         return x;
     }
 
+    /** Returns a new, shuffled copy of the input array. */
+    public static <T> T[] randomize(T[] data) { return randomize(data, RANDOM); }
+
     /** Returns a new copy of the input with the specified percentage of elements shuffled.
      * The randomizer ensures that there are no duplicate swaps, such that the percentage
      * of shuffled elements as closely matches the percentage given as possible.
@@ -95,9 +125,10 @@ public class Handler {
      * {@code 1 < n <= percentage / data.length}
      * @param data The array to produce a shuffled copy of.
      * @param percentage The percentage expressed as a number between 0 and 100.
+     * @param the source of randomness.
      * @return An array containing the input data with the given percentage of elements randomly swapped.
      */
-    public static <T> T[] randomize(T[] data, int percent) {
+    public static <T> T[] randomize(T[] data, int percent, Random r) {
         if (percent < 0 || percent > 100)      // Precondition
             throw new IllegalArgumentException("Percentage must be between 0-100");
 
@@ -126,19 +157,59 @@ public class Handler {
         return x;
     }
 
+    /** Returns a new copy of the input with the specified percentage of elements shuffled.
+     * The randomizer ensures that there are no duplicate swaps, such that the percentage
+     * of shuffled elements as closely matches the percentage given as possible.
+     * The integer rounding is always downwards to prevent indexing out of bounds,
+     * this also means that no swaps will happen if the percentage translates to less than two elements
+     * swapped.
+     * In other words the number of elements swapped is the nearest integer n where
+     * {@code 1 < n <= percentage / data.length}
+     * @param data The array to produce a shuffled copy of.
+     * @param percentage The percentage expressed as a number between 0 and 100.
+     * @return An array containing the input data with the given percentage of elements randomly swapped.
+     */
+    public static <T> T[] randomize(T[] data, int percent) { return randomize(data, percent, RANDOM); }
+
     // ============================= I/O ======================================
 
-    public enum Category { UNITTEST, SMALL, MEDIUM, LARGE, OTHER }
-    public enum Ext { IN, OUT }
 
-    public static <T> boolean writeToFile(String filename, T[] data, Category category, Ext ext) {
+    /** Writes the testdata to a file as simple plain text.
+     * Each element is in one line by calling {@code toString}.
+     *
+     * Note that calling this with a {@code toString} method that produces multiple
+     * lines will result in weird behavior.
+     * The data is stored in directory named "data".
+     * @param filename the desired file name.
+     * @param data the list of data to write.
+     * @param category the directory where this data should be stored.
+     * @param ext the relevant extension.
+     * @return if there was no errors writing the data to file.
+     */
+    public static <T> boolean writeToFile(String filename, T[] data, Cat category, Ext ext) {
+        return writeToFile(filename, data, category, ext, e -> e.toString());
+    }
+
+    /** Writes the testdata to a file as simple plain text.
+     * Each element is in one line by calling {@code toString}.
+     *
+     * Note that calling this with a {@code toString} method that produces multiple
+     * lines will result in weird behavior.
+     * The data is stored in directory named "data".
+     * @param filename the desired file name.
+     * @param data the list of data to write.
+     * @param category the directory where this data should be stored.
+     * @param ext the relevant extension.
+     * @return if there was no errors writing the data to file.
+     */
+    public static <T> boolean writeToFile(String filename, T[] data, Cat category, Ext ext, Function<T,String> writer) {
         String c = data[0].getClass().getSimpleName(); 
         String fullname = 
             category.toString().toLowerCase() + 
             "/" + filename + 
             "." + c + 
             "." + ext.toString().toLowerCase();
-        return writeToFile(fullname, data, e -> e.toString());
+        return writeToFile(fullname, data, writer);
     }
 
     /** Writes the testdata to a file as simple plain text.
@@ -199,7 +270,7 @@ public class Handler {
     /** Reads data from an input stream.
      * Makes no attempt at input verification.
      * @param stream a stream of correctly formatted strings.
-     * @param reader a function that creates data from a string.
+     * @param reader a function that creates a new data object from a string.
      * @return an array of data objects.
      */
     @SuppressWarnings("unchecked")
@@ -227,6 +298,7 @@ public class Handler {
 
     // ===================Manual sanity check tests===============
 
+    /** Checks if data can be written and read from disk. */
     public static <T> boolean readWriteTest(String filename, T[] testData, Function<String, T> reader) {
         System.out.println("Writing testdata to file");
         System.out.println(Arrays.toString(testData));
@@ -245,14 +317,15 @@ public class Handler {
     }
 
     // ============== MAIN ======================
+
     /** Generate all desired test data to the data folder */
     public static void main(String[] args) {
 
         // Sanity check
         assert(readWriteTest(
             "other/sanity.TestData",
-            generate(10, i -> testDataGen(0, i, 1, 1)),
-            s -> testDataFrom(s)
+            generate(10, i -> new TestData(RANDOM.nextInt(), i)),
+            TestData::from
         ));
         
         // ------------------- Data generation
@@ -262,7 +335,7 @@ public class Handler {
 
         // Unit tests
 
-        Category ut = Category.UNITTEST;
+        Cat ut = Cat.UNITTEST;
         
         Integer[] basicseq = generate(10, i -> i);
         String a = "basicshuffle";
