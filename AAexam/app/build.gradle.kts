@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "TestData"
+    mainClass = "data.Handler"
     applicationDefaultJvmArgs = listOf("-ea")
 }
 
