@@ -32,7 +32,7 @@ public class TopDownMergeSort {
             else if (right > hi)                             a[k] = aux[left++]; 
             //If current element on right less than current on left, take from right, inc compares
             else if (aux[right].compareTo(aux[left]) < 0 )  {a[k] = aux[right++]; compares++;}
-            //If current key on left less or equal to key on rigt, take from left, inc compares
+            //If current key on left less or equal to key on right, take from left, inc compares (ensures stability)
             else                                            {a[k] = aux[left++]; compares++;}                            
         }
 
@@ -45,9 +45,10 @@ public class TopDownMergeSort {
     private static int sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
         //number of total compares
         int compares = 0;
-        //if just one element (or empty array), ready to merge (TODO:threshold for insertion sort could be here?)
+        //if just one element (or empty array), ready to merge 
         if (hi <= lo) return compares;
 
+        //(TODO:threshold for insertion sort could be around here?)
         //split up array and recursively sort the two, returning number of compares from each
         int mid = lo + (hi - lo) / 2;
         int comparesLeft = sort(a, aux, lo, mid);
