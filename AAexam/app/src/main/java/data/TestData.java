@@ -20,4 +20,15 @@ public record TestData(int id, int value) implements Comparable<TestData> {
         return id + " " + value;
     }
 
+    /** Generates a TestData object from a plain text description.
+     * @param string must contain first the ID as an integer, then an integer value.
+     * @throws IllegalArgumentException if the string does not contain exactly two tokens.
+     * @throws NumberFormatException if either of the tokens are not readable as integers.
+     */
+    public static TestData from(String string) {
+        String[] split = string.split(" ");
+        if (!(split.length == 2)) throw new IllegalArgumentException("Wrong string content");
+        return new TestData(Integer.parseInt(split[0]), Integer.parseInt(split[1])); }
+
+
 }

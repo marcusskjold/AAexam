@@ -1,39 +1,57 @@
 package data;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import static data.Handler.Ext;
+import static data.Handler.Cat;
+
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * DataGeneratorTest
+ * TODO: Write a parameterized test that check the invariant holds for many sizes of lists and / or percentages
+ * TODO: Think through exactly what tests are needed to be confident of correctness.
+ * Currently, only very basic tests are done to confirm that *something* is done.
+ * Mainly, there is no test that ensures that the randomization is of high quality.
+ * Also, only Integers are tested.
  */
 public class HandlerTest{
 
+    /** Make sure the generator generates the specified number of elements */
     @Test void generate_matchesLength() {
-        Integer[] actual = Handler.generate(10_000_000, i -> i);
-        assertEquals(10_000_000, actual.length);
+        Integer[] actual = Handler.generate(10_000, i -> i);
+        assertEquals(10_000, actual.length);
     }
 
+    /** Make sure the generator output array is sorted */
     @Test void generate_isSorted() {
-        Integer[] actual = Handler.generate(10_000_000, i -> i);
+        // This generator function takes the index, and so the generator assumes the output is automatically sorted.
+        Integer[] actual = Handler.generate(10_000, i -> i);
         Integer[] expected = actual.clone();
         Arrays.sort(expected);
         assertArrayEquals(expected, actual);
+
+        // The string generator function is a supplier, and so the generator manually sorts the output.
+        String[] sActual = Handler.generate(1_000, () -> Handler.randomString(10));
+        String[] sExpected = sActual.clone();
+        assertArrayEquals(sExpected, sActual);
     }
 
+    /** Basic check that *something* happens when randomize is called */
     @Test void randomize_randomizes() {
-        Integer[] expected = Handler.generate(10_000_000, i -> i);
+        Integer[] expected = Handler.generate(10_000, i -> i);
         Integer[] actual   = Handler.randomize(expected);
         assertFalse(Arrays.equals(expected,actual));
     }
 
+    /** Randomize should accept boundary values but reject thos outside the boundary */
     @Test void randomize_throwsCorrectly() {
-        Integer[] dummy = Handler.generate(10_000_000, i -> i);
+        Integer[] dummy = Handler.generate(10_000, i -> i);
         Handler.randomize(dummy, 0);
         Handler.randomize(dummy, 100);
 
@@ -45,7 +63,7 @@ public class HandlerTest{
 
     }
 
-    // We expect no change unless at least two elements can be swapped.
+    /** We expect no change unless at least two elements can be swapped. */
     @Test void randomize_atBoundaryValues_roundsCorrectly() {
         Integer[] expected = Handler.generate(10, i -> i);
         Integer[] actual   = Handler.randomize(expected, 19);
@@ -66,14 +84,11 @@ public class HandlerTest{
         assertArrayEquals(expected, actual);
     }
 
-    /** This also implicitly tests all other methods */
+    /** This implicitly tests multiple methods */
     @Test void fileIO_works() {
         Integer[] expected = Handler.generate(1_000_000, i -> i);
-        Handler.writeToFile("test", expected, Handler.Category.UNITTEST, Handler.Ext.OUT);
-        Integer[] actual = Handler.readData(Handler.streamFile("unittest/test.Integer.out"), s -> Integer.valueOf(s));
+        Handler.writeToFile("test", expected, Cat.UNITTEST, Ext.OUT);
+        Integer[] actual = Handler.readData(Handler.streamFile("unittest/test.Integer.out"), Integer::valueOf);
         assertArrayEquals(expected, actual);
     }
-
-    // TODO: Write a parameterized test that check the invariant holds for many sizes of lists and / or percentages
-
 }
