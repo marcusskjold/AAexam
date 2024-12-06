@@ -50,8 +50,8 @@ public class Handler {
 
     // ============================== Data generation ===================================
 
-    /** Generates a sorted array of elements from the generator function.
-     * Returns a sorted output if the generator function intrinsically generates output of higher
+    /** Generates a array of elements from the generator function.
+     * The sorted output if the generator function intrinsically generates output of higher
      * value relative to the integer input.
      * @param n the number of elements.
      * @param generator a supplier function.
@@ -86,8 +86,8 @@ public class Handler {
 
     /** Creates a random alphanumeric string of the specified length */
     public static String randomString(int length, Random r) {
-        final char[] chars = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ ".toCharArray();
-        final StringBuilder b = new StringBuilder(length);;
+        final char[] chars = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ".toCharArray();
+        final StringBuilder b = new StringBuilder(length);
         for (int i = 0; i < length; i++) b.append(chars[r.nextInt(chars.length)]);
         return b.toString();
     }
@@ -119,8 +119,8 @@ public class Handler {
      * The randomizer ensures that there are no duplicate swaps, such that the percentage
      * of shuffled elements as closely matches the percentage given as possible.
      * The integer rounding is always downwards to prevent indexing out of bounds,
-     * this also means that no swaps will happen if the percentage translates to less than two elements
-     * swapped.
+     * this also means that no swaps will happen if the percentage translates to less than two 
+     * elements swapped.
      * In other words the number of elements swapped is the nearest integer n where
      * {@code 1 < n <= percentage / data.length}
      * @param data The array to produce a shuffled copy of.
@@ -132,13 +132,13 @@ public class Handler {
         if (percent < 0 || percent > 100)      // Precondition
             throw new IllegalArgumentException("Percentage must be between 0-100");
 
-        int n        = data.length;            // Setup
-        int m        = (n * percent) / 100;
-        T[] x        = data.clone();
-        int[] seq    = IntStream.range(0, n).toArray(); 
+        int n      = data.length;              // Setup
+        int m      = (n * percent) / 100;
+        T[] x      = data.clone();
+        int[] seq  = IntStream.range(0, n).toArray(); 
 
         for (int i = 0; i < n; i++) {          // Generate a random sequence of indices
-            int k  = i + r.nextInt(n-i);
+            int k  = i + r.nextInt(n - i);
             int j  = seq[i];
             seq[i] = seq[k];
             seq[k] = j;
@@ -191,9 +191,9 @@ public class Handler {
     }
 
     /** Writes the testdata to a file as simple plain text.
-     * Each element is in one line by calling {@code toString}.
+     * Each element is in one line by applying the writer function.
      *
-     * Note that calling this with a {@code toString} method that produces multiple
+     * Note that calling this with a writer function that produces multiple
      * lines will result in weird behavior.
      * The data is stored in directory named "data".
      * @param filename the desired file name.
@@ -333,27 +333,27 @@ public class Handler {
         Ext in = Ext.IN;
         Ext out = Ext.OUT;
 
-        // Unit tests
+        // Unit tests data specification exempler
 
         Cat ut = Cat.UNITTEST;
         
-        Integer[] basicseq = generate(10, i -> i);
         String a = "basicshuffle";
+        Integer[] basicseq = generate(10, i -> i);
         writeToFile(a, randomize(basicseq), ut, in);
         writeToFile(a, basicseq, ut, out);
 
-        TestData[] copies = generate(20, i -> new TestData(i, i/2));
         String b = "stable";
+        TestData[] copies = generate(20, i -> new TestData(i, i/2));
         writeToFile(b, randomize(copies), ut, in);
         writeToFile(b, copies, ut, out);
 
-        String[] strings = generate(10, () -> randomString(10));
         String c = "strings";
+        String[] strings = generate(10, () -> randomString(10));
         writeToFile(c, randomize(strings), ut, in);
         writeToFile(c, strings, ut, out);
 
-        String[] stringsprefix = generate(10, () -> "prefix" + randomString(10));
         String d = "stringsprefix";
+        String[] stringsprefix = generate(10, () -> "prefix" + randomString(10));
         writeToFile(d, randomize(stringsprefix), ut, in);
         writeToFile(d, stringsprefix, ut, out);
 
