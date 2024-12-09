@@ -34,8 +34,20 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "data.Handler"
+    mainClass.set(
+        if (project.hasProperty("mainClass"))
+            project.property("mainClass") as String
+        else "Main"
+    )
     applicationDefaultJvmArgs = listOf("-ea")
+}
+
+application {
+    // applicationDefaultJvmArgs = listOf(
+    //     if (project.hasProperty("assertions"))
+    //         "-ea"
+    //     else ""
+    // )
 }
 
 tasks.named<Test>("test") {
