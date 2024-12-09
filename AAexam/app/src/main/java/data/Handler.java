@@ -113,6 +113,19 @@ public class Handler {
     }
 
     /** Returns a new, shuffled copy of the input array. */
+    public static <T> void inPlaceRandomize(T[] x) {
+        int n = x.length;
+        for (int i = 0; i < n; i++) {
+            int j  = i + RANDOM.nextInt(n-i);
+            T t    = x[i];
+            x[i]   = x[j];
+            x[j]   = t;
+        }
+        
+    }
+
+
+    /** Returns a new, shuffled copy of the input array. */
     public static <T> T[] randomize(T[] data) { return randomize(data, RANDOM); }
 
     /** Returns a new copy of the input with the specified percentage of elements shuffled.
