@@ -13,7 +13,7 @@ public class InsertionSort {
      */
     public static int sort(Comparable[] a) {
         int compares = sort(a, 0, a.length - 1);
-        assert isSorted(a);
+        assert SortUtils.isSorted(a);
         return compares;
     }
 
@@ -36,7 +36,7 @@ public class InsertionSort {
                     break;
             }
         }
-        assert isSorted(a, lo, hi);
+        assert SortUtils.isSorted(a, lo, hi);
         return compares;
     }
 
@@ -53,18 +53,4 @@ public class InsertionSort {
         a[j] = swap;
     }
 
-
-   /***************************************************************************
-    *  Check if array is sorted - useful for debugging.
-    ***************************************************************************/
-    private static boolean isSorted(Comparable[] a) {
-        return isSorted(a, 0, a.length - 1);
-    }
-
-    // is the array a[lo..hi] sorted
-    private static boolean isSorted(Comparable[] a, int lo, int hi) {
-        for (int i = lo + 1; i <= hi; i++)
-            if (a[i].compareTo(a[i-1]) < 0 ) return false;
-        return true;
-    }
 }
