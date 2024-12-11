@@ -1,9 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.InputStream;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
@@ -12,7 +12,9 @@ import sorting.TopDownMergeSort;
 
 public class TopDownMergeSortTest {
 
+    //-----------------------------------
     //Case: Empty array
+    //-----------------------------------
     @Test
     void givenEmptyArray_whenMergeSort_thenEmptyArray() {
         Integer[] emptyArray = new Integer[0];
@@ -26,7 +28,9 @@ public class TopDownMergeSortTest {
         assertEquals(0, TopDownMergeSort.sort(emptyArray));
     }
 
+    //-----------------------------------
     //Case: Only one element
+    //-----------------------------------
     @Test
     void givenSizeOneArray_whenMergeSort_thenIdenticalArray() {
         Integer[] sizeOneArray = new Integer[]{1};
@@ -40,7 +44,9 @@ public class TopDownMergeSortTest {
         assertEquals(0, TopDownMergeSort.sort(sizeOneArray));
     }
 
+    //-----------------------------------
     //Case: Descending order rather than ascending
+    //-----------------------------------
     @Test
     void givenDescendingArray_whenMergeSort_thenAscendingArray() {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
@@ -54,7 +60,9 @@ public class TopDownMergeSortTest {
         assertEquals(4, TopDownMergeSort.sort(descendingArray));
     }
 
+    //-----------------------------------
     //Case: Odd amount of elements
+    //-----------------------------------
     @Test
     void givenOddSizeArray_whenMergeSort_thenSortsArray() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
@@ -69,8 +77,10 @@ public class TopDownMergeSortTest {
     }
 
 
-    //Case all elements equal value (using Testdata tuples with identical values and distinct id's)
+    //-----------------------------------
+    //Case: all elements equal value (using Testdata tuples with identical values and distinct id's)
     //As such, if not identical would imply that some tuples with equal value were switched (e.g. try value = -i)
+    //-----------------------------------
     @Test
     void givenIdenticalElementsArray_whenMergeSort_thenPreserveStability() {
         TestData[] identicalElementsArray = Handler.generate(10, i -> new TestData(i,0));
@@ -84,37 +94,56 @@ public class TopDownMergeSortTest {
         assertEquals(19, TopDownMergeSort.sort(identicalElementsArray));
     }
 
-    //case: small array contains duplicates (for easier readability compared to medium array)
+    //-----------------------------------
+    //Case: small array contains duplicates (for easier readability compared to medium array)
+    //-----------------------------------
     @Test
     void givenDuplicateElementsArray_whenMergeSort_thenSortsArrayStably() {
-        TestData[] identicalElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
         TestData::from); 
         TestData[] expectedArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.out"), 
         TestData::from); 
-        TopDownMergeSort.sort(identicalElementsArray);
-        assertArrayEquals(expectedArray, identicalElementsArray);
+        TopDownMergeSort.sort(duplicateElementsArray);
+        assertArrayEquals(expectedArray, duplicateElementsArray);
     }
 
-    //case: medium array contains duplicates
+    @Test
+    void givenDuplicateElementsArray_whenMergeSort_thenReturnNumberOfCompares() {
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
+        TestData::from); 
+        assertEquals(8, TopDownMergeSort.sort(duplicateElementsArray));
+    }
+
+    //-----------------------------------
+    //Case: medium array contains duplicates
+    //-----------------------------------
     //TODO: Important! When one of the files are modified, it doesn't seem to be updated in the read array (a cache seems to be used) (Maybe okay and because it has to be built also?)
     //changing name and back can solve this ish
     @Test
     void givenDuplicateElementsArrayMedium_whenMergeSort_thenSortsArrayStably() {
-        TestData[] identicalElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
         TestData::from); 
         TestData[] expectedArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.out"), 
         TestData::from); 
 
         // Debug: Log input and expected output
-        System.out.println("Input Array: " + Arrays.toString(identicalElementsArray));
+        System.out.println("Input Array: " + Arrays.toString(duplicateElementsArray));
         System.out.println("Expected Array: " + Arrays.toString(expectedArray));
 
-        TopDownMergeSort.sort(identicalElementsArray);
+        TopDownMergeSort.sort(duplicateElementsArray);
 
         // Debug: sorted input
-        System.out.println("Sorted Array: " + Arrays.toString(identicalElementsArray));
+        System.out.println("Sorted Array: " + Arrays.toString(duplicateElementsArray));
 
-        assertArrayEquals(expectedArray, identicalElementsArray);
+        assertArrayEquals(expectedArray, duplicateElementsArray);
+    }    
+
+    @Test
+    void givenDuplicateElementsArrayMedium_whenMergeSort_thenReturnNumberOfCompares() {
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
+        TestData::from); 
+
+        assertEquals(23, TopDownMergeSort.sort(duplicateElementsArray));
     }    
 
 }
