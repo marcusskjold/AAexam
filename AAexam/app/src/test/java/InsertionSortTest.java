@@ -1,18 +1,17 @@
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
 import data.TestData;
 import sorting.InsertionSort;
-import sorting.TopDownMergeSort;
 
 public class InsertionSortTest {
 
+    //-----------------------------------
     //Case: Empty array
+    //-----------------------------------
     @Test
     void givenEmptyArray_whenInsertionSort_thenEmptyArray() {
         Integer[] emptyArray = new Integer[0];
@@ -26,7 +25,9 @@ public class InsertionSortTest {
         assertEquals(0, InsertionSort.sort(emptyArray));
     }
 
+    //-----------------------------------
     //Case: Only one element
+    //-----------------------------------
     @Test
     void givenSizeOneArray_whenInsertionSort_thenIdenticalArray() {
         Integer[] sizeOneArray = new Integer[]{1};
@@ -40,7 +41,9 @@ public class InsertionSortTest {
         assertEquals(0, InsertionSort.sort(sizeOneArray));
     }
 
+    //-----------------------------------
     //Case: Descending order rather than ascending (worst case)
+    //-----------------------------------
     @Test
     void givenDescendingArray_whenInsertionSort_thenAscendingArray() {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
@@ -62,15 +65,18 @@ public class InsertionSortTest {
     }
 
 
-    //case: already sorted (best case)
+    //-----------------------------------
+    //Case: already sorted (best case)
+    //-----------------------------------
     @Test
     void givenAlreadySortedArray_whenInsertionSort_thenReturnNumberOfCompares() {
         Integer[] sortedArray = new Integer[]{0,1,2,3,4,5,6};
         assertEquals(6, InsertionSort.sort(sortedArray));
     }
 
-
+    //-----------------------------------
     //Case: Odd amount of elements
+    //-----------------------------------
     @Test
     void givenOddSizeArray_whenInsertionSort_thenSortsArray() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
@@ -92,7 +98,9 @@ public class InsertionSortTest {
     }
 
 
-    //Case all elements equal value (using Testdata tuples with identical values and distinct id's)
+    //-----------------------------------
+    //Case: all elements equal value (using Testdata tuples with identical values and distinct id's)
+    //-----------------------------------
     @Test
     void givenIdenticalElementsArray_whenInsertionSort_thenPreserveStability() {
         TestData[] identicalElementsArray = Handler.generate(10, i -> new TestData(i,0));
@@ -106,28 +114,46 @@ public class InsertionSortTest {
         assertEquals(9, InsertionSort.sort(identicalElementsArray));
     }
 
-    //case: small array contains duplicates (for easier readability compared to medium array)
+    //-----------------------------------
+    //Case: small array contains duplicates (for easier readability compared to medium array)
+    //-----------------------------------
     @Test
     void givenDuplicateElementsArray_whenInsertionSort_thenSortsArrayStably() {
-        TestData[] identicalElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
         TestData::from); 
         TestData[] expectedArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.out"), 
         TestData::from); 
-        InsertionSort.sort(identicalElementsArray);
-        assertArrayEquals(expectedArray, identicalElementsArray);
+        InsertionSort.sort(duplicateElementsArray);
+        assertArrayEquals(expectedArray, duplicateElementsArray);
     }
 
-    //case: medium array contains duplicates
+    @Test
+    void givenDuplicateElementsArray_whenInsertionSort_thenReturnNumberOfCompares() {
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
+        TestData::from); 
+        assertEquals(6, InsertionSort.sort(duplicateElementsArray));
+    }
+
+    //-----------------------------------
+    //Case: medium array contains duplicates
+    //-----------------------------------
     //TODO: Important! When one of the files are modified, it doesn't seem to be updated in the read array (a cache seems to be used) (Maybe okay and because it has to be built also?)
     //changing name and back can solve this ish
     @Test
     void givenDuplicateElementsArrayMedium_whenInsertionSort_thenSortsArrayStably() {
-        TestData[] identicalElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
         TestData::from); 
         TestData[] expectedArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.out"), 
         TestData::from); 
-        InsertionSort.sort(identicalElementsArray);
-        assertArrayEquals(expectedArray, identicalElementsArray);
+        InsertionSort.sort(duplicateElementsArray);
+        assertArrayEquals(expectedArray, duplicateElementsArray);
+    } 
+
+    @Test
+    void givenDuplicateElementsArrayMedium_whenInsertionSort_thenReturnNumberOfCompares() {
+        TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
+        TestData::from); 
+        assertEquals(24, InsertionSort.sort(duplicateElementsArray));
     } 
 
 }
