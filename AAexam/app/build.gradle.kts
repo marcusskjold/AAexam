@@ -39,15 +39,7 @@ application {
             project.property("mainClass") as String
         else "Main"
     )
-    applicationDefaultJvmArgs = listOf("-ea")
-}
-
-application {
-    // applicationDefaultJvmArgs = listOf(
-    //     if (project.hasProperty("assertions"))
-    //         "-ea"
-    //     else ""
-    // )
+    // applicationDefaultJvmArgs = listOf("-ea")
 }
 
 tasks.named<Test>("test") {
@@ -55,3 +47,11 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+tasks.jar {
+    manifest {
+        attributes (
+            "Main-Class" to application.mainClass.get()
+        )
+    }
+
+}

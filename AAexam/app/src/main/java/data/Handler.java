@@ -184,6 +184,15 @@ public class Handler {
      */
     public static <T> T[] randomize(T[] data, int percent) { return randomize(data, percent, RANDOM); }
 
+    public static <T> T[] invert(T[] data) {
+        T[] x = data.clone();
+        int n = data.length - 1;
+        for (int i = 0; i <= n; i++) {
+            x[i] = data[n-i];
+        }
+        return x;
+    }
+
     // ============================= I/O ======================================
 
 
