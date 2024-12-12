@@ -59,15 +59,15 @@ final class SingleResult extends Result {
 
     public String toCSV() {
         return String.format(
-            "%s%s%s%s%s%s%s%s",
+            "%s, %s, %s, %s, %s, %s, %s, %s",
             getName(),
-            r.containsKey(Key.PARAMETER)   ? String.format(", %.0f", r.get(Key.PARAMETER))   : "",
-            r.containsKey(Key.RUNS)        ? String.format(", %.0f", r.get(Key.RUNS))        : "",
-            r.containsKey(Key.REPETITIONS) ? String.format(", %.0f", r.get(Key.REPETITIONS)) : "",
-            r.containsKey(Key.MEANTIME)    ? String.format(", %.2f", r.get(Key.MEANTIME))    : "",
-            r.containsKey(Key.SDEVTIME)    ? String.format(", %.2f", r.get(Key.SDEVTIME))    : "",
-            r.containsKey(Key.MEANRESULT)  ? String.format(", %.2f", r.get(Key.MEANRESULT))  : "",
-            r.containsKey(Key.SDEVRESULT)  ? String.format(", %.2f",  r.get(Key.SDEVRESULT))  : ""
+            r.containsKey(Key.PARAMETER)   ? String.format("%.0f", r.get(Key.PARAMETER))   : "NULL",
+            r.containsKey(Key.RUNS)        ? String.format("%.0f", r.get(Key.RUNS))        : "NULL",
+            r.containsKey(Key.REPETITIONS) ? String.format("%.0f", r.get(Key.REPETITIONS)) : "NULL",
+            r.containsKey(Key.MEANTIME)    ? String.format("%.2f", r.get(Key.MEANTIME))    : "NULL",
+            r.containsKey(Key.SDEVTIME)    ? String.format("%.2f", r.get(Key.SDEVTIME))    : "NULL",
+            r.containsKey(Key.MEANRESULT)  ? String.format("%.2f", r.get(Key.MEANRESULT))  : "NULL",
+            r.containsKey(Key.SDEVRESULT)  ? String.format("%.2f",  r.get(Key.SDEVRESULT)) : "NULL"
         );
     }
 }

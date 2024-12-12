@@ -30,23 +30,38 @@ public class Experiments {
 
     private Experiments() {}
 
+    /** Perform a static single run measurement.
+     * Run an experiment a specific amount of times and return the measurement.
+     * the results reflect the average and standard error of those measurements. */
     public static <T> Measurement measure(Experiment<T> ex, int repetitions) { 
         return new SingleRunMeasurement(ex, repetitions); }
 
+    /** Perform a dynamic single run experiment.
+     * Dynamically find a proportional amount repetitions and measure an experiment */
     public static <T> Measurement measure(Experiment<T> ex, double timeLimit) { 
         return new SingleRunMeasurement(ex, timeLimit); }
 
+    /** Perform a static multi run experiment.
+     * Measure an experiment a specific amount of times, average the results, and 
+     * repeat for a specific amount of runs. The results reflect the average of 
+     * averages and the standard deviance of those averages. */
     public static <T> Measurement measure(Experiment<T> ex, int repetitions, int runs) { 
         return new MultiRunMeasurement(ex, runs, repetitions); }
 
+    /** Perform a dynamic multi run experiment.
+     * Measure an experiment a dynamic amount of times (based on the timeLimit),
+     * average the results, and repeat for a specific amount of runs.
+     * The results reflect the average of averages and the standard deviance of those averages. */
     public static <T> Measurement measure(Experiment<T> ex, double timeLimit, int runs) { 
         return new MultiRunMeasurement(ex, runs, timeLimit); }
 
+    /** Perform a parameterized single run experiment. */
     public static <T> Measurement measure(
         IntFunction<Experiment<T>> ex, double timeLimit,
         int pMin, int pMax, double pScale
     ) { return new ParameterizedSingleRunMeasurement(ex, timeLimit, pMin, pMax, pScale); }
 
+    /** Perform a parameterized multi run experiment. */
     public static <T> Measurement measure(
         IntFunction<Experiment<T>> ex, double timeLimit, int runs,
         int pMin, int pMax, double pScale
