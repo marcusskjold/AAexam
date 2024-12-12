@@ -79,6 +79,11 @@ public class BottomUpMergeSort {
     
     /**
      * Rearranges the array in ascending order, using the natural order
+     * Keeps a stack of computed runs. 
+     * When a new run of size one is added, it is merged with the next 
+     * run in the stack till the next run has a different length than the resulting run
+     * Afterwards, merges all runs together, one by one, starting at the top
+     * of the stack.
      * @param a the array to be sorted
      * @return the number of compares performed during the sort
      */
@@ -119,8 +124,8 @@ public class BottomUpMergeSort {
                 int mid = runStack - 1;
                 //define final index as the sum of lengths and current run minus 1
                 int hi = runStack + runLength - 1;
-                //debug
-                System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+                ////debug
+                //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
                 //merge current run with next run (and count compares):
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the next (now merged) run from stack (by bitwise AND with reverse of runLength)
@@ -143,7 +148,7 @@ public class BottomUpMergeSort {
         //}
         //Idea: Manually see if first merge necessary first element?
 
-        System.out.println("Finishing up stack:");
+        //System.out.println("Finishing up stack:");
         //while still elements in stack:
         while(runStack != 0) {
             //If run of current length found (can only be one for each length pr the stack invariant)
@@ -152,10 +157,10 @@ public class BottomUpMergeSort {
                 int lo = runStack - runLength;
                 //compute mid (as usual)
                 int mid = runStack - 1;
-                //If not a redundant merge: //TODO: verify this check (Maybe a bit ad hoc)
+                //If not a redundant first merge: //TODO: verify this check (Maybe a bit ad hoc)
                 if(hi >= mid + 1) {
-                    //debug
-                    System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+                    ////debug
+                    //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
                     //merge current run with next run (and count compares):
                     compares += Merge.merge(a, aux, lo, mid, hi);
                 }
@@ -165,37 +170,10 @@ public class BottomUpMergeSort {
             //proceed to next bit (length)
             runLength = runLength << 1;
         }
-        //debug
-        System.out.println(Arrays.toString(a));
+        ////debug
+        //System.out.println(Arrays.toString(a));
 
         return compares;
     }
 
-
-
-    
 }
-
-
-
-
-
-
-///Scratches from draft:
-//int[] secondRun = runs.pop();
-//                int secondRunStart = secondRun[0];
-//                int secondRunLength = secondRun[1];
-//                if(latestRunLength == secondRunLength) {
-//                    //defines new lo
-//                    int lo = latestRun[0];
-//                    int hi = lo + latestRunLength + 1;
-//                    Merge.merge(a, aux, latestRun[0], i, hi)
-//                    runs.add(new int[]{latestRun[0],latestRunLength+secondRunLength});
-//                } 
-//                //if two top is not equal in length, put them back together with run containing next element
-//                else {
-//                    runs.add(secondRun);
-//                    runs.add(latestRun);
-//                    runs.add(new int[]{i,1});
-//                }
-//

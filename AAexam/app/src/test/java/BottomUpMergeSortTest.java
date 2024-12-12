@@ -1,14 +1,12 @@
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
 import data.TestData;
 import sorting.BottomUpMergeSort;
-import sorting.TopDownMergeSort;
 
 public class BottomUpMergeSortTest {
     
@@ -62,6 +60,8 @@ public class BottomUpMergeSortTest {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
         assertEquals(4, BottomUpMergeSort.sort(descendingArray));
     }
+
+    
 
 
     //-----------------------------------
@@ -160,6 +160,6 @@ public class BottomUpMergeSortTest {
         assertEquals(25, BottomUpMergeSort.sort(duplicateElementsArray));
     }    
 
-    
+
 
 }
