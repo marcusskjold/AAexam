@@ -14,7 +14,6 @@ public class Main {
 
         // ========== Setup
 
-        Result r;
         Experiment<Integer> iEx;
         Experiment<Integer[]> ex;
         IntFunction<Experiment<Integer[]>> gen;
@@ -28,9 +27,9 @@ public class Main {
         // ========== Experiment 1: Simple integer multiplication [multiple runs]
 
         iEx = new Experiment<Integer>(i -> i, Experiments::multiply, i -> i);
-        r = Experiments.measure(iEx, 0.1).analyze("multiply");
-        r.removeKeys(List.of(Key.MEANRESULT, Key.SDEVRESULT));
-        System.out.println(r);
+        Experiments.measure(iEx, 0.1).analyze("multiply")
+                   .removeKeys(List.of(Key.MEANRESULT, Key.SDEVRESULT))
+                   .print();
 
 
         // =========== Experiment 2: Mergesort [parameterized]
@@ -53,9 +52,9 @@ public class Main {
         ex = new Experiment<>(
             data, TopDownMergeSort::sort, j -> j);
 
-        r = Experiments.measure(ex, 0.25).analyze("sorted");
-        r.put(Key.PARAMETER, (double) 50_000);
-        System.out.println(r);
+        Experiments.measure(ex, 0.25).analyze("sorted")
+                   .put(Key.PARAMETER, (double) 50_000)
+                   .print();
 
 
         // =========== Experiment 3B: Mergesort with different input
@@ -63,9 +62,10 @@ public class Main {
         ex = new Experiment<>(
             data, TopDownMergeSort::sort, j -> Handler.randomize(j, 20));
 
-        r = Experiments.measure(ex, 0.25).analyze("20pRandom");
-        r.put(Key.PARAMETER, (double) 50_000);
-        System.out.println(r);
+        Experiments.measure(ex, 0.25)
+                   .analyze("20pRandom")
+                   .put(Key.PARAMETER, (double) 50_000)
+                   .print();
 
 
         // =========== Experiment 3C: Mergesort with different input
@@ -73,9 +73,9 @@ public class Main {
         ex = new Experiment<>(
             data, TopDownMergeSort::sort, Handler::invert);
 
-        r = Experiments.measure(ex, 0.25).analyze("inverted");
-        r.put(Key.PARAMETER, (double) 50_000);
-        System.out.println(r);
+        Experiments.measure(ex, 0.25).analyze("inverted")
+                   .put(Key.PARAMETER, (double) 50_000)
+                   .print();
 
 
         // =========== Experiment 4: Complex mergesort [parameterized, multiple runs]
