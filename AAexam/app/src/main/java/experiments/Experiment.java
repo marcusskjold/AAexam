@@ -14,6 +14,7 @@ import java.util.function.UnaryOperator;
  */
 public record Experiment<T>(IntFunction<T> inputGen, ToIntFunction<T> runFun, UnaryOperator<T> setupFun) { 
     public T input(int i)   { return inputGen.apply(i); }
+    public T input()        { return inputGen.apply(0); }
     public T setup(T input) { return setupFun.apply(input);}
     public int run(T input) { return runFun.applyAsInt(input); }
 

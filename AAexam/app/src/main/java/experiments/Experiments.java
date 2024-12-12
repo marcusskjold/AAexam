@@ -6,7 +6,6 @@ import java.util.function.IntFunction;
 
 import data.Handler;
 import sorting.TopDownMergeSort;
-import experiments.Result;
 import experiments.Result.Key;
 
 /** The main class to access the experiments library.
