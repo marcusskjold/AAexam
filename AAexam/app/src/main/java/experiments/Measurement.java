@@ -8,15 +8,27 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
 
+/** <p>A measurement is a collection of observations of time and experimental results.
+ * There are four types of measurements:</p>
+ * <ol>
+ * <li>{@code SingleRunMeasurement}</li>
+ * <li>{@code ParameterizedRunMeasurement}</li>
+ * <li>{@code MultiRunMeasurement}</li>
+ * <li>{@code ParameterizedMultiRunMeasurement}</li>
+ * </ol>
+ * Measurements are created through the {@code Experiments} factory method {@code measure}.
+ * The only public method os an {@code Measurement} is {@code analyze()}, which produces a result.
+ *
+ * Measurement also contains the {@code Timer} class, which is used for basic timekeeping.
+ */
 public abstract sealed class Measurement {
 
-    public class Timer {
+    public static class Timer {
         private long start, spent = 0;
         public Timer()        { }
         public long check()   { return  (System.nanoTime()-start+spent); }
         public void pause()   { spent += System.nanoTime()-start; }
         public void play()    { start  = System.nanoTime(); }
-        public void reset()   { spent  = 0; }
     }
 
     abstract public Result analyze(String withTitle);
@@ -29,19 +41,19 @@ final class SingleRunMeasurement extends Measurement {
     private final double averageTime,averageResult;
     private final int observations;
 
-    public <T> SingleRunMeasurement(Experiment<T> ex, int repetitions) {
+    <T> SingleRunMeasurement(Experiment<T> ex, int repetitions) {
         Timer t              = new Timer();
         long runningTime     = 0; 
         double averageResult = 0;
         results              = new int[repetitions];
         times                = new long[repetitions];
         for (int i = 0; i < repetitions; i++) {
-            T in = ex.setup(ex.input(i));
+            T in           = ex.setup(ex.input(i));
             t.play();
-            int result = ex.run(in);
-            long time = t.check();
-            results[i] = result;
-            times[i]   = time;
+            int result     = ex.run(in);
+            long time      = t.check();
+            results[i]     = result;
+            times[i]       = time;
             runningTime   += time;
             averageResult += result / (double) repetitions;
         }
@@ -80,15 +92,16 @@ final class SingleRunMeasurement extends Measurement {
             count++;
             int result      = results[i];          long time     = times[i];
             double d1Result = result - meanResult; double d1Time = time - meanTime;
-            meanResult     += d1Result / count;        meanTime     += d1Time / count;
+            meanResult     += d1Result / count;    meanTime     += d1Time / count;
             double d2Result = result - meanResult; double d2Time = time - meanTime;
-            m2Result       += d1Result * d2Result;     m2Time       += d1Time * d2Time;
+            m2Result       += d1Result * d2Result; m2Time       += d1Time * d2Time;
         }
         sdResult  = Math.sqrt(m2Result/(count-1));     sdTime = Math.sqrt(m2Time/(count-1));
 
         SingleResult r = new SingleResult(withTitle);
         r.put(Key.MEANRESULT, meanResult);             r.put(Key.MEANTIME, meanTime);
         r.put(Key.SDEVRESULT, sdResult);               r.put(Key.SDEVTIME, sdTime);
+        r.put(Key.REPETITIONS, (double) count);
         return r;
     }
 }
@@ -98,7 +111,7 @@ final class MultiRunMeasurement extends Measurement {
     int runs;
     int repetitions;
 
-    public <T> MultiRunMeasurement(Experiment<T> ex, int runs, int repetitions) {
+    <T> MultiRunMeasurement(Experiment<T> ex, int runs, int repetitions) {
         this.runs = runs;
         this.repetitions = repetitions;
         List<SingleRunMeasurement> x = new ArrayList<>();
@@ -107,7 +120,7 @@ final class MultiRunMeasurement extends Measurement {
         } obs = x;
     }
 
-    public <T> MultiRunMeasurement(Experiment<T> ex, int runs, double timeLimit) {
+    <T> MultiRunMeasurement(Experiment<T> ex, int runs, double timeLimit) {
         this(ex, runs, new SingleRunMeasurement(ex, timeLimit).observations()); }
 
     public SingleResult analyze(String withTitle) {
@@ -116,9 +129,9 @@ final class MultiRunMeasurement extends Measurement {
         for (SingleRunMeasurement o : obs ) {
             double result   = o.averageResult();       double time   = o.averageTime();
             count++;
-            double d1Result = result - meanResult;     double d1Time = time - meanTime;
+            double d1Result = result   - meanResult;   double d1Time = time   - meanTime;
             meanResult     += d1Result / count;        meanTime     += d1Time / count;
-            double d2Result = result - meanResult;     double d2Time = time - meanTime;
+            double d2Result = result   - meanResult;   double d2Time = time   - meanTime;
             m2Result       += d1Result * d2Result;     m2Time       += d1Time * d2Time;
         }
         sdResult = Math.sqrt(m2Result/(count-1));      sdTime = Math.sqrt(m2Time/(count-1));
@@ -126,6 +139,7 @@ final class MultiRunMeasurement extends Measurement {
         SingleResult r = new SingleResult(withTitle);
         r.put(Key.MEANRESULT, meanResult);             r.put(Key.MEANTIME, meanTime);
         r.put(Key.SDEVRESULT, sdResult);               r.put(Key.SDEVTIME, sdTime);
+        r.put(Key.REPETITIONS, (double) count);
         return r;
     }
 }
@@ -133,7 +147,7 @@ final class MultiRunMeasurement extends Measurement {
 final class ParameterizedSingleRunMeasurement extends Measurement {
     Map<Integer, SingleRunMeasurement> obs;
 
-    public <T> ParameterizedSingleRunMeasurement(
+    <T> ParameterizedSingleRunMeasurement(
         IntFunction<Experiment<T>> exGen, double timeLimit,
         int pMin, int pMax, double pScale
     ) {
@@ -160,7 +174,7 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
 final class ParameterizedMultiRunMeasurement extends Measurement {
     Map<Integer, MultiRunMeasurement> obs;
 
-    public <T> ParameterizedMultiRunMeasurement(
+    <T> ParameterizedMultiRunMeasurement(
         IntFunction<Experiment<T>> exGen, double timeLimit, int runs,
         int pMin, int pMax, double pScale
     ) {
