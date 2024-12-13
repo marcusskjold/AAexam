@@ -1,5 +1,9 @@
 package experiments;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,14 @@ public abstract sealed class Result {
     public void setTitle(String title) { this.title = title; }
     public String getName()            { return title; }
     public void print()                { System.out.println(this); }
+
+    public Result saveAsCSV() {
+        File f = new File("data/results/" + getName() + ".csv");
+        try { BufferedWriter fw = new BufferedWriter(new FileWriter(f));
+              fw.write(toCSV()); fw.close();
+        } catch (IOException e) { e.printStackTrace();}
+        return this;
+    }
 
     public static String resultHeaders() {
         return String.format(PRINTFORMAT,
@@ -76,7 +88,7 @@ final class SingleResult extends Result {
 final class ParameterizedResult extends Result {
     public final List<SingleResult> result;
 
-    public ParameterizedResult(List<SingleResult> result)                               { this.result = result; }
+    public ParameterizedResult(String title, List<SingleResult> results) { setTitle(title);   result = results; }
     public Result removeKeys(Collection<Key> ks) { for (SingleResult r : result) r.removeKeys(ks); return this; }
     public Result removeKey(Key k)               { for (SingleResult r : result) r.removeKey(k);   return this; }
     public Result put(Key k, Double d)           { for (SingleResult r : result) r.put(k, d);      return this; }

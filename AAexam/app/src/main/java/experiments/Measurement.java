@@ -148,6 +148,17 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
     Map<Integer, SingleRunMeasurement> obs;
 
     <T> ParameterizedSingleRunMeasurement(
+        IntFunction<Experiment<T>> exGen, double timeLimit, int pMax
+    ) {
+        Map<Integer, SingleRunMeasurement> results = new TreeMap<>();
+        for (int p = 0; p < pMax; p++) {
+            Experiment<T> ex = exGen.apply(p);
+            results.put(p, new SingleRunMeasurement(ex, timeLimit));
+        }
+        obs = results;
+    }
+
+    <T> ParameterizedSingleRunMeasurement(
         IntFunction<Experiment<T>> exGen, double timeLimit,
         int pMin, int pMax, double pScale
     ) {
@@ -167,12 +178,25 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
             m.put(Key.PARAMETER, (double) i);
             x.add(m);
         });
-        return new ParameterizedResult(x);
+        return new ParameterizedResult(withTitle, x);
     }
 }
 
 final class ParameterizedMultiRunMeasurement extends Measurement {
     Map<Integer, MultiRunMeasurement> obs;
+
+    <T> ParameterizedMultiRunMeasurement(
+        IntFunction<Experiment<T>> exGen, double timeLimit, int runs, int pMax
+    ) {
+        Map<Integer, MultiRunMeasurement> results = new TreeMap<>();
+        for (int p = 0; p < pMax; p++) {
+            Experiment<T> ex = exGen.apply(p);
+            results.put(p, new MultiRunMeasurement(
+                ex, runs, new SingleRunMeasurement(ex, timeLimit).observations())
+            );
+        }
+        obs = results;
+    }
 
     <T> ParameterizedMultiRunMeasurement(
         IntFunction<Experiment<T>> exGen, double timeLimit, int runs,
@@ -189,6 +213,7 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
         }
         obs = results;
     }
+
     public ParameterizedResult analyze(String withTitle) {
         List<SingleResult> x = new ArrayList<>();
         obs.keySet().stream().sorted().forEach(i -> {
@@ -196,6 +221,6 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
             m.put(Key.PARAMETER, (double) i);
             x.add(m);
         });
-        return new ParameterizedResult(x);
+        return new ParameterizedResult(withTitle, x);
     }
 }

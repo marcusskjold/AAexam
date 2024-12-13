@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -58,10 +59,10 @@ public class Handler {
      * @return an array of elements.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] generate(int n, Function<Integer, T> generator) {
+    public static <T> T[] generate(int n, IntFunction<T> generator) {
         @SuppressWarnings("rawtypes") Class c = generator.apply(0).getClass();
-        return (T[]) IntStream.range(0, n).boxed()
-            .map(i -> generator.apply(i))
+        return (T[]) IntStream.range(0, n)
+            .mapToObj(i -> generator.apply(i))
             .toArray(i -> (T[]) Array.newInstance(c, i));
 
     }
@@ -111,19 +112,6 @@ public class Handler {
         
         return x;
     }
-
-    /** Returns a new, shuffled copy of the input array. */
-    public static <T> void inPlaceRandomize(T[] x) {
-        int n = x.length;
-        for (int i = 0; i < n; i++) {
-            int j  = i + RANDOM.nextInt(n-i);
-            T t    = x[i];
-            x[i]   = x[j];
-            x[j]   = t;
-        }
-        
-    }
-
 
     /** Returns a new, shuffled copy of the input array. */
     public static <T> T[] randomize(T[] data) { return randomize(data, RANDOM); }
@@ -184,6 +172,20 @@ public class Handler {
      */
     public static <T> T[] randomize(T[] data, int percent) { return randomize(data, percent, RANDOM); }
 
+    /** Returns a new, shuffled copy of the input array.
+     * TODO: Test
+     */
+    public static <T> void inPlaceRandomize(T[] x) {
+        int n = x.length;
+        for (int i = 0; i < n; i++) {
+            int j  = i + RANDOM.nextInt(n-i);
+            T t    = x[i];
+            x[i]   = x[j];
+            x[j]   = t;
+        }
+        
+    }
+
     public static <T> T[] invert(T[] data) {
         T[] x = data.clone();
         int n = data.length - 1;
@@ -191,6 +193,29 @@ public class Handler {
             x[i] = data[n-i];
         }
         return x;
+    }
+
+    /** Returns a new copy of the input array ordered as to be a worst
+     * case input for a classic merge sort algorithm.
+     * The input array must be sorted already.
+     * I have not proven it is worst case.
+     * Inspired by Morgan Wilde @ https://stackoverflow.com/a/33409294
+     * TODO: Test
+     */
+    public static <T> T[] mergeSortWorstCase(T[] data) {
+        int n = data.length;
+        int[] order = worstCaseOrderer(n).toArray();
+        T[] x = data.clone();
+        for (int i = 0; i < n; i++) { x[order[i]-1] = data[i]; }
+        return x;
+    }
+
+    private static IntStream worstCaseOrderer(int n) {
+        if (n == 1) return IntStream.of(1);
+        IntStream top = worstCaseOrderer(n/2).map(i -> i * 2);
+        IntStream bottom = worstCaseOrderer(Math.ceilDiv(n, 2)).map(i -> i * 2 - 1);
+        
+        return IntStream.concat(top, bottom);
     }
 
     // ============================= I/O ======================================
