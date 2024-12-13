@@ -2,17 +2,26 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
 import data.TestData;
+import sorting.InsertionSort;
 import sorting.TopDownMergeSort;
 import sorting.TopDownMergeSortCutoff;
 
 public class TopDownMergeSortCutoffTest {
     
+    //-----------------------------------
+    //Case: Invalid cutoff value
+    //-----------------------------------
+    @Test
+    void givenInvalidCutoffvalue_whenMergeSortCutoff_thenThrowsException() {
+        Exception e = assertThrows(IllegalArgumentException.class, 
+        () -> TopDownMergeSortCutoff.sort(new Integer[]{1,2,3},-2));
+        assertEquals("Cutoff value must be at least 1.", e.getMessage());
+    }
+
     //-----------------------------------
     //Case: Empty array
     //-----------------------------------
@@ -46,16 +55,6 @@ public class TopDownMergeSortCutoffTest {
     }
 
     //-----------------------------------
-    //Case: Invalid cutoff value
-    //-----------------------------------
-    @Test
-    void givenInvalidCutoffvalue_whenMergeSortCutoff_thenThrowsException() {
-        Exception e = assertThrows(IllegalArgumentException.class, 
-        () -> TopDownMergeSortCutoff.sort(new Integer[]{1,2,3},-2));
-        assertEquals("Cutoff value must be at least 1.", e.getMessage());
-    }
-
-    //-----------------------------------
     //Case: Odd amount of elements 
     //-----------------------------------
     @Test
@@ -79,6 +78,24 @@ public class TopDownMergeSortCutoffTest {
         assertEquals(TopDownMergeSort.sort(oddSizeArray), TopDownMergeSortCutoff.sort(oddSizeArray2,1));
     }
 
+
+    //-----------------------------------
+    //Case: c greater or equal to array length
+    //-----------------------------------
+
+    @Test
+    void givenArray_whenMergeSortCutoffExceedingValue_thenSortsArray() {
+        Integer[] mediumArray = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        TopDownMergeSortCutoff.sort(mediumArray, 50);
+        assertArrayEquals(new Integer[]{-23,-5,1,2,2,2,4,5,6,7,7,45,54,88}, mediumArray);
+    }
+
+    @Test
+    void givenArray_whenMergeSortCutoffExceedingValue_thenReturnNumberOfComparesEqualToInsertionSort() {
+        Integer[] mediumArray = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        Integer[] mediumArray2 = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        assertEquals(InsertionSort.sort(mediumArray), TopDownMergeSortCutoff.sort(mediumArray2, 50));
+    }
 
     //-----------------------------------
     //Case: all elements equal value (using Testdata tuples with identical values and distinct id's)
