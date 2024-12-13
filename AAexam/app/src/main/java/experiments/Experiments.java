@@ -66,6 +66,17 @@ public class Experiments {
         IntFunction<Experiment<T>> ex, double timeLimit, int runs,
         int pMin, int pMax, double pScale
     ) { return new ParameterizedMultiRunMeasurement(ex, timeLimit, runs, pMin, pMax, pScale); }
+
+    /** Perform a parameterized single run experiment. */
+    public static <T> Measurement measure(
+        IntFunction<Experiment<T>> ex, double timeLimit, int pMax) 
+        { return new ParameterizedSingleRunMeasurement(ex, timeLimit, pMax); }
+    
+    /** Perform a parameterized multi run experiment. */
+    public static <T> Measurement measure(
+        IntFunction<Experiment<T>> ex, double timeLimit, int runs, int pMax) 
+        { return new ParameterizedMultiRunMeasurement(ex, timeLimit, runs, pMax); }
+
     
     /** Prints system info */
     public static void systemInfo() {
