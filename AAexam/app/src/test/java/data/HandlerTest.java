@@ -9,8 +9,12 @@ import static data.Handler.Ext;
 import static data.Handler.Cat;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import sorting.SortUtils;
 
 /**
  * DataGeneratorTest
@@ -26,6 +30,22 @@ public class HandlerTest{
     @Test void generate_matchesLength() {
         Integer[] actual = Handler.generate(10_000, i -> i);
         assertEquals(10_000, actual.length);
+    }
+
+    @Test void
+    givenSameLength_whenGenerateRandomString_generatesUniqueStrings() {
+        int n = 100;
+        String[] ss = Handler.generate(n, i -> Handler.randomString(20));
+        Set<String> uniqueStrings = new HashSet<>(100);
+        for (int i = 0; i < n; i++) uniqueStrings.add(ss[i]); 
+        assertEquals(n, uniqueStrings.size());
+    }
+
+    @Test void
+    givenSameLength_whenGenerateRandomString_generatesUnsortedArray() {
+        int n = 100;
+        String[] ss = Handler.generate(n, i -> Handler.randomString(20));
+        assertFalse(SortUtils.isSorted(ss));
     }
 
     /** Make sure the generator output array is sorted */

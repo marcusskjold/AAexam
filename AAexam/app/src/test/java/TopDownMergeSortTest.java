@@ -1,5 +1,9 @@
+import static data.Handler.randomString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static sorting.SortUtils.isSorted;
 
 import java.util.Arrays;
 
@@ -10,6 +14,19 @@ import data.TestData;
 import sorting.TopDownMergeSort;
 
 public class TopDownMergeSortTest {
+
+    // ====================================
+    // String tests
+    // ====================================
+
+    @Test void
+    givenRandomStrings_whenSort_thenSorted() {
+        int n = 100, m = 20;
+        String[] in = Handler.generate(n, i -> randomString(m));
+        assertFalse(isSorted(in));
+        TopDownMergeSort.sort(in);
+        assertTrue(isSorted(in));
+    }
 
     //-----------------------------------
     //Case: Empty array

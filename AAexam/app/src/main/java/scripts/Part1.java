@@ -3,7 +3,6 @@ package scripts;
 import experiments.Experiments;
 import experiments.Experiment;
 import experiments.Result;
-import experiments.Result.Key;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,13 @@ public class Part1 {
         Experiments.systemInfo();
         System.out.println();
 
-
-        task1();
+        //task1();
         task2();
     }
+
+    // ==================================================================
+    // Task 1
+    // ==================================================================
 
     public static void task1() {
         print("=====================================================================");
@@ -67,6 +69,23 @@ public class Part1 {
         print("A classic recursive top-down mergesort sorted an integer array of size 100000, using "
                 + comparisons + " comparisons");
         print();
+    }
+
+    // ==================================================================
+    // Task 2
+    // ==================================================================
+
+    public static void task2() {
+        print("=====================================================================");
+        print("Task 2: Design and perform an experiment that investigates if the");
+        print("        running time of an implementation is proportional to the");
+        print("        number of comparisons.");
+        print("=====================================================================");
+        print();
+
+        //task2_1();
+        //task2_2();
+        task2_3();
     }
 
     public static void task2_1() {
@@ -254,37 +273,39 @@ public class Part1 {
 
         IntFunction<Experiment<String[]>> exString = parameterValue -> new Experiment<>(
             Handler.generate(n, i -> Handler.randomString(parameterValue)),
-            TopDownMergeSort::sort
+            TopDownMergeSort::sort,
+            Handler::randomize
         );
 
         print();
-        print("Experiment 3: Random string input of size " + n);
-        print("              The parameter is the length of the string.");
+        print("Experiment 3.1: Random string input of size " + n);
+        print("                The parameter is the length of the string.");
         print();
         print(Result.resultHeaders());
 
         Experiments.measure(exString, LONGTIME, 20)
-                   .analyze("t2e3")
+                   .analyze("t2e3_1")
                    .saveAsCSV()
                    .print();
         print();
-        print("I do not yet understand why the result (number of compares) is identical to sorted input");
-        print("in all cases. It might be issues with the random generator?");
-    }
-
-    public static void task2() {
-        print("=====================================================================");
-        print("Task 2: Design and perform an experiment that investigates if the");
-        print("        running time of an implementation is proportional to the");
-        print("        number of comparisons.");
-        print("=====================================================================");
+        print("Interestingly, while it is slower to sort longer strings, it does not require more comparisons.");
         print();
 
-        task2_1();
-        task2_2();
-        task2_3();
+        print();
+        print("Experiment 3.2: Random string input of size " + n + " with a common prefix of 'prefixprefix'");
+        print("                The parameter is the length of the string following the prefix.");
+        print();
 
-        
+        exString = parameterValue -> new Experiment<>(
+            Handler.generate(n, i -> "prefixprefix" + Handler.randomString(parameterValue)),
+            TopDownMergeSort::sort,
+            Handler::randomize
+        );
+
+        Experiments.measure(exString, LONGTIME, 20)
+                   .analyze("t2e3_2")
+                   .saveAsCSV()
+                   .print();
     }
 
 }
