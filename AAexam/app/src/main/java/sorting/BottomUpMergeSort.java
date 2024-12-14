@@ -52,8 +52,8 @@ public class BottomUpMergeSort {
                 int mid = runStack - 1;
                 //define final index as the sum of lengths and current run minus 1
                 int hi = runStack + runLength - 1;
-                //debug
-                System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+                ////debug
+                //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
                 //merge current run with next run (and count compares):
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the next (now merged) run from stack (by bitwise AND with reverse of runLength)
@@ -76,10 +76,10 @@ public class BottomUpMergeSort {
         //define final index for merges as the last index in the array (since upmost merged, this will stay the same)
         int hi = n - 1;
         
-        //debug
-        System.out.println("Finishing up stack:");
-        System.out.println("runStack: " + Integer.toBinaryString(runStack));
-        System.out.println("runLength: " + runLength);
+        ////debug
+        //System.out.println("Finishing up stack:");
+        //System.out.println("runStack: " + Integer.toBinaryString(runStack));
+        //System.out.println("runLength: " + runLength);
         //while still elements in stack:
         while(runStack != 0) {
             //find next run in stack to merge with (can only be one for each length pr the stack invariant)
@@ -88,15 +88,15 @@ public class BottomUpMergeSort {
                 int lo = runStack - runLength;
                 //compute mid (as usual)
                 int mid = runStack - 1;
-                    //debug
-                    System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+                    ////debug
+                    //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
                 //merge top run with next run (and count compares):
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the next (now merged) run from stack
                 runStack = runStack & (~runLength);   
         }
-        ////debug
-        System.out.println(Arrays.toString(a));
+        //////debug
+        //System.out.println(Arrays.toString(a));
 
         return compares;
     }

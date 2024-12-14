@@ -11,8 +11,11 @@ import java.util.function.UnaryOperator;
 
 import data.Handler;
 import data.TestData;
+import sorting.BottomUpMergeSort;
+import sorting.BottomUpMergeSortCutoff;
 import sorting.SortUtils;
 import sorting.TopDownMergeSort;
+import sorting.TopDownMergeSortCutoff;
 import sorting.TopDownMergeSortCutoff;
 
 public class Part1 {
@@ -450,6 +453,95 @@ public class Part1 {
         Experiments.measure(ex, SHORTTIME, 4).analyze(title).add(r).saveAsCSV().print();
 
         print();
+
+    }
+
+    public static void task5() {
+        print("=====================================================================");
+        print("Task 5: Implement MergeSort iteratively using a stack of runs.");
+        print("=====================================================================");
+        print();
+
+        // The Handler.generate method is a generic test data generator.
+        // It returns an object array.
+        // The size of the array is given as the first parameter.
+        // The function to generate the i'th element of the array is
+        // given as the second parameter.
+        Integer[] expected = Handler.generate(100_000, i -> i);
+
+        // Basic correctness checks.
+        // SortUtils can check if an array is sorted.
+        if (!SortUtils.isSorted(expected)) throw new AssertionError(
+            "Precondition failed: Expected data is not sorted!");
+        Integer[] actual   = Handler.randomize(expected);
+        if (SortUtils.isSorted(actual)) throw new AssertionError(
+            "Precondition failed: Input data is already sorted!");
+
+        // BottomUpMergeSort is our iterative mergesort implementation.
+        int comparisons = BottomUpMergeSort.sort(actual);
+
+        if (!SortUtils.isSorted(actual)) throw new AssertionError(
+            "Postcondition failed: Returned data is not sorted!");
+
+        print("An iterative recursive top-down mergesort sorted an integer array of size 100000, using "
+                + comparisons + " comparisons");
+        print();
+    }
+
+    public static void task7_1() {
+        print();
+        print("Sorting random Integer-arrays of length 100_000 with cutoff-values from 1-30");
+        print();
+
+        //Creates an experiment that sorts an array of size 100_000 based on parameter cutoff-value c
+        //!!I'm adding 1 to the parameter, as 0 is an invalid cutoff-value
+        IntFunction<Experiment<Integer[]>> cutoffExperiment = c ->
+            new Experiment<Integer[]>(
+                Handler.generate(100000, i -> i),
+                a -> BottomUpMergeSortCutoff.sort(a, c + 1),
+                Handler::randomize
+        );
+
+        // Run, analyze and print the results of the experiment.
+        print(Result.resultHeaders());
+        Experiments.measure(cutoffExperiment, 1.0, 30)
+                   .analyze("t7e1")
+                   .saveAsCSV()
+                   .print();
+
+    }
+
+    public static void task7_2() {
+        print();
+        print("Sorting random size10-String-arrays of length 100_000 with cutoff-values from 1-30");
+        print();
+        //run the experiment above, but for random strings of length 10 rather than Integers
+        IntFunction<Experiment<String[]>> cutoffExperimentString = c ->
+            new Experiment<String[]>(
+                Handler.generate(100000, i -> Handler.randomString(10)),
+                a -> BottomUpMergeSortCutoff.sort(a, c + 1),
+                Handler::randomize
+        );
+
+        // Run, analyze and print the results of the experiment.
+        print(Result.resultHeaders());
+        Experiments.measure(cutoffExperimentString, 1.0, 30)
+                   .analyze("t7e2")
+                   .saveAsCSV()
+                   .print();
+    }
+
+
+    public static void task7() {
+        print("=====================================================================");
+        print("Rerun your experiment of Task 4 for your iterative MergeSort");
+        print("Compare your results for the recursive and iterative implementations.");
+        print("=====================================================================");
+        print();
+
+        task7_1();
+        task7_2();
+
 
     }
 
