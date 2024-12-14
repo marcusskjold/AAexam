@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,17 +27,17 @@ public abstract sealed class Result {
     public abstract Result removeKeys(Collection<Key> ks);
     public abstract Result removeKey(Key ks);
     public abstract Result put(Key k, Double d);
-    public abstract String toCSV();
+    public abstract List<String> toCSV();
 
     public void setTitle(String title) { this.title = title; }
-    public String getName()            { return title; }
+    public String getTitle()            { return title; }
     public void print()                { System.out.println(this); }
 
     public Result saveAsCSV() {
-        File f = new File("data/results/" + getName() + ".csv");
-        try { BufferedWriter fw = new BufferedWriter(new FileWriter(f));
-              fw.write(toCSV()); fw.close();
-        } catch (IOException e) { e.printStackTrace();}
+        File f = new File("data/results/" + getTitle() + ".csv");
+        try (BufferedWriter fw = new BufferedWriter(new FileWriter(f))) {
+            for (String s : toCSV()) { fw.write(s); fw.newLine(); }
+        } catch (Exception e) { e.printStackTrace(); return null; }
         return this;
     }
 
@@ -58,7 +59,7 @@ final class SingleResult extends Result {
     public String toString() {
         return String.format(
             PRINTFORMAT, 
-            getName(),
+            getTitle(),
             r.containsKey(Key.PARAMETER)   ? String.format("%,9.0f",  r.get(Key.PARAMETER))   : "",
             r.containsKey(Key.RUNS)        ? String.format("%,4.0f",  r.get(Key.RUNS))        : "",
             r.containsKey(Key.REPETITIONS) ? String.format("%,9.0f",  r.get(Key.REPETITIONS)) : "",
@@ -69,18 +70,19 @@ final class SingleResult extends Result {
         ).trim();
     }
 
-    public String toCSV() {
-        return String.format(
-            "%s, %s, %s, %s, %s, %s, %s, %s",
-            getName(),
-            r.containsKey(Key.PARAMETER)   ? String.format("%.0f", r.get(Key.PARAMETER))   : "NULL",
-            r.containsKey(Key.RUNS)        ? String.format("%.0f", r.get(Key.RUNS))        : "NULL",
-            r.containsKey(Key.REPETITIONS) ? String.format("%.0f", r.get(Key.REPETITIONS)) : "NULL",
-            r.containsKey(Key.MEANTIME)    ? String.format("%.2f", r.get(Key.MEANTIME))    : "NULL",
-            r.containsKey(Key.SDEVTIME)    ? String.format("%.2f", r.get(Key.SDEVTIME))    : "NULL",
-            r.containsKey(Key.MEANRESULT)  ? String.format("%.2f", r.get(Key.MEANRESULT))  : "NULL",
-            r.containsKey(Key.SDEVRESULT)  ? String.format("%.2f",  r.get(Key.SDEVRESULT)) : "NULL"
-        );
+    public List<String> toCSV() {
+        
+        StringBuilder sbC = new StringBuilder();
+        StringBuilder sbH = new StringBuilder();
+        sbH.append("TITLE");
+        sbC.append(getTitle());
+        for (Key k : r.keySet()) {
+            sbH.append(", ");
+            sbH.append(k.toString());
+            sbC.append(", ");
+            sbC.append(r.get(k));
+        }
+        return List.of(sbH.toString(),sbC.toString());
     }
 }
 
@@ -100,10 +102,14 @@ final class ParameterizedResult extends Result {
                      .orElse("");
     }
 
-    public String toCSV() {
-        return result.stream()
-                     .map(r -> r.toCSV())
-                     .reduce((s, t) -> String.format("%s%n%s", s, t))
-                     .orElse("");
+    public List<String> toCSV() {
+        List<List<String>> ls = result.stream()
+                                      .map(r -> r.toCSV())
+                                      .toList();
+        List<String> l = new ArrayList<String>(ls.size()+1);
+        l.add(ls.getFirst().getFirst());
+        ls.forEach(e -> l.add(e.getLast()));
+        return l;
+
     }
 }
