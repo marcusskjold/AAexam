@@ -139,7 +139,8 @@ final class MultiRunMeasurement extends Measurement {
         SingleResult r = new SingleResult(withTitle);
         r.put(Key.MEANRESULT, meanResult);             r.put(Key.MEANTIME, meanTime);
         r.put(Key.SDEVRESULT, sdResult);               r.put(Key.SDEVTIME, sdTime);
-        r.put(Key.REPETITIONS, (double) count);
+        r.put(Key.RUNS, (double) count);
+        r.put(Key.REPETITIONS, (double) repetitions);
         return r;
     }
 }
@@ -151,7 +152,7 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
         IntFunction<Experiment<T>> exGen, double timeLimit, int pMax
     ) {
         Map<Integer, SingleRunMeasurement> results = new TreeMap<>();
-        for (int p = 0; p < pMax; p++) {
+        for (int p = 1; p <= pMax; p++) {
             Experiment<T> ex = exGen.apply(p);
             results.put(p, new SingleRunMeasurement(ex, timeLimit));
         }
@@ -189,7 +190,8 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
         IntFunction<Experiment<T>> exGen, double timeLimit, int runs, int pMax
     ) {
         Map<Integer, MultiRunMeasurement> results = new TreeMap<>();
-        for (int p = 0; p < pMax; p++) {
+
+        for (int p = 1; p <= pMax; p++) {
             Experiment<T> ex = exGen.apply(p);
             results.put(p, new MultiRunMeasurement(
                 ex, runs, new SingleRunMeasurement(ex, timeLimit).observations())

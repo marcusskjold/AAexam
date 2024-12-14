@@ -13,6 +13,7 @@ import data.Handler;
 import data.TestData;
 import sorting.SortUtils;
 import sorting.TopDownMergeSort;
+import sorting.TopDownMergeSortCutoff;
 
 public class Part1 {
 
@@ -32,7 +33,13 @@ public class Part1 {
         System.out.println();
 
         //task1();
-        task2();
+        //task2();
+        //task2_1();
+        //task2_2();
+        //task2_3();
+        //task2_4();
+        //task3();
+        //task4();
     }
 
     // ==================================================================
@@ -82,13 +89,10 @@ public class Part1 {
         print("        number of comparisons.");
         print("=====================================================================");
         print();
-
-        //task2_1();
-        //task2_2();
-        task2_3();
     }
 
     public static void task2_1() {
+        print("------------------------------------------------");
         print("Experiment 1: Varying the number of comparisons by varying input size");
         print("              Perform a single run, dynamically find repetitions");
         print("Result is the number of comparisons. Param is the size of the input. Time is in nanoseconds.");
@@ -145,7 +149,9 @@ public class Part1 {
 
         // Go
 
-        print("Experiment 2: Varying the number of comparisons by varying input state");
+
+        print("------------------------------------------------");
+        print("Experiment 2: Varying the number of comparisons by varying input order");
         print("              Array size is kept constant at " + n + " elements");
         print("              Parameter corresponds to different kinds of array order. Parameter key:");
         print("                  0. Ordered");
@@ -165,7 +171,7 @@ public class Part1 {
         print();
         print(Result.resultHeaders());
 
-        IntFunction<Experiment<Integer[]>> ex = parameterValue -> 
+        IntFunction<Experiment<Integer[]>> ex = parameterValue ->
             new Experiment<Integer[]>(
                 Handler.generate(n, i -> 1),
                 TopDownMergeSort::sort,
@@ -182,7 +188,7 @@ public class Part1 {
         print("                perform equally well on all input (of type TestData[]).");
         print();
         print(Result.resultHeaders());
-        IntFunction<Experiment<TestData[]>> ex2 = parameterValue -> 
+        IntFunction<Experiment<TestData[]>> ex2 = parameterValue ->
             new Experiment<TestData[]>(
                 Handler.generate(n, i -> new TestData(1, 1)),
                 TopDownMergeSort::sort,
@@ -198,7 +204,7 @@ public class Part1 {
         print("                perform equally well on all input (of type TestData[] with random ID).");
         print();
         print(Result.resultHeaders());
-        ex2 = parameterValue -> 
+        ex2 = parameterValue ->
             new Experiment<TestData[]>(
                 Handler.generate(n, i -> new TestData(i, 1)),
                 TopDownMergeSort::sort,
@@ -220,7 +226,7 @@ public class Part1 {
         print("                2) Inverted arrays produce a lower number of comparisons.");
         print();
         print(Result.resultHeaders());
-        ex = parameterValue -> 
+        ex = parameterValue ->
             new Experiment<Integer[]>(
                 Handler.generate(n, i -> i),
                 TopDownMergeSort::sort,
@@ -238,7 +244,7 @@ public class Part1 {
         print("                input array each repetitions.");
         print();
         print(Result.resultHeaders());
-        ex = parameterValue -> 
+        ex = parameterValue ->
             new Experiment<Integer[]>(
                 r -> Handler.generate(n, i -> i + (r * 1000)),
                 TopDownMergeSort::sort,
@@ -269,6 +275,7 @@ public class Part1 {
 
     public static void task2_3() {
 
+        print("------------------------------------------------");
         print("The following experiments will investigate how sorting reacts to string input");
 
         IntFunction<Experiment<String[]>> exString = parameterValue -> new Experiment<>(
@@ -306,6 +313,144 @@ public class Part1 {
                    .analyze("t2e3_2")
                    .saveAsCSV()
                    .print();
+        print();
+    }
+
+    public static void task2_4() {
+
+        print("------------------------------------------------");
+        print("The following experiments will investigate how different types of data and contents affect running time.");
+
+        print("Experiment 4.1: This will run with completely random values");
+        print();
+        int n = 1_000_000;
+
+        Experiment<Integer[]> exInt = new Experiment<>(
+            Handler.generate(n, j -> Handler.random().nextInt()),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        Experiment<String[]> exString = new Experiment<>(
+            Handler.generate(n, j -> Handler.randomString(5)),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        Experiment<TestData[]> exTD = new Experiment<>(
+            Handler.generate(n, j -> new TestData(Handler.random().nextInt(), Handler.random().nextInt())),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        Experiment<Double[]> exDouble = new Experiment<>(
+            Handler.generate(n, i -> Handler.random().nextDouble()),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+
+        print(Result.resultHeaders());
+        Experiments.measure(exInt,    MEDIUMTIME).analyze("t2e4_1-integers").print();
+        Experiments.measure(exString, MEDIUMTIME).analyze("t2e4_1-strings").print();
+        Experiments.measure(exDouble, MEDIUMTIME).analyze("t2e4_1-doubles").print();
+        Experiments.measure(exTD,     MEDIUMTIME).analyze("t2e4_1-testdata").print();
+        print();
+
+        print("Experiment 4.2: This will run with completely identical values");
+        print();
+
+        exInt = new Experiment<>(
+            Handler.generate(n, j -> 1),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        exString = new Experiment<>(
+            Handler.generate(n, j -> "s"),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        exTD = new Experiment<>(
+            Handler.generate(n, j -> new TestData(1, 1)),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+        exDouble = new Experiment<>(
+            Handler.generate(n, i -> 0.1),
+            TopDownMergeSort::sort,
+            Handler::randomize);
+
+        print(Result.resultHeaders());
+        Experiments.measure(exInt,    MEDIUMTIME).analyze("t2e4_2-integers").print();
+        Experiments.measure(exString, MEDIUMTIME).analyze("t2e4_2-strings").print();
+        Experiments.measure(exDouble, MEDIUMTIME).analyze("t2e4_2-doubles").print();
+        Experiments.measure(exTD,     MEDIUMTIME).analyze("t2e4_2-testdata").print();
+        print();
+    }
+
+    // ==================================================================
+    // Task 3
+    // ==================================================================
+
+    public static void task3() {
+        print("=====================================================================");
+        print("Task 3: Implement MergeSort with a base case of insertion sort.");
+        print("=====================================================================");
+        print();
+
+        Integer[] expected = Handler.generate(100_000, i -> i);
+
+        // Basic correctness checks.
+        if (!SortUtils.isSorted(expected)) throw new AssertionError(
+            "Precondition failed: Expected data is not sorted!");
+        Integer[] actual   = Handler.randomize(expected);
+        if (SortUtils.isSorted(actual)) throw new AssertionError(
+            "Precondition failed: Input data is already sorted!");
+
+        // TopDownMergeSortCutoff is our implementation.
+        int comparisons = TopDownMergeSortCutoff.sort(actual, 4);
+
+        if (!SortUtils.isSorted(actual)) throw new AssertionError(
+            "Postcondition failed: Returned data is not sorted!");
+
+        print("A recursive top-down mergesort with a base case of insertion sort sorted an integer array of size 100000, using "
+                + comparisons + " comparisons");
+        print();
+
+    }
+
+    // ==================================================================
+    // Task 4
+    // ==================================================================
+
+    public static void task4() {
+        print("=====================================================================");
+        print("Task 4: Design and perform an experiment to find a good value of the parameter c.");
+        print("=====================================================================");
+        print();
+
+        t4e1("t4e1_1",       100);
+        t4e1("t4e1_2",     1_000);
+        t4e1("t4e1_3",    10_000);
+        t4e1("t4e1_4",   100_000);
+        t4e1("t4e1_5", 1_000_000);
+        t4e1("t4e1_6", 2_000_000);
+
+        print();
+        print("It seems the optimal zone is around the 20s");
+
+    }
+
+    public static void t4e1(String title, int n) {
+
+        IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
+            Handler.generate(n, i -> i),
+            data -> TopDownMergeSortCutoff.sort(data, parameterValue),
+            Handler::randomize
+        );
+
+        Experiment<Integer[]> control = new Experiment<>(
+            Handler.generate(n, i -> i), TopDownMergeSort::sort, Handler::randomize);
+
+        print("Size of array: " + n);
+
+        print(Result.resultHeaders());
+        Experiments.measure(ex, SHORTTIME, 1); // To get startup costs out of the way.
+        Experiments.measure(control, SHORTTIME).analyze("control").print();
+        Experiments.measure(ex, SHORTTIME, 4).analyze(title).saveAsCSV().print();
+        Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title).saveAsCSV().print();
+
+        print();
+
     }
 
 }

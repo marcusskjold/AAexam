@@ -45,11 +45,14 @@ import java.util.stream.Stream;
 public class Handler {
     private static final long DEFAULT_SEED = 298092841098572l;
     public static final Random RANDOM     = new Random(DEFAULT_SEED);
+    
 
     public enum Cat { UNITTEST, SMALL, MEDIUM, LARGE, OTHER }
     public enum Ext { IN, OUT }
 
     // ============================== Data generation ===================================
+
+    public static Random random() { return RANDOM; }
 
     /** Generates a array of elements from the generator function.
      * The sorted output if the generator function intrinsically generates output of higher
@@ -64,7 +67,6 @@ public class Handler {
         return (T[]) IntStream.range(0, n)
             .mapToObj(i -> generator.apply(i))
             .toArray(i -> (T[]) Array.newInstance(c, i));
-
     }
 
     /** Generates a sorted array of elements from the supplier function
