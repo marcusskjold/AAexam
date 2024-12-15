@@ -39,7 +39,7 @@ public class Part1 {
         //task2_3();
         //task2_4();
         //task3();
-        //task4();
+        task4();
     }
 
     // ==================================================================
@@ -446,8 +446,8 @@ public class Part1 {
         print(Result.resultHeaders());
         Experiments.measure(ex, SHORTTIME, 1); // To get startup costs out of the way.
         Experiments.measure(control, SHORTTIME).analyze("control").print();
-        Experiments.measure(ex, SHORTTIME, 4).analyze(title).saveAsCSV().print();
-        Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title).saveAsCSV().print();
+        Result r = Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title);
+        Experiments.measure(ex, SHORTTIME, 4).analyze(title).add(r).saveAsCSV().print();
 
         print();
 
