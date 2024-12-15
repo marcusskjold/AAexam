@@ -2,6 +2,8 @@ package experiments;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import experiments.Result.Key;
@@ -45,8 +47,11 @@ public class ResultTest {
         r.put(Key.SDEVRESULT, 99.003414);
         r.put(Key.RUNS, 10.0);
         r.put(Key.PARAMETER, 79.0);
+        List<String> csv = r.toCSV();
+        assertEquals(2, csv.size());
         assertEquals(
-            "test, 79, 10, 8000, 8000.41, 0.40, 1000.00, 99.00",
-            r.toCSV());
+            "TITLE, PARAMETER, RUNS, REPETITIONS, MEANTIME, SDEVTIME, MEANRESULT, SDEVRESULT", csv.getFirst());
+        assertEquals(
+            "test, 79.0, 10.0, 8000.0, 8000.407414, 0.403414, 1000.0, 99.003414", csv.getLast());
     }
 }
