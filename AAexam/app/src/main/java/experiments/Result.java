@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /** Represents the results of a single experiment.
  * A result is a collection of key-value pairs.
@@ -22,7 +23,7 @@ public abstract sealed class Result {
     public static final String PRINTFORMAT = "%-20s%10s%7s%13s%20s%13s%13s%13s";
     private String title;
 
-    public enum Key { MEANTIME, SDEVTIME, MEANRESULT, SDEVRESULT, PARAMETER, REPETITIONS, RUNS; }
+    public enum Key { PARAMETER, RUNS, REPETITIONS, MEANTIME, SDEVTIME, MEANRESULT, SDEVRESULT; }
 
     public abstract Result removeKeys(Collection<Key> ks);
     public abstract Result removeKey(Key ks);
@@ -48,9 +49,9 @@ public abstract sealed class Result {
 }
 
 final class SingleResult extends Result {
-    private Map<Key, Double> r;
+    private TreeMap<Key, Double> r;
 
-    public SingleResult(String withTitle)        { r = new HashMap<>();      setTitle(withTitle); }
+    public SingleResult(String withTitle)        { r = new TreeMap<>();      setTitle(withTitle); }
     public Result put(Key k, Double d)           { r.put(k, d);                      return this; }
     public Result removeKeys(Collection<Key> ks) { for (Key key : ks) r.remove(key); return this; }
     public Result removeKey(Key k)               { r.remove(k);                      return this; }
