@@ -25,6 +25,7 @@ public class LevelSort {
         return compares;
     }
 
+    
     //Trying to create non-adaptive variant (always create new runs of length c)
     private static int sort(Comparable[] a, Comparable[] aux, int c) {
         //Counter for compare and length defined
@@ -33,9 +34,11 @@ public class LevelSort {
         //check if any compares necessary at all
         if(n<=1) return compares;
 
-        //TODO: capacity depends on skewedness? (can't exceed MSB of n-2+n-1 ish?)
-        //Compute the capacity of our stack of runs (as they seem to be doubled each time, this value should be okay?) //TODO: check that this is okay when in levelsort rather than powersort and/or just use list instead?
-        int stackCapacity = (int)(Math.log(n) / Math.log(2)) + 2;
+        //define capacity for stacks of runs, indexed by level
+        //Can't exceed the position of the most significant bit of the sum of last two entries (max level) +1 (accounting for that first index is 0 rather than 1)
+        int stackCapacity = 64 - Long.numberOfLeadingZeros(((long) (n - 1) + (long) (n - 2))) + 1;
+        //int stackCapacity = (int)(Math.log(n) / Math.log(2)) + 2;
+
         //create stacks for determining start and ends of runs, depending on their power
         //Should work as level-stack is increasing monotonically and no consecutive runs are equal
         int[] runStart = new int[stackCapacity];
@@ -55,8 +58,8 @@ public class LevelSort {
         compares += InsertionSort.sort(a, startL,endL);
 
         //Start and end index for next run, N, to compare with
-        //endN is set to endL in case of just one run in whole stack (to be used below this loop)
-        int startN;
+        //Is initially set to start and end of L in case of just one run in whole stack (to be used below this loop)
+        int startN= startL; //TODO: okay?
         int endN = endL;
 
         //starting from the end of first run
@@ -68,8 +71,10 @@ public class LevelSort {
             compares += InsertionSort.sort(a,startN,endN);
             //compute level of boundary between run L and run N
             int currentLevel =  level(startL, endL, startN, endN);
+
+
             //update end-point of run L (its level is the level of right boundary):
-            
+            //To be used for potential merge (?)
             runEnd[currentLevel] = endL;
             
             //If this level greater than level of run at top of stack (which must be the position of the LSB, as stack is monotonic):
@@ -87,12 +92,12 @@ public class LevelSort {
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the run from the levelStack (by AND with 1 leftshifted by toplevel - 1) (and update starting-point of L)
                 levelStack &= ~(1 << (topLevel - 1));
-                levelStack-=topLevel;
                 //runStart[currentLevel] = lo;
                 startL = lo;
             }
             //When l > currentLevel, put L on stack (Bitwise or with 1 leftshifted lvl -1 times), and set start of run (updated in loop if entered):
             levelStack|=1 << (currentLevel -1 );
+            //Maybe assert that checks that the level stack is a power of two?
             runStart[currentLevel] = startL;
             //Set N as the new L
             startL = startN;
@@ -100,10 +105,15 @@ public class LevelSort {
         }
         //if run with length < c left (no runs of length >=c should be left after this iteration)
         if(endN + 1 < n) {
+            //TODO: If residue, it should merge with run N (indices correct)?
+            int lo = startN;
+            int mid = endN;
             //get indeces for residual run and sort it
             startN = endN + 1;
             endN = n - 1;
             compares += InsertionSort.sort(a, startN,endN);
+            Merge.merge(a,aux,lo,mid, endN);
+            
         }
         //set endpoint for finishing merges (will just be right end of array)
         int hi = endN;
