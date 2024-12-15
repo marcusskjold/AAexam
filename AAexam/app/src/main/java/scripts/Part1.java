@@ -43,6 +43,7 @@ public class Part1 {
         //task2_4();
         //task3();
         task4();
+        task7();
     }
 
     // ==================================================================
@@ -531,6 +532,30 @@ public class Part1 {
                    .print();
     }
 
+    //Version corresponding to proposed version of task4:
+    public static void t7e1(String title, int n) {
+
+        IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
+            Handler.generate(n, i -> i),
+            data -> BottomUpMergeSortCutoff.sort(data, parameterValue),
+            Handler::randomize
+        );
+
+        Experiment<Integer[]> control = new Experiment<>(
+            Handler.generate(n, i -> i), BottomUpMergeSort::sort, Handler::randomize);
+
+        print("Size of array: " + n);
+
+        print(Result.resultHeaders());
+        Experiments.measure(ex, SHORTTIME, 1); // To get startup costs out of the way.
+        Experiments.measure(control, SHORTTIME).analyze("control").print();
+        Experiments.measure(ex, SHORTTIME, 4).analyze(title).saveAsCSV().print();
+        Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title).saveAsCSV().print();
+
+        print();
+
+    }
+
 
     public static void task7() {
         print("=====================================================================");
@@ -539,8 +564,18 @@ public class Part1 {
         print("=====================================================================");
         print();
 
-        task7_1();
-        task7_2();
+        //My initial draft
+        //task7_1();
+        //task7_2();
+        t7e1("t7e1_1",       100);
+        t7e1("t7e1_2",     1_000);
+        t7e1("t7e1_3",    10_000);
+        t7e1("t7e1_4",   100_000);
+        t7e1("t7e1_5", 1_000_000);
+        t7e1("t7e1_6", 2_000_000);
+
+        print();
+        print("It seems the optimal zone is around 7-9");
 
 
     }
