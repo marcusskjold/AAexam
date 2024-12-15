@@ -1,4 +1,9 @@
-AAexam/app/data/*
+AAexam/app/data/results/*
+AAexam/app/data/small/*
+AAexam/app/data/medium/*
+AAexam/app/data/large/*
+AAexam/app/data/other/*
+
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,java,macos,git,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,java,macos,git,windows
 
