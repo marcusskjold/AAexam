@@ -78,9 +78,9 @@ final class SingleResult extends Result {
         sbH.append("TITLE");
         sbC.append(getTitle());
         for (Key k : r.keySet()) {
-            sbH.append(", ");
+            sbH.append(",");
             sbH.append(k.toString());
-            sbC.append(", ");
+            sbC.append(",");
             sbC.append(r.get(k));
         }
         return List.of(sbH.toString(),sbC.toString());
