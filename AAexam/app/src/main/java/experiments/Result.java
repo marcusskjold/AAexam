@@ -29,6 +29,7 @@ public abstract sealed class Result {
     public abstract Result removeKey(Key ks);
     public abstract Result put(Key k, Double d);
     public abstract List<String> toCSV();
+    public abstract Result add(Result r);
 
     public void setTitle(String title) { this.title = title; }
     public String getTitle()            { return title; }
@@ -85,13 +86,17 @@ final class SingleResult extends Result {
         }
         return List.of(sbH.toString(),sbC.toString());
     }
+
+    public Result add(Result r) {
+        return new MultiResult(getTitle(), List.of(this)).add(r);
+    }
 }
 
 /** Represents the results of a parameterized experiments as a list of single results.*/
-final class ParameterizedResult extends Result {
+final class MultiResult extends Result {
     public final List<SingleResult> result;
 
-    public ParameterizedResult(String title, List<SingleResult> results) { setTitle(title);   result = results; }
+    public MultiResult(String title, List<SingleResult> results) { setTitle(title);   result = results; }
     public Result removeKeys(Collection<Key> ks) { for (SingleResult r : result) r.removeKeys(ks); return this; }
     public Result removeKey(Key k)               { for (SingleResult r : result) r.removeKey(k);   return this; }
     public Result put(Key k, Double d)           { for (SingleResult r : result) r.put(k, d);      return this; }
@@ -111,6 +116,15 @@ final class ParameterizedResult extends Result {
         l.add(ls.getFirst().getFirst());
         ls.forEach(e -> l.add(e.getLast()));
         return l;
+
+    }
+    public Result add(Result r) {
+        if (r instanceof SingleResult) result.add((SingleResult) r);
+        else {
+            MultiResult rr = (MultiResult) r;
+            result.addAll(rr.result);
+        }
+        return this;
 
     }
 }

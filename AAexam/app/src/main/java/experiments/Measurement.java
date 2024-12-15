@@ -172,14 +172,14 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
         obs = results;
     }
 
-    public ParameterizedResult analyze(String withTitle) {
+    public MultiResult analyze(String withTitle) {
         List<SingleResult> x = new ArrayList<>();
         obs.keySet().stream().sorted().forEach(i -> {
             SingleResult m = obs.get(i).analyze(withTitle);
             m.put(Key.PARAMETER, (double) i);
             x.add(m);
         });
-        return new ParameterizedResult(withTitle, x);
+        return new MultiResult(withTitle, x);
     }
 }
 
@@ -216,13 +216,13 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
         obs = results;
     }
 
-    public ParameterizedResult analyze(String withTitle) {
+    public MultiResult analyze(String withTitle) {
         List<SingleResult> x = new ArrayList<>();
         obs.keySet().stream().sorted().forEach(i -> {
             SingleResult m = obs.get(i).analyze(withTitle);
             m.put(Key.PARAMETER, (double) i);
             x.add(m);
         });
-        return new ParameterizedResult(withTitle, x);
+        return new MultiResult(withTitle, x);
     }
 }
