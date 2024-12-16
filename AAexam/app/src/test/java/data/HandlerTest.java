@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import sorting.SortUtils;
+import sorting.Util;
 
 /**
  * DataGeneratorTest
@@ -45,7 +45,7 @@ public class HandlerTest{
     givenSameLength_whenGenerateRandomString_generatesUnsortedArray() {
         int n = 100;
         String[] ss = Handler.generate(n, i -> Handler.randomString(20));
-        assertFalse(SortUtils.isSorted(ss));
+        assertFalse(Util.isSorted(ss));
     }
 
     /** Make sure the generator output array is sorted */

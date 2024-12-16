@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static sorting.SortUtils.isSorted;
+import static sorting.Util.isSorted;
 
 import java.util.Arrays;
 
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import data.Handler;
 import data.TestData;
-import sorting.TopDownMergeSort;
 
 public class TopDownMergeSortTest {
 

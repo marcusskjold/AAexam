@@ -41,7 +41,9 @@ public class Part1 {
         //task2_3();
         //task2_4();
         //task3();
-        task4();
+        //task4();
+        task5();
+        task6();
         task7();
     }
 
@@ -462,11 +464,6 @@ public class Part1 {
         print("=====================================================================");
         print();
 
-        // The Handler.generate method is a generic test data generator.
-        // It returns an object array.
-        // The size of the array is given as the first parameter.
-        // The function to generate the i'th element of the array is
-        // given as the second parameter.
         Integer[] expected = Handler.generate(100_000, i -> i);
 
         // Basic correctness checks.
@@ -483,7 +480,28 @@ public class Part1 {
         if (!Util.isSorted(actual)) throw new AssertionError(
             "Postcondition failed: Returned data is not sorted!");
 
-        print("An iterative recursive top-down mergesort sorted an integer array of size 100000, using "
+        print("An iterative top-down mergesort sorted an integer array of size 100000, using "
+                + comparisons + " comparisons");
+        print();
+    }
+
+    public static void task6() {
+        print("=====================================================================");
+        print("Task 6: In the algorithm of Task 5, create new runs of length c.");
+        print("=====================================================================");
+        print();
+
+        Integer[] expected = Handler.generate(100_000, i -> i);
+
+        Integer[] actual   = Handler.randomize(expected);
+
+        // BottomUpMergeSortCutoff is our iterative mergesort with run creation implementation.
+        int comparisons = BottomUpMergeSortCutoff.sort(actual, 5);
+
+        if (!Util.isSorted(actual)) throw new AssertionError(
+            "Postcondition failed: Returned data is not sorted!");
+
+        print("An iterative top-down mergesort with base case of runs of size 5 sorted an integer array of size 100000, using "
                 + comparisons + " comparisons");
         print();
     }
