@@ -33,7 +33,7 @@ public class TopDownMergeSort {
     public static int sort(Comparable[] a) {
         Comparable[] aux = new Comparable[a.length];
         int compares = sort(a, aux, 0, a.length-1);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 

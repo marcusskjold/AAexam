@@ -19,7 +19,7 @@ public class BottomUpMergeSort {
     public static int sort(Comparable[] a) {
         Comparable[] aux = new Comparable[a.length];
         int compares = sort(a, aux);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 

@@ -35,7 +35,7 @@ public class TopDownMergeSortCutoff {
         }
         Comparable[] aux = new Comparable[a.length];
         int compares = sort(a, aux, 0, a.length-1, c);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 

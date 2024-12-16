@@ -13,10 +13,9 @@ import data.Handler;
 import data.TestData;
 import sorting.BottomUpMergeSort;
 import sorting.BottomUpMergeSortCutoff;
-import sorting.SortUtils;
 import sorting.TopDownMergeSort;
 import sorting.TopDownMergeSortCutoff;
-import sorting.TopDownMergeSortCutoff;
+import sorting.Util;
 
 public class Part1 {
 
@@ -64,17 +63,17 @@ public class Part1 {
         Integer[] expected = Handler.generate(100_000, i -> i);
 
         // Basic correctness checks.
-        // SortUtils can check if an array is sorted.
-        if (!SortUtils.isSorted(expected)) throw new AssertionError(
+        // Util can check if an array is sorted.
+        if (!Util.isSorted(expected)) throw new AssertionError(
             "Precondition failed: Expected data is not sorted!");
         Integer[] actual   = Handler.randomize(expected);
-        if (SortUtils.isSorted(actual)) throw new AssertionError(
+        if (Util.isSorted(actual)) throw new AssertionError(
             "Precondition failed: Input data is already sorted!");
 
         // TopDownMergeSort is our classic recursive mergesort implementation.
         int comparisons = TopDownMergeSort.sort(actual);
 
-        if (!SortUtils.isSorted(actual)) throw new AssertionError(
+        if (!Util.isSorted(actual)) throw new AssertionError(
             "Postcondition failed: Returned data is not sorted!");
 
         print("A classic recursive top-down mergesort sorted an integer array of size 100000, using "
@@ -394,16 +393,16 @@ public class Part1 {
         Integer[] expected = Handler.generate(100_000, i -> i);
 
         // Basic correctness checks.
-        if (!SortUtils.isSorted(expected)) throw new AssertionError(
+        if (!Util.isSorted(expected)) throw new AssertionError(
             "Precondition failed: Expected data is not sorted!");
         Integer[] actual   = Handler.randomize(expected);
-        if (SortUtils.isSorted(actual)) throw new AssertionError(
+        if (Util.isSorted(actual)) throw new AssertionError(
             "Precondition failed: Input data is already sorted!");
 
         // TopDownMergeSortCutoff is our implementation.
         int comparisons = TopDownMergeSortCutoff.sort(actual, 4);
 
-        if (!SortUtils.isSorted(actual)) throw new AssertionError(
+        if (!Util.isSorted(actual)) throw new AssertionError(
             "Postcondition failed: Returned data is not sorted!");
 
         print("A recursive top-down mergesort with a base case of insertion sort sorted an integer array of size 100000, using "
@@ -471,17 +470,17 @@ public class Part1 {
         Integer[] expected = Handler.generate(100_000, i -> i);
 
         // Basic correctness checks.
-        // SortUtils can check if an array is sorted.
-        if (!SortUtils.isSorted(expected)) throw new AssertionError(
+        // Util can check if an array is sorted.
+        if (!Util.isSorted(expected)) throw new AssertionError(
             "Precondition failed: Expected data is not sorted!");
         Integer[] actual   = Handler.randomize(expected);
-        if (SortUtils.isSorted(actual)) throw new AssertionError(
+        if (Util.isSorted(actual)) throw new AssertionError(
             "Precondition failed: Input data is already sorted!");
 
         // BottomUpMergeSort is our iterative mergesort implementation.
         int comparisons = BottomUpMergeSort.sort(actual);
 
-        if (!SortUtils.isSorted(actual)) throw new AssertionError(
+        if (!Util.isSorted(actual)) throw new AssertionError(
             "Postcondition failed: Returned data is not sorted!");
 
         print("An iterative recursive top-down mergesort sorted an integer array of size 100000, using "
