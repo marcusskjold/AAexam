@@ -50,8 +50,8 @@ public class ResultTest {
         List<String> csv = r.toCSV();
         assertEquals(2, csv.size());
         assertEquals(
-            "TITLE, PARAMETER, RUNS, REPETITIONS, MEANTIME, SDEVTIME, MEANRESULT, SDEVRESULT", csv.getFirst());
+            "TITLE,PARAMETER,RUNS,REPETITIONS,MEANTIME,SDEVTIME,MEANRESULT,SDEVRESULT", csv.getFirst());
         assertEquals(
-            "test, 79.0, 10.0, 8000.0, 8000.407414, 0.403414, 1000.0, 99.003414", csv.getLast());
+            "test,79.0,10.0,8000.0,8000.407414,0.403414,1000.0,99.003414", csv.getLast());
     }
 }
