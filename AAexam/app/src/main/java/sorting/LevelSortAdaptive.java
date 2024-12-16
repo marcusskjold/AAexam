@@ -2,18 +2,19 @@ package sorting;
 
 import java.util.Arrays;
 
-public class LevelSort {
-    private LevelSort(){}
+public class LevelSortAdaptive {
+    private LevelSortAdaptive() {}
 
-
+    //TODO: Right now it doesn't include the compares from exploring runs in the returned number of compares!!
     /**
      * Rearranges the array in ascending order, using the natural order
      * Works iteratively through the array by computing runs of next {@code c} elements in {@code a} 
-     * (or less when not enough elements left in array), and merges them
-     * this version is non-adaptible in that it computes runs of length {@code c}, whether they
-     * are already sorted or not
+     * (or less when not enough elements left in array), and merges them.
+     * This version is adaptible in that it checks for runs in the input array and,
+     * if either a weakly increasing or strictly decreasing run of length > c is found, we 
+     * use that run (otherwise computes runs of length {@code c} with insertion sort).
      * @param a the array to be sorted
-     * @param c the initial length of runs to merge, when enough left; must be at least 1
+     * @param c the least length of runs to merge, when enough left; must be at least 1
      * @return the number of compares performed during the sort
      * @throws IllegalArgumentException if {@code c} is less than 1
      */
@@ -27,7 +28,8 @@ public class LevelSort {
         return compares;
     }
 
-    //non-adaptive variant
+    
+    //adaptive variant
     private static int sort(Comparable[] a, Comparable[] aux, int c) {
 
         //Counter for compare and length defined
@@ -52,18 +54,28 @@ public class LevelSort {
         //create initial run from 0 of length c (or lesser if constrained by array size)
         //This is our first merging candidate (L), which will immediately be put in stack
         int startL = 0;
-        int endL = Math.min(startL+c-1, n-1);
-        compares += InsertionSort.sort(a, startL,endL);
 
+        //find last index of next run
+        int endL = RunUtils.exploreRun(a, startL);
+
+        //If next run not longer than c, compute run of length c with insertion sort
+        if(endL - startL + 1 <= c) {
+            endL = Math.min(startL+c-1, n-1);
+            compares += InsertionSort.sort(a, startL,endL);
+        }
+        
         //starting from the end of first run
         //iterates through array in intervals of length c, run by run
         //while the end of the array hasn't been reached
         while(endL < n - 1) {
 
-            //find new run N of length c (or less, if constrained by array length): 
+            //find new run N of length c or more: 
             int startN = endL + 1;
-            int endN = Math.min(startN+c-1, n - 1);
-            compares += InsertionSort.sort(a,startN,endN);
+            int endN = RunUtils.exploreRun(a, startN);
+            if(endN - startN + 1 <= c) {
+                endN = Math.min(startN+c-1, n-1);
+                compares += InsertionSort.sort(a, startN,endN);
+            }
 
             //compute level of boundary between run L and run N
             int currentLevel =  level(startL, endL, startN, endN);
