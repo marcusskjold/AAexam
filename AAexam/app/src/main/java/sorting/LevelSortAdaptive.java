@@ -24,7 +24,7 @@ public class LevelSortAdaptive {
         }
         Comparable[] aux = new Comparable[a.length];
         int compares = sort(a, aux, c);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 
@@ -56,7 +56,7 @@ public class LevelSortAdaptive {
         int startL = 0;
 
         //find last index of next run
-        int endL = RunUtils.exploreRun(a, startL);
+        int endL = Util.exploreRun(a, startL);
 
         //If next run not longer than c, compute run of length c with insertion sort
         if(endL - startL + 1 <= c) {
@@ -71,7 +71,7 @@ public class LevelSortAdaptive {
 
             //find new run N of length c or more: 
             int startN = endL + 1;
-            int endN = RunUtils.exploreRun(a, startN);
+            int endN = Util.exploreRun(a, startN);
             if(endN - startN + 1 <= c) {
                 endN = Math.min(startN+c-1, n-1);
                 compares += InsertionSort.sort(a, startN,endN);

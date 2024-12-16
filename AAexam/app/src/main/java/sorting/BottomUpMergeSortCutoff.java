@@ -19,7 +19,7 @@ public class BottomUpMergeSortCutoff {
         }
         Comparable[] aux = new Comparable[a.length];
         int compares = sort(a, aux, c);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 

@@ -13,7 +13,7 @@ public class InsertionSort {
      */
     public static int sort(Comparable[] a) {
         int compares = sort(a, 0, a.length - 1);
-        assert SortUtils.isSorted(a);
+        assert Util.isSorted(a);
         return compares;
     }
 
@@ -36,7 +36,7 @@ public class InsertionSort {
                     break;
             }
         }
-        assert SortUtils.isSorted(a, lo, hi);
+        assert Util.isSorted(a, lo, hi);
         return compares;
     }
 

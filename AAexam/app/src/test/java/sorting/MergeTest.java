@@ -1,3 +1,5 @@
+package sorting;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -5,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import data.Handler;
 import data.TestData;
-import sorting.Merge;
 
 public class MergeTest {
 

@@ -20,8 +20,8 @@ public class Merge {
     @SuppressWarnings("rawtypes")
     public static int merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
         // precondition: a[lo .. mid] and a[mid+1 .. hi] are sorted subarrays
-        assert SortUtils.isSorted(a, lo, mid);
-        assert SortUtils.isSorted(a, mid+1, hi);
+        assert Util.isSorted(a, lo, mid);
+        assert Util.isSorted(a, mid+1, hi);
 
         //counter for number of compares:
         int compares = 0;
@@ -45,7 +45,7 @@ public class Merge {
         }
 
         // postcondition: a[lo .. hi] is sorted
-        assert SortUtils.isSorted(a, lo, hi);
+        assert Util.isSorted(a, lo, hi);
         //return number of compares
         return compares;
     }
