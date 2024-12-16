@@ -37,7 +37,7 @@ application {
     mainClass.set(
         if (project.hasProperty("mainClass"))
             project.property("mainClass") as String
-        else "Main"
+        else "scripts/Main"
     )
     // applicationDefaultJvmArgs = listOf("-ea")
 }

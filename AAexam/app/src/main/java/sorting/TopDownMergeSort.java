@@ -8,7 +8,7 @@ public class TopDownMergeSort {
     private TopDownMergeSort() { }
 
 
-    private static int sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
+    private static <T extends Comparable<? super T>> int sort(T[] a, T[] aux, int lo, int hi) {
         //if just one element (or empty array), ready to merge (so 0 compares)
         if (hi <= lo) return 0;
 
@@ -29,9 +29,8 @@ public class TopDownMergeSort {
      * @param a the array to be sorted
      * @return the number of compares performed for the sort
      */
-    @SuppressWarnings("rawtypes") //TODO: For now I suppress warnings like this
-    public static int sort(Comparable[] a) {
-        Comparable[] aux = new Comparable[a.length];
+    public static <T extends Comparable<? super T>> int sort(T[] a) {
+        T[] aux = a.clone();
         int compares = sort(a, aux, 0, a.length-1);
         assert Util.isSorted(a);
         return compares;
