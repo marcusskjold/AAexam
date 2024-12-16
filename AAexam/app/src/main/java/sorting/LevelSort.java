@@ -17,18 +17,18 @@ public class LevelSort {
      * @return the number of compares performed during the sort
      * @throws IllegalArgumentException if {@code c} is less than 1
      */
-    public static int sort(Comparable[] a, int c) {
+    public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
         if (c < 1) {
             throw new IllegalArgumentException("Cutoff value must be at least 1.");
         }
-        Comparable[] aux = new Comparable[a.length];
+        T[] aux = a.clone();
         int compares = sort(a, aux, c);
         assert Util.isSorted(a);
         return compares;
     }
 
     //non-adaptive variant
-    private static int sort(Comparable[] a, Comparable[] aux, int c) {
+    private static <T extends Comparable<? super T>> int sort(T[] a, T[] aux, int c) {
 
         //Counter for compare and length defined
         int compares = 0;

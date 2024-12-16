@@ -1,4 +1,4 @@
-import scripts.Part1;
+package scripts;
 
 public class Main {
     public static void main(String[] args) {

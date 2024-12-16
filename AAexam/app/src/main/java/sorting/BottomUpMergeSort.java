@@ -16,15 +16,15 @@ public class BottomUpMergeSort {
      * @param a the array to be sorted
      * @return the number of compares performed during the sort
      */
-    public static int sort(Comparable[] a) {
-        Comparable[] aux = new Comparable[a.length];
+    public static <T extends Comparable<? super T>> int sort(T[] a) {
+        T[] aux = a.clone();
         int compares = sort(a, aux);
         assert Util.isSorted(a);
         return compares;
     }
 
 
-    private static int sort(Comparable[] a, Comparable[] aux) {
+    private static <T extends Comparable<? super T>> int sort(T[] a, T[] aux) {
         //counter for performed compares
         int compares = 0;
         //length of array
@@ -108,7 +108,7 @@ public class BottomUpMergeSort {
 
     //Version of sort that uses a stack data-structure, rather than a binary number
     //Have only been checked by a few tests
-    private static  int sortStack(Comparable[] a, Comparable[] aux) {
+    private static <T extends Comparable<? super T>> int sortStack(T[] a, T[] aux) {
         /*Creates empty stack for runs
         For now runs are length 2 int-arrays where int[0] is the leftmost index in array a,
         and int[1] is the length of the run */

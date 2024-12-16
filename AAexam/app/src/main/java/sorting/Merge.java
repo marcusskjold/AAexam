@@ -17,8 +17,7 @@ public class Merge {
      * @return the number of compares used for the merge.
      */
     
-    @SuppressWarnings("rawtypes")
-    public static int merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
+    public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi) {
         // precondition: a[lo .. mid] and a[mid+1 .. hi] are sorted subarrays
         assert Util.isSorted(a, lo, mid);
         assert Util.isSorted(a, mid+1, hi);
