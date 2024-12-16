@@ -34,17 +34,22 @@ public class Part1 {
         Experiments.systemInfo();
         System.out.println();
 
-        //task1();
-        //task2();
-        //task2_1();
-        //task2_2();
-        //task2_3();
-        //task2_4();
-        //task3();
-        //task4();
+        // Todo: maybe add a global switch to set the scope of our experiments (e.g. by doing multiple runs, with a longer max time)
+        //       This is so we can run the experiments quickly and well enough, but at the end we can just let the computer cook
+        //       and hopefully get better results.
+        task1();
+        task2();
+        task2_1();
+        task2_2();
+        task2_3();
+        task2_4();
+        task3();
+        task4();
         task5();
         task6();
         task7();
+        task7_1();
+        task7_2();
     }
 
     // ==================================================================
@@ -458,6 +463,10 @@ public class Part1 {
 
     }
 
+    // ==================================================================
+    // Task 5
+    // ==================================================================
+
     public static void task5() {
         print("=====================================================================");
         print("Task 5: Implement MergeSort iteratively using a stack of runs.");
@@ -485,6 +494,11 @@ public class Part1 {
         print();
     }
 
+
+    // ==================================================================
+    // Task 6
+    // ==================================================================
+
     public static void task6() {
         print("=====================================================================");
         print("Task 6: In the algorithm of Task 5, create new runs of length c.");
@@ -503,6 +517,19 @@ public class Part1 {
 
         print("An iterative top-down mergesort with base case of runs of size 5 sorted an integer array of size 100000, using "
                 + comparisons + " comparisons");
+        print();
+    }
+
+
+    // ==================================================================
+    // Task 7
+    // ==================================================================
+
+    public static void task7() {
+        print("=====================================================================");
+        print("Rerun your experiment of Task 4 for your iterative MergeSort");
+        print("Compare your results for the recursive and iterative implementations.");
+        print("=====================================================================");
         print();
     }
 
@@ -550,7 +577,7 @@ public class Part1 {
     }
 
     //Version corresponding to proposed version of task4:
-    public static void t7e1(String title, int n) {
+    public static void t7e3(String title, int n) {
 
         IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
             Handler.generate(n, i -> i),
@@ -573,28 +600,16 @@ public class Part1 {
 
     }
 
-
-    public static void task7() {
-        print("=====================================================================");
-        print("Rerun your experiment of Task 4 for your iterative MergeSort");
-        print("Compare your results for the recursive and iterative implementations.");
-        print("=====================================================================");
-        print();
-
+    public static void task7_3() {
         //My initial draft
-        //task7_1();
-        //task7_2();
-        t7e1("t7e1_1",       100);
-        t7e1("t7e1_2",     1_000);
-        t7e1("t7e1_3",    10_000);
-        t7e1("t7e1_4",   100_000);
-        t7e1("t7e1_5", 1_000_000);
-        t7e1("t7e1_6", 2_000_000);
+        t7e3("t7e3_1",       100);
+        t7e3("t7e3_2",     1_000);
+        t7e3("t7e3_3",    10_000);
+        t7e3("t7e3_4",   100_000);
+        t7e3("t7e3_5", 1_000_000);
+        t7e3("t7e3_6", 2_000_000);
 
         print();
         print("It seems the optimal zone is around 7-9");
-
-
     }
-
 }
