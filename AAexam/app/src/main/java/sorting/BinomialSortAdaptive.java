@@ -11,7 +11,7 @@ import static sorting.Merge.merge;
 public class BinomialSortAdaptive {
     
     public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
-        System.out.println(Arrays.toString(a));
+        //System.out.println(Arrays.toString(a));
         final int n  = a.length;
         int compares = 0;
 
@@ -65,7 +65,7 @@ public class BinomialSortAdaptive {
             starts[top]  = start;
             lengths[top] = length;
         }
-        System.out.println(compares);
+        //System.out.println(compares);
 
         final int hi = n-1;
         while (top > 1) {                           // Final merge
