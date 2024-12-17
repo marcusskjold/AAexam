@@ -30,13 +30,17 @@ public class Util {
         return true;
     }
     
-
-    //TODO: I think the number of compares for this operation is not counted -> should we do that?
     /**
      * Explore a run, by locating the longest weakly increasing
-     * or strictly decreasing, starting from index {@code first} in array {@code a},
+     * or strictly decreasing sequence, starting from index {@code first} in array {@code a},
      * from left to right, and returning the last index of said sequence.
      * If the sequence is strictly decreasing, it is reversed.
+     * <p>
+     * The length of the run returned  {@code (last - first + 1)} is equal to
+     * the number of compares performed, EXCEPT for if the run extends
+     * to the end of {@code a} {@code (last == a.length - 1)}, 
+     * in which case the number of compares corresponds to the run-length minus 1.
+     * As such, the latter will only be the case for the last run in {@code a}.
      * @param a the array to explore the run in
      * @param first the initial index of the run
      * @return the last index of the run
@@ -61,7 +65,6 @@ public class Util {
 
     private static <T extends Comparable<? super T>> int findIncreasing(T[] a, int from) {
         int to = from;
-        //index for penultimate element in a
         while(to < a.length - 1) {
             if (a[to].compareTo(a[to + 1]) > 0) break;
             to++;
@@ -69,7 +72,6 @@ public class Util {
         return to;
     }
 
-    //TODO: what if to < penult from beginning?
     private static <T extends Comparable<? super T>> int findDecreasing(T[] a, int from) {
         int to = from;
         while(to < a.length-1) {
@@ -87,5 +89,63 @@ public class Util {
             from++;
             to--;
         }
+    }
+
+
+    //--------------------------------------------------------------------------------------------
+    //ONLY FOR TESTING COMPARES
+    //--------------------------------------------------------------------------------------------
+
+    /**
+     * Test-version of exploreRun. Only to be used for Tests.
+     * Instead of returning last index, return tuple of last index
+     * and number of compares performed
+     * performed during run-exploration
+     * @param a the array to explore the run in
+     * @param first the initial index of the run
+     * @return length two int[] where int[0]= last index of run
+     * and int[1]= number of compares
+     */
+    public static <T extends Comparable<? super T>> int[] exploreRunDebug(T[] a, int first) {
+        int n = a.length;
+        assert(first >=0 && first < a.length);
+        //if first is the last index of a, run starts and ends at first, with 0 compares
+        if(n == first + 1) return new int[]{first,0};
+
+
+        //define last index of run (starting at first + 1) and number of compares as a tuple
+        int[] lastAndCompares = new int[]{first + 1, 1};
+        int last = lastAndCompares[0];
+        int compares = lastAndCompares[1];
+        //If weakly increasing: find the end of weakly increasing sequence
+        if(a[first].compareTo(a[last]) <= 0) lastAndCompares = findIncreasingDebug(a, last, compares);
+        //If strictly decreasing: find the end of strictly increasing run and reverse
+        else {
+            lastAndCompares = findDecreasingDebug(a, last, compares);
+            reverseSequence(a, first, last);
+        }
+
+        //return number of compares
+        return lastAndCompares;
+    }
+
+    private static <T extends Comparable<? super T>> int[] findIncreasingDebug(T[] a, int from, int compares) {
+        int to = from;
+        while(to < a.length - 1) {
+            compares++;
+            if (a[to].compareTo(a[to + 1]) > 0) break;
+            to++;
+        }
+        return new int[]{to,compares};
+    }
+
+    private static <T extends Comparable<? super T>> int[] findDecreasingDebug(T[] a, int from, int compares) {
+        int to = from;
+        while(to < a.length-1) {
+            compares++;
+            if (a[to].compareTo(a[to + 1]) <= 0) break;
+            to++;
+        }
+        return new int[]{to,compares};
     }
 }

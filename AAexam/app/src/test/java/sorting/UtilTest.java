@@ -186,6 +186,40 @@ public class UtilTest {
         assertArrayEquals(Handler.generate(5, i -> new TestData(i,0)), identicalElementsArray);
     }
 
+    //----------------------------
+    //Testing compares performed in exploreRun
+    //----------------------------
+
+    //case: run doesn't reach end of array
+    //Here we expect the number of performed compares to be equal to the length of the found run
+    @Test
+    void givenRunNotToEnd_whenExploreRunDebug_thenComparesEqualToRunLength() {
+        Integer[] strictlyDecreasingSeq = new Integer[]{10,9,8,5,10};
+        int first = 1;
+        int[] lastAndCompares = Util.exploreRunDebug(strictlyDecreasingSeq, first);
+        int runLength = lastAndCompares[0] - first + 1;
+        int compares = lastAndCompares[1];
+        assertEquals(runLength, compares);
+    }
+
+    //case: run reach end of array
+    //Here we expect the number of performed compares to be 1 deducted from the length of the found run
+    @Test
+    void givenRunToEnd_whenExploreRunDebug_thenComparesEqualToRunLengthMinusOne() {
+        Integer[] strictlyDecreasingSeq = new Integer[]{10,9,8,5,4};
+        int first = 2;
+        int[] lastAndCompares = Util.exploreRunDebug(strictlyDecreasingSeq, first);
+        int runLength = lastAndCompares[0] - first + 1;
+        int compares = lastAndCompares[1];
+        assertEquals(runLength - 1, compares);
+    }
+
+    
+
+
+
+
+
     
 
 }

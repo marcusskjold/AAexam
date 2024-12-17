@@ -73,15 +73,13 @@ public class LevelSort {
             //To be used for potential merges in stack (if top level < currentLevel)
             runEnd[currentLevel] = endL;
             
+            //define level of the run in top of the stack 
+            //(must be position of LSB, due to stack invariant of monotonic and decreasing):
+            int topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
             //If this level greater than level of run at top of stack (which must be the position of the LSB, as stack is monotonic):
             //also won't be equal since no consecutive boundaries have same level
             //1: while levelStack is non-empty (!=0), and current level bigger than top level in stack
-            while(levelStack!=0 && currentLevel > Integer.numberOfTrailingZeros(levelStack) + 1) {
-
-                //define level of the run in top of the stack 
-                //(must be position of LSB, due to stack invariant of monotonic and decreasing):
-                int topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
-
+            while(levelStack!=0 && currentLevel > topLevel) {
                 //merge L with run in top of stack
                 int lo = runStart[topLevel];
                 int mid = runEnd[topLevel];
@@ -91,6 +89,8 @@ public class LevelSort {
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the (now merged) top run from the levelStack (by AND with 1 leftshifted by toplevel - 1) 
                 levelStack &= ~(1 << (topLevel - 1));
+                //and update topLevel
+                topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
                 //update starting-point of L (according to merge)
                 startL = lo;
             }

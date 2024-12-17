@@ -70,6 +70,24 @@ public class LevelSortTest {
     }
 
     //-----------------------------------
+    //Case: c greater or equal to array length
+    //-----------------------------------
+
+    @Test
+    void givenArray_whenLevelSortExceedingc_thenSortsArray() {
+        Integer[] mediumArray = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        LevelSort.sort(mediumArray, 50);
+        assertArrayEquals(new Integer[]{-23,-5,1,2,2,2,4,5,6,7,7,45,54,88}, mediumArray);
+    }
+
+    @Test
+    void givenArray_whenLevelSortExceedingc_thenReturnNumberOfComparesEqualToInsertionSort() {
+        Integer[] mediumArray = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        Integer[] mediumArray2 = new Integer[]{-5,2,2,7,6,4,5,1,2,45,7,88,-23,54};
+        assertEquals(InsertionSort.sort(mediumArray), LevelSort.sort(mediumArray2, 50));
+    }
+
+    //-----------------------------------
     //Case: array length not evenly divisible by run lengths (last run will not be of length c)
     //-----------------------------------
     @Test

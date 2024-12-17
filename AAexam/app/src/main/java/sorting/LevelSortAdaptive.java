@@ -5,7 +5,6 @@ import java.util.Arrays;
 public class LevelSortAdaptive {
     private LevelSortAdaptive() {}
 
-    //TODO: Right now it doesn't include the compares from exploring runs in the returned number of compares!!
     /**
      * Rearranges the array in ascending order, using the natural order
      * Works iteratively through the array by computing runs of next {@code c} elements in {@code a} 
@@ -58,8 +57,13 @@ public class LevelSortAdaptive {
         //find last index of next run
         int endL = Util.exploreRun(a, startL);
 
+        assert(endL>=startL);
+
+        //add length of run to compares
+        int lengthL = endL - startL + 1;
+        compares+= lengthL;
         //If next run not longer than c, compute run of length c with insertion sort
-        if(endL - startL + 1 <= c) {
+        if(lengthL <= c) {
             endL = Math.min(startL+c-1, n-1);
             compares += InsertionSort.sort(a, startL,endL);
         }
@@ -72,7 +76,9 @@ public class LevelSortAdaptive {
             //find new run N of length c or more: 
             int startN = endL + 1;
             int endN = Util.exploreRun(a, startN);
-            if(endN - startN + 1 <= c) {
+            int lengthN = endN - startN + 1;
+            compares+= lengthN;
+            if(lengthN <= c) {
                 endN = Math.min(startN+c-1, n-1);
                 compares += InsertionSort.sort(a, startN,endN);
             }
@@ -85,14 +91,14 @@ public class LevelSortAdaptive {
             //To be used for potential merges in stack (if top level < currentLevel)
             runEnd[currentLevel] = endL;
             
+            //define level of the run in top of the stack 
+            //(must be position of LSB, due to stack invariant of monotonic and decreasing):
+            int topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
+
             //If this level greater than level of run at top of stack (which must be the position of the LSB, as stack is monotonic):
             //also won't be equal since no consecutive boundaries have same level
             //1: while levelStack is non-empty (!=0), and current level bigger than top level in stack
-            while(levelStack!=0 && currentLevel > Integer.numberOfTrailingZeros(levelStack) + 1) {
-
-                //define level of the run in top of the stack 
-                //(must be position of LSB, due to stack invariant of monotonic and decreasing):
-                int topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
+            while(levelStack!=0 && currentLevel > topLevel) {
 
                 //merge L with run in top of stack
                 int lo = runStart[topLevel];
@@ -103,6 +109,8 @@ public class LevelSortAdaptive {
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the (now merged) top run from the levelStack (by AND with 1 leftshifted by toplevel - 1) 
                 levelStack &= ~(1 << (topLevel - 1));
+                //Update level of top run:
+                topLevel = Integer.numberOfTrailingZeros(levelStack) + 1;
                 //update starting-point of L (according to merge)
                 startL = lo;
             }
@@ -116,6 +124,8 @@ public class LevelSortAdaptive {
             startL = startN;
             endL = endN;
         }
+        //deduct 1 from compares to account for one less compare when exploring last run in array
+        compares--;
         
         //debug:
         System.out.println("finishing stack:");
@@ -137,7 +147,6 @@ public class LevelSortAdaptive {
         
         //debug
         System.out.println(Arrays.toString(a));
-
         return compares;
     }
 
