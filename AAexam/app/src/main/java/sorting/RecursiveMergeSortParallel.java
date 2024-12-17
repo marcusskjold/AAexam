@@ -4,6 +4,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
+import static sorting.Merge.merge;
+
 public class RecursiveMergeSortParallel {
     private static ForkJoinPool executor = new ForkJoinPool();
 
@@ -20,22 +22,15 @@ public class RecursiveMergeSortParallel {
             this.a = a; low = lo; high = hi; this.c = c; this.aux = aux;
         }
 
-        public int sort(int lo, int hi) {
-            if (hi <= lo) return 0;
-            int mid = lo + (hi - lo) / 2;
-            int left = sort(lo, mid);
-            int right = sort(mid + 1, hi);
-            int merge = Merge.merge(a, aux, lo, mid, hi);
-            return left + right + merge;
-        }
-
         @Override protected Integer compute() {
-            if (high - low < c) return sort(low, high);
+            if (high - low < c) return TopDownMergeSort.sort(a, aux, low, high);
             int mid = low + (high - low) / 2;
-            ForkJoinTask<Integer> left = new MergeSortTask<T>(a, aux, low, mid, c).fork();
-            int r = new MergeSortTask<T>(a, aux, mid+1, high, c).invoke();
-            int l = left.join();
-            return r + l;
+            ForkJoinTask<Integer> fork  = new MergeSortTask<T>(a, aux, low, mid, c).fork();
+            Integer r = new MergeSortTask<T>(a, aux, mid+1, high, c).invoke();
+            int l = fork.join();
+            int m = merge(a, aux, low, mid, high);
+
+            return r + l + m;
         }
     }
 }

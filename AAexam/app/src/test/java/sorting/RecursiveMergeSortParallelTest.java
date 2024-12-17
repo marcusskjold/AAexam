@@ -1,6 +1,8 @@
 package sorting;
 
 import static data.Handler.randomString;
+import static data.Handler.generate;
+import static data.Handler.randomize;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,6 +12,7 @@ import static sorting.RecursiveMergeSortParallel.sort;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
@@ -24,9 +27,9 @@ public class RecursiveMergeSortParallelTest {
     @Test void
     givenRandomStrings_whenSort_thenSorted() {
         int n = 100, m = 20;
-        String[] in = Handler.generate(n, i -> randomString(m));
+        String[] in = generate(n, i -> randomString(m));
         assertFalse(isSorted(in));
-        sort(in, 100);
+        sort(in, 10);
         System.out.println(Arrays.toString(in));
         assertTrue(isSorted(in));
     }
@@ -37,14 +40,14 @@ public class RecursiveMergeSortParallelTest {
     @Test
     void givenEmptyArray_whenMergeSort_thenEmptyArray() {
         Integer[] emptyArray = new Integer[0];
-        sort(emptyArray, 16);
+        sort(emptyArray, 4);
         assertArrayEquals(new Integer[]{}, emptyArray);
     }
 
     @Test
     void givenEmptyArray_whenMergeSort_thenReturnZeroCompares() {
         Integer[] emptyArray = new Integer[0];
-        assertEquals(0, sort(emptyArray, 16));
+        assertEquals(0, sort(emptyArray, 4));
     }
 
     //-----------------------------------
@@ -53,14 +56,14 @@ public class RecursiveMergeSortParallelTest {
     @Test
     void givenSizeOneArray_whenMergeSort_thenIdenticalArray() {
         Integer[] sizeOneArray = new Integer[]{1};
-        sort(sizeOneArray, 16);
+        sort(sizeOneArray, 4);
         assertArrayEquals(new Integer[]{1}, sizeOneArray);
     }
 
     @Test
     void givenSizeOneArray_whenMergeSort_thenReturnZeroCompares() {
         Integer[] sizeOneArray = new Integer[]{1};
-        assertEquals(0, sort(sizeOneArray, 16));
+        assertEquals(0, sort(sizeOneArray, 4));
     }
 
     //-----------------------------------
@@ -69,14 +72,14 @@ public class RecursiveMergeSortParallelTest {
     @Test
     void givenDescendingArray_whenMergeSort_thenAscendingArray() {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
-        sort(descendingArray, 16);
+        sort(descendingArray, 4);
         assertArrayEquals(new Integer[]{-1,0,1,2}, descendingArray);
     }
 
     @Test
     void givenDescendingArray_whenMergeSort_thenReturnNumberOfCompares() {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
-        assertEquals(4, sort(descendingArray, 16));
+        assertEquals(4, sort(descendingArray, 4));
     }
 
     //-----------------------------------
@@ -85,14 +88,14 @@ public class RecursiveMergeSortParallelTest {
     @Test
     void givenOddSizeArray_whenMergeSort_thenSortsArray() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
-        sort(oddSizeArray, 16);
+        sort(oddSizeArray, 4);
         assertArrayEquals(new Integer[]{0,1,2,3,4,5,6,7,8,9,10}, oddSizeArray);
     }
 
     @Test
     void givenOddSizeArray_whenMergeSort_thenReturnNumberOfCompares() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
-        assertEquals(29, sort(oddSizeArray, 16));
+        assertEquals(29, sort(oddSizeArray, 4));
     }
 
 
@@ -102,15 +105,15 @@ public class RecursiveMergeSortParallelTest {
     //-----------------------------------
     @Test
     void givenIdenticalElementsArray_whenMergeSort_thenPreserveStability() {
-        TestData[] identicalElementsArray = Handler.generate(10, i -> new TestData(i,0));
-        sort(identicalElementsArray, 16);
-        assertArrayEquals(Handler.generate(10, i -> new TestData(i,0)), identicalElementsArray);
+        TestData[] identicalElementsArray = generate(10, i -> new TestData(i,0));
+        sort(identicalElementsArray, 4);
+        assertArrayEquals(generate(10, i -> new TestData(i,0)), identicalElementsArray);
     }
 
     @Test
     void givenIdenticalElementsArray_whenMergeSort_thenReturnNumberOfCompares() {
-        TestData[] identicalElementsArray = Handler.generate(10, i -> new TestData(i,0));
-        assertEquals(19, sort(identicalElementsArray, 16));
+        TestData[] identicalElementsArray = generate(10, i -> new TestData(i,0));
+        assertEquals(19, sort(identicalElementsArray, 6));
     }
 
     //-----------------------------------
@@ -122,7 +125,7 @@ public class RecursiveMergeSortParallelTest {
         TestData::from); 
         TestData[] expectedArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.out"), 
         TestData::from); 
-        sort(duplicateElementsArray, 16);
+        sort(duplicateElementsArray, 4);
         assertArrayEquals(expectedArray, duplicateElementsArray);
     }
 
@@ -130,7 +133,7 @@ public class RecursiveMergeSortParallelTest {
     void givenDuplicateElementsArray_whenMergeSort_thenReturnNumberOfCompares() {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
         TestData::from); 
-        assertEquals(8, sort(duplicateElementsArray, 16));
+        assertEquals(8, sort(duplicateElementsArray, 4));
     }
 
     //-----------------------------------
@@ -149,7 +152,7 @@ public class RecursiveMergeSortParallelTest {
         //System.out.println("Input Array: " + Arrays.toString(duplicateElementsArray));
         //System.out.println("Expected Array: " + Arrays.toString(expectedArray));
 
-        sort(duplicateElementsArray, 16);
+        sort(duplicateElementsArray, 4);
 
         // Debug: sorted input
         //System.out.println("Sorted Array: " + Arrays.toString(duplicateElementsArray));
@@ -162,7 +165,17 @@ public class RecursiveMergeSortParallelTest {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
         TestData::from); 
 
-        assertEquals(23, sort(duplicateElementsArray, 16));
+        assertEquals(23, sort(duplicateElementsArray, 4));
     }    
+
+    @RepeatedTest(200)
+    @Test void givenLargeArray_whenSort_thenIdenticalResultToSequential() {
+        Integer[] actual   = randomize(generate(10_000, i -> i));
+        Integer[] expected = actual.clone();
+        TopDownMergeSort.sort(expected);
+        sort(actual, 32);
+        assertArrayEquals(expected, actual);
+        
+    }
 
 }
