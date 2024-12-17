@@ -8,7 +8,7 @@ public class TopDownMergeSort {
     private TopDownMergeSort() { }
 
 
-    private static <T extends Comparable<? super T>> int sort(T[] a, T[] aux, int lo, int hi) {
+    public static <T extends Comparable<? super T>> int sort(T[] a, T[] aux, int lo, int hi) {
         //if just one element (or empty array), ready to merge (so 0 compares)
         if (hi <= lo) return 0;
 
