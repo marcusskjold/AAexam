@@ -105,7 +105,7 @@ public class LevelSortAdaptive {
                 int mid = runEnd[topLevel];
                 int hi = endL;
                 //debug
-                System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+                //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
                 compares += Merge.merge(a, aux, lo, mid, hi);
                 //remove the (now merged) top run from the levelStack (by AND with 1 leftshifted by toplevel - 1) 
                 levelStack &= ~(1 << (topLevel - 1));
@@ -128,7 +128,7 @@ public class LevelSortAdaptive {
         compares--;
         
         //debug:
-        System.out.println("finishing stack:");
+        //System.out.println("finishing stack:");
 
         //set endpoint for finishing merges (will just be right end of array)
         int hi = endL;
@@ -140,13 +140,13 @@ public class LevelSortAdaptive {
             int mid = runEnd[topLevel];
             compares += Merge.merge(a, aux, lo, mid, hi);
             //debug
-            System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
+            //System.out.println("Now merging: a[" + lo + " .. " + mid + "] + a [" + mid + " + 1 .. " + hi + "]");
             //remove the run from the levelStack
             levelStack &= ~(1 << (topLevel - 1));
         }
         
         //debug
-        System.out.println(Arrays.toString(a));
+        //System.out.println(Arrays.toString(a));
         return compares;
     }
 

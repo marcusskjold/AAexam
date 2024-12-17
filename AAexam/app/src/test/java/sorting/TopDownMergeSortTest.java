@@ -144,13 +144,13 @@ public class TopDownMergeSortTest {
         TestData::from); 
 
         // Debug: Log input and expected output
-        System.out.println("Input Array: " + Arrays.toString(duplicateElementsArray));
-        System.out.println("Expected Array: " + Arrays.toString(expectedArray));
+        //System.out.println("Input Array: " + Arrays.toString(duplicateElementsArray));
+        //System.out.println("Expected Array: " + Arrays.toString(expectedArray));
 
         TopDownMergeSort.sort(duplicateElementsArray);
 
         // Debug: sorted input
-        System.out.println("Sorted Array: " + Arrays.toString(duplicateElementsArray));
+        //System.out.println("Sorted Array: " + Arrays.toString(duplicateElementsArray));
 
         assertArrayEquals(expectedArray, duplicateElementsArray);
     }    
