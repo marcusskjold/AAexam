@@ -1,5 +1,10 @@
 package sorting;
 
+import static sorting.Merge.merge;
+import static java.lang.Math.min;
+import static sorting.Util.isSorted;
+
+
 public class BinomialSort {
     
     public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
@@ -18,15 +23,15 @@ public class BinomialSort {
 
         for (int next = 0; next < n; next += c) {
             int start     = next;                   // Define next run
-            final int end = Math.min(next + c, n);
-            int length    = end - next;
-            compares     += InsertionSort.sort(a, next, end - 1);
+            final int end = min(next + c, n) - 1;
+            int length    = end - next + 1;
+            compares     += InsertionSort.sort(a, next, end);
 
             while (lengths[top] < length * 2) {     // Peek into the stack
                 int mid   = start - 1;              // Merge next run with top of stack
                 start     = starts[top];
                 length   += lengths[top];
-                compares += Merge.merge(a, aux, start, mid, end - 1); 
+                compares += merge(a, aux, start, mid, end); 
                 top--;                              // Pop the stack
             }
             top++;
@@ -39,10 +44,10 @@ public class BinomialSort {
             int mid = starts[top] - 1;
             top--;
             int lo  = starts[top];
-            compares += Merge.merge(a, aux, lo, mid, hi);
+            compares += merge(a, aux, lo, mid, hi);
         }
 
-        assert Util.isSorted(a);
+        assert isSorted(a);
         return compares;
     }
 }

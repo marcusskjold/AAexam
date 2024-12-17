@@ -2,6 +2,7 @@ package sorting;
 
 import static java.lang.Math.min;
 import static sorting.Util.exploreRun;
+import static sorting.Util.isSorted;
 
 import java.util.Arrays;
 
@@ -27,23 +28,17 @@ public class BinomialSortAdaptive {
         int increment;
 
         for (int next = 0; next < n; next += increment) {
-            final int end;
-            final int endC = min(next + c, n) - 1;
-            final int endR = exploreRun(a, next);
-            int com = (endR - next) + 1;
-            compares      += com;
-            //System.out.println("next = " + next);
-            System.out.printf("Spent %d compares to explore run%n", com);
-            //System.out.println("endC = " + endC + ", endR = " + endR);
-            if (endR <= endC) { 
-                end = endC;
-                com = InsertionSort.sort(a, next, endC);
-                compares += com;
-                System.out.printf("Spent %d compares to insertion sort %n", com);
-                //System.out.println("INSERTIONSORT!");
-            } else end = endR;
-
+            int end = exploreRun(a, next);
             increment = (end - next) + 1;
+            compares  += increment;
+            //System.out.println("next = " + next);
+            //System.out.println("endC = " + endC + ", endR = " + endR);
+            if (increment <= c) { 
+                end = min(next + c, n) - 1;
+                compares += InsertionSort.sort(a, next, end);
+                //System.out.println("INSERTIONSORT!");
+                increment = (end - next) + 1;
+            } 
             assert(next + increment <= n);
             //System.out.println();
             //System.out.println("n      = " + n);
@@ -61,9 +56,7 @@ public class BinomialSortAdaptive {
                 start     = starts[top];
                 length   += lengths[top];
                 //System.out.printf("a[%d .. %d] + a[%d .. %d]%n", start, mid, mid+1, end);
-                com = merge(a, aux, start, mid, end); 
-                compares += com;
-                System.out.printf("Spent %d compares to merge%n", com);
+                compares += merge(a, aux, start, mid, end);
                 top--;                              // Pop the stack
             }
             top++;
@@ -84,7 +77,7 @@ public class BinomialSortAdaptive {
             compares += merge(a, aux, lo, mid, hi);
         }
 
-        assert Util.isSorted(a);
+        assert isSorted(a);
         return compares - 1;
     }
 }
