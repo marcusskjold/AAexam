@@ -125,7 +125,7 @@ public class BottomUpMergeSort {
             //Create run of size 1 from next element in array:
             int[] latestRun = new int[]{i,1};
             //debug:
-            System.out.println("looking at latest run: " + Arrays.toString(latestRun));
+            //System.out.println("looking at latest run: " + Arrays.toString(latestRun));
             
     
             //While more runs in stack and length of next run is equal to that of current run
@@ -134,7 +134,7 @@ public class BottomUpMergeSort {
                     //pop next run
                     int[] nextRun = runs.pop();
                     //debug:
-                    System.out.println("comparing with next run: " + Arrays.toString(nextRun));
+                    //System.out.println("comparing with next run: " + Arrays.toString(nextRun));
     
                     //assign lo, mid and hi for merged of the two runs and perform merge
                     int lo = nextRun[0];
@@ -145,7 +145,7 @@ public class BottomUpMergeSort {
                     //make merged run the latest run
                     latestRun = new int[]{lo, hi - lo + 1};
                     //debug:
-                    System.out.println("new latest run: " + Arrays.toString(latestRun));
+                    //System.out.println("new latest run: " + Arrays.toString(latestRun));
                   
             }
             //when latest merged with all other runs, or next run has different length, push to stack
@@ -168,7 +168,7 @@ public class BottomUpMergeSort {
                 latestRun = new int[]{lo, hi - lo + 1};
         }
         //debug:
-        System.out.println("Resulting array: " + Arrays.toString(a));
+        //System.out.println("Resulting array: " + Arrays.toString(a));
     
         return 0;
     }

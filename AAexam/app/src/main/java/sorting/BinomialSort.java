@@ -1,11 +1,50 @@
 package sorting;
 
+import java.util.Arrays;
+
 public class BinomialSort {
     
     public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
-        T[] aux = a.clone();
-        
+        final int n  = a.length;
+        int compares = 0;
 
+        if (c < 1) throw new IllegalArgumentException("Cutoff value must be at least 1.");
+        if (n < 2) return 0;
 
+        final T[] aux       = a.clone();
+        final byte stackmax = (byte) (32 - Integer.numberOfLeadingZeros(n) + 1); // |1|
+        final int[] starts  = new int[stackmax];    // Setup stack
+        final int[] lengths = new int[stackmax];
+        byte top            = 0;
+        lengths[0]          = Integer.MAX_VALUE;    // index 0 is a guard value
+
+        for (int next = 0; next < n; next += c) {
+            int start     = next;                   // Define next run
+            final int end = Math.min(next + c, n);
+            int length    = end - next;
+            compares     += InsertionSort.sort(a, next, end - 1);
+
+            while (lengths[top] < length * 2) {     // Peek into the stack
+                int mid   = start - 1;              // Merge next run with top of stack
+                start     = starts[top];
+                length   += lengths[top];
+                compares += Merge.merge(a, aux, start, mid, end - 1); 
+                top--;                              // Pop the stack
+            }
+            top++;
+            starts[top]  = start;
+            lengths[top] = length;
+        }
+
+        final int hi = n-1;
+        while (top > 1) {                           // Final merge
+            int mid = starts[top] - 1;
+            top--;
+            int lo  = starts[top];
+            compares += Merge.merge(a, aux, lo, mid, hi);
+        }
+
+        assert Util.isSorted(a);
+        return compares;
     }
 }
