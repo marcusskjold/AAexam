@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 import org.junit.jupiter.api.Test;
 
 import data.Handler;
@@ -32,11 +33,11 @@ public class LevelSortAdaptiveTest {
         assertArrayEquals(new Integer[]{}, emptyArray);
     }
 
-    //@Test
-    //void givenEmptyArray_LevelSortAdaptive_thenReturnNumberOfCompares() {
-    //    Integer[] emptyArray = new Integer[0];
-    //    assertEquals(0, LevelSortAdaptive.sort(emptyArray,1));
-    //}
+    @Test
+    void givenEmptyArray_LevelSortAdaptive_thenReturnNumberOfCompares() {
+        Integer[] emptyArray = new Integer[0];
+        assertEquals(0, LevelSortAdaptive.sort(emptyArray,1));
+    }
 
     //-----------------------------------
     //Case: Only one element
@@ -48,62 +49,113 @@ public class LevelSortAdaptiveTest {
         assertArrayEquals(new Integer[]{1}, sizeOneArray);
     }
 
-    //@Test
-    //void givenSizeOneArray_whenLevelSortAdaptive_thenReturnNumberOfCompares() {
-    //    Integer[] sizeOneArray = new Integer[]{1};
-    //    assertEquals(0, LevelSortAdaptive.sort(sizeOneArray,1));
-    //}
+    @Test
+    void givenSizeOneArray_whenLevelSortAdaptive_thenReturnNumberOfCompares() {
+        Integer[] sizeOneArray = new Integer[]{1};
+        assertEquals(0, LevelSortAdaptive.sort(sizeOneArray,1));
+    }
 
     //-----------------------------------
-    //Case: Just one run put in stack during initial iteration
+    //Case: Input is just one run (when reversed), and c < array length
+    //  Here we expect it to just explore the run and then finishing up
     //------------------------------------
     @Test
-    void givenDescendingArray_LevelSortAdaptivec2_thenAscendingArray() {
+    void givenOneRunArray_LevelSortAdaptiveLesserc_thenAscendingArray() {
         Integer[] descendingArray = new Integer[]{2,1,0,-1};
         LevelSortAdaptive.sort(descendingArray, 2);
         assertArrayEquals(new Integer[]{-1,0,1,2}, descendingArray);
     }
 
-    //@Test
-    //void givenDescendingArray_LevelSortAdaptivec2_thenReturnNumberOfCompares() {
-    //    Integer[] descendingArray = new Integer[]{2,1,0,-1};
-    //    assertEquals(4, LevelSortAdaptive.sort(descendingArray, 2));
-    //}
-
-    //-----------------------------------
-    //Case: array length not evenly divisible by run lengths (last run will not be of length c)
-    //-----------------------------------
     @Test
-    void givenOddSizeArray_whenLevelSortAdaptivec3_thenSortsArray() {
-        Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
-        LevelSortAdaptive.sort(oddSizeArray, 3);
-        assertArrayEquals(new Integer[]{0,1,2,3,4,5,6,7,8,9,10}, oddSizeArray);
+    void givenOneRunArray_LevelSortAdaptiveLesserc_thenReturnNumberOfCompares() {
+        Integer[] oneRunArray = new Integer[]{2,1,0,-1};
+        int expectedCompares = oneRunArray.length -1;
+        assertEquals(expectedCompares, LevelSortAdaptive.sort(oneRunArray, 2));
     }
 
-    //@Test
-    //void givenOddSizeArray_whenLevelSortAdaptivec3_thenReturnNumberOfCompares() {
-    //    Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
-    //    assertEquals(33, LevelSortAdaptive.sort(oddSizeArray, 3));
-    //}
+    //-----------------------------------
+    //Case: Input is just one run (when reversed), and c >= array length
+    //  Here we expect it to explore the run (and reverse it), then using Insertion sort on it
+    //------------------------------------
+    @Test
+    void givenOneRunArray_LevelSortAdaptiveGreaterc_thenAscendingArray() {
+        Integer[] oneRunArray = new Integer[]{2,1,0,-1};
+        LevelSortAdaptive.sort(oneRunArray, 10);
+        assertArrayEquals(new Integer[]{-1,0,1,2}, oneRunArray);
+    }
 
-    ////(Changing value of c to check that order of merging follows accordingly)
+    @Test
+    void givenOneRunArray_LevelSortAdaptiveGreaterc_thenReturnNumberOfCompares() {
+        Integer[] oneRunArray = new Integer[]{2,1,0,-1};
+        int expectedCompares = oneRunArray.length -1 + InsertionSort.sort(new Integer[]{-1,0,1,2});
+        assertEquals(expectedCompares, LevelSortAdaptive.sort(oneRunArray, 10));
+    }
+
+    //-----------------------------------
+    //Case: All runs in array are strictly increasing and of length <= c
+    //  Here we expect the algorithm to behave like the non-adaptive variant
+    //  with the addition of exploring run lengths (additional compares)
+    //-----------------------------------
+    @Test
+    void givenSmallIncreasingRunsArray_whenLevelSortAdaptive_thenSortsArray() {
+        Integer[] smallIncreasingRunsArray = new Integer[]{0,2,4,3,3,3,0,1,1,0,10};
+        LevelSortAdaptive.sort(smallIncreasingRunsArray, 3);
+        assertArrayEquals(new Integer[]{0,0,0,1,1,2,3,3,3,4,10}, smallIncreasingRunsArray);
+    }
+
+    @Test
+    void givenSmallIncreasingRunsArray_whenLevelSortAdaptivec3_thenReturnNumberOfCompares() {
+        Integer[] smallIncreasingRunsArray = new Integer[]{0,2,4,3,3,3,0,1,1,0,10};
+        int exploringCost = (3 + 3 + 3 + 2) - 1;
+        int expectedCost = LevelSort.sort(smallIncreasingRunsArray.clone(), 3) + exploringCost;
+        assertEquals(expectedCost, LevelSortAdaptive.sort(smallIncreasingRunsArray, 3));
+    }
+
+
+    //-----------------------------------
+    //Case: All runs in array are of length > c
+    //  Here we expect the algorithm to use runs longer than c 
+    //  rather than insertion-sorting in those cases:
+    //-----------------------------------
+
+    @Test
+    void givenVariousRunsArray_whenLevelSortAdaptive_thenSortsArray() {
+        Integer[] variousRunsArray = new Integer[]{9,2,1,0,7,4,3,8,5,6,10};
+        LevelSortAdaptive.sort(variousRunsArray, 2);
+        assertArrayEquals(new Integer[]{0,1,2,3,4,5,6,7,8,9,10}, variousRunsArray);
+    }
+
+    @Test
+    void givenVariousRunsArray_whenLevelSortAdaptive_thenReturnNumberOfCompares() {
+        Integer[] variousRunsArray = new Integer[]{9,2,1,0,7,4,3,8,5,6,10};
+        assertEquals(31, LevelSortAdaptive.sort(variousRunsArray, 2));
+    }
+
+
+//--------------------------
+//Extra tests that just shows equality with Non-adaptible levelsort
+//--------------------------
+
+
     //@Test
-    //void givenOddSizeArray_whenLevelSortAdaptivec4_thenReturnNumberOfCompares() {
-    //    Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
-    //    assertEquals(29, LevelSortAdaptive.sort(oddSizeArray, 4));
+    //void giveVariousRunsArray_whenLevelSortAdaptivec4_thenReturnNumberOfCompares() {
+    //    Integer[] variousRunsArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
+    //    assertEquals(29, LevelSortAdaptive.sort(variousRunsArray, 4));
     //}
 
 
     //-----------------------------------
     //Case: Highest possible level relative to stack-size computed (Five elements with c= 1) 
     // n + (n-1) yields higher level than (n - 1) + (n - 2)
+    //Array built different here than in non-adaptive version, 
+    //but showcase that this bound is still relevant
     //-----------------------------------
 
     @Test
     void givenSize5Array_whenLevelSortAdaptivec1_thenSortsArray() {
-        Integer[] size5Array = new Integer[]{4,3,2,1,0};
-        LevelSortAdaptive.sort(size5Array, 1);
-        assertArrayEquals(new Integer[]{0,1,2,3,4}, size5Array);
+        Integer[] size5Array = new Integer[]{4,3,4,1,4};
+        LevelSortAdaptive.sort(size5Array, 2);
+        assertArrayEquals(new Integer[]{1,3,4,4,4}, size5Array);
     }
 
     //-----------------------------------
