@@ -40,11 +40,11 @@ public class Part1 {
         //task1();
         //task2();
         //task2_1();
-        task2_2();
+        //task2_2();
         //task2_3();
         //task2_4();
         //task3();
-        //task4();
+        task4();
         //task5();
         //task6();
         //task7();
@@ -453,7 +453,7 @@ public class Part1 {
         Experiment<Integer[]> control = new Experiment<>(
             Handler.generate(n, i -> i), TopDownMergeSort::sort, Handler::randomize);
 
-        print("Size of array: " + n);
+        System.out.printf("Size of array: %,d%n",n);
 
         print(Result.resultHeaders());
         Experiments.measure(ex, SHORTTIME, 1); // To get startup costs out of the way.

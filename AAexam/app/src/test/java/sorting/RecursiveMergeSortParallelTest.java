@@ -30,7 +30,6 @@ public class RecursiveMergeSortParallelTest {
         String[] in = generate(n, i -> randomString(m));
         assertFalse(isSorted(in));
         sort(in, 10);
-        System.out.println(Arrays.toString(in));
         assertTrue(isSorted(in));
     }
 
@@ -168,8 +167,7 @@ public class RecursiveMergeSortParallelTest {
         assertEquals(23, sort(duplicateElementsArray, 4));
     }    
 
-    @RepeatedTest(200)
-    @Test void givenLargeArray_whenSort_thenIdenticalResultToSequential() {
+    @RepeatedTest(200) void givenLargeArray_whenSort_thenIdenticalResultToSequential() {
         Integer[] actual   = randomize(generate(10_000, i -> i));
         Integer[] expected = actual.clone();
         TopDownMergeSort.sort(expected);
