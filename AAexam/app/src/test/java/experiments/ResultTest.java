@@ -19,7 +19,7 @@ public class ResultTest {
     givenSomeKeys_whenPrint_thenCorrectFormat() {
         SingleResult r = new SingleResult("test");
         r.put(Key.RUNS, 10.0);
-        assertEquals("test                            10", r.toString());
+        assertEquals("test                           10", r.toString());
     }
 
     @Test void
@@ -33,7 +33,7 @@ public class ResultTest {
         r.put(Key.RUNS, 10.0);
         r.put(Key.PARAMETER, 79.0);
         assertEquals(
-            "test                      79    10     8,000               8,000             0.4        1,000         99.0",
+            "test                      79   10     8,000               8,000             0.4        1,000         99.0",
             r.toString());
     }
 
