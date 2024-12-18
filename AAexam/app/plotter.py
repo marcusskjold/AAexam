@@ -17,6 +17,34 @@ FILENAME_CSV = 'data/results/t2e1.csv'
 ParamRes = namedtuple("ParamRes", "param rep time sdtime res sdres")
 
 
+def plot_task12():
+    filename = PLOT + '/t12p1.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [256_000, 512_000, 1_024_000, 2_000_000,
+             4_000_000, 8_000_000, 16_000_000, 32_000_000]
+    markers = ['1', '2', '3', '4', '+', 'x', '.', 's']
+    for i in range(0, 8):
+        name = RES + '/t12e1_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[-1].time
+        times = [(baseline / r.time) for r in res]
+        params = [(sizes[i] / r.param) for r in res]
+        ax.plot(params, times, linestyle=':', linewidth='1',
+                marker=markers[i], markersize='4',
+                label='array size {:,.0f}'.format(sizes[i]))
+
+    ax.legend(fontsize=8)
+    # plt.ylim(ymax=120)
+    # plt.xlim(xmax=150, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('Number of parallel tasks (calculated as $\\frac{n}{c}$)')
+    ax.set_ylabel('Speedup')
+    ax.set_xscale('log', base=2)
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+
 def read_single_parameterized(filename: str) -> List[ParamRes]:
     results: List[tuple] = list()
 
@@ -72,14 +100,12 @@ def plot_task4():
     filename = PLOT + '/t4p1.pdf'
     (fig, ax) = plt.subplots()
     sizes = [100, 1000, 10000, 100000, 1000000, 2000000]
-    results = []
     for i in range(2, 6):
         name = RES + '/t4e1_{}.csv'.format(i)
         res = read_single_parameterized(name)
         baseline = res[0].time
         times = [(r.time / baseline) * 100 for r in res]
         params = [r.param for r in res]
-        results.append((times, params))
         ax.plot(params, times, label='array size ' + str(sizes[i-1]),
                 linestyle=':', marker='o', markersize='2', linewidth='1')
 
@@ -101,6 +127,7 @@ def plot_task4():
 
 if __name__ == '__main__':
     raw_results = read_single_parameterized(FILENAME_CSV)
-    plot_task2()
-    plot_task4()
+    # plot_task2()
+    # plot_task4()
     # read_results('log/results.csv')
+    plot_task12()

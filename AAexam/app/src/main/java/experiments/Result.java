@@ -20,7 +20,7 @@ import java.util.TreeMap;
  * {@code exampleResult.removeKey(Key.RUNS).put(Key.MEANTIME, 0.0).toCSV()}
  */
 public abstract sealed class Result {
-    public static final String PRINTFORMAT = "%-20s%10s%7s%13s%20s%13s%13s%13s";
+    public static final String PRINTFORMAT = "%-18s%10s%5s%10s%20s%16s%13s%13s";
     private String title;
 
     public enum Key { PARAMETER, RUNS, REPETITIONS, MEANTIME, SDEVTIME, MEANRESULT, SDEVRESULT; }
