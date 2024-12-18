@@ -37,19 +37,19 @@ public class Part1 {
         // Todo: maybe add a global switch to set the scope of our experiments (e.g. by doing multiple runs, with a longer max time)
         //       This is so we can run the experiments quickly and well enough, but at the end we can just let the computer cook
         //       and hopefully get better results.
-        task1();
-        task2();
-        task2_1();
+        //task1();
+        //task2();
+        //task2_1();
         task2_2();
-        task2_3();
-        task2_4();
-        task3();
-        task4();
-        task5();
-        task6();
-        task7();
-        task7_1();
-        task7_2();
+        //task2_3();
+        //task2_4();
+        //task3();
+        //task4();
+        //task5();
+        //task6();
+        //task7();
+        //task7_1();
+        //task7_2();
     }
 
     // ==================================================================
@@ -136,6 +136,7 @@ public class Part1 {
         // Setup
 
         List<UnaryOperator<Integer[]>> setupInts = new ArrayList<>();
+        setupInts.add(null);
         setupInts.add(i -> i);
         setupInts.add(Handler::invert);
         setupInts.add(i -> Handler.randomize(i, 1));
@@ -146,6 +147,7 @@ public class Part1 {
         setupInts.add(Handler::mergeSortWorstCase);
 
         List<UnaryOperator<TestData[]>> setupTDs = new ArrayList<>();
+        setupTDs.add(null);
         setupTDs.add(i -> i);
         setupTDs.add(Handler::invert);
         setupTDs.add(i -> Handler.randomize(i, 1));
@@ -155,7 +157,7 @@ public class Part1 {
         setupTDs.add(Handler::randomize);
         setupTDs.add(Handler::mergeSortWorstCase);
 
-        int methods = setupTDs.size();
+        int methods = setupTDs.size() - 1;
 
         // Go
 

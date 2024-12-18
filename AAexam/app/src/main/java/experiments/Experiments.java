@@ -45,15 +45,15 @@ public class Experiments {
      * Measure an experiment a specific amount of times, average the results, and 
      * repeat for a specific amount of runs. The results reflect the average of 
      * averages and the standard deviance of those averages. */
-    public static <T> Measurement measure(Experiment<T> ex, int repetitions, int runs) { 
-        return new MultiRunMeasurement(ex, runs, repetitions); }
+    public static <T> Measurement measure(int runs, Experiment<T> ex, int repetitions) { 
+        return new MultiRunMeasurement(runs, ex, repetitions); }
 
     /** Perform a dynamic multi run experiment.
      * Measure an experiment a dynamic amount of times (based on the timeLimit),
      * average the results, and repeat for a specific amount of runs.
      * The results reflect the average of averages and the standard deviance of those averages. */
-    public static <T> Measurement measure(Experiment<T> ex, double timeLimit, int runs) { 
-        return new MultiRunMeasurement(ex, runs, timeLimit); }
+    public static <T> Measurement measure(int runs, Experiment<T> ex, double timeLimit) { 
+        return new MultiRunMeasurement(runs, ex, timeLimit); }
 
     /** Perform a parameterized single run experiment. */
     public static <T> Measurement measure(
@@ -63,9 +63,9 @@ public class Experiments {
 
     /** Perform a parameterized multi run experiment. */
     public static <T> Measurement measure(
-        IntFunction<Experiment<T>> ex, double timeLimit, int runs,
+        int runs,IntFunction<Experiment<T>> ex, double timeLimit, 
         int pMin, int pMax, double pScale
-    ) { return new ParameterizedMultiRunMeasurement(ex, timeLimit, runs, pMin, pMax, pScale); }
+    ) { return new ParameterizedMultiRunMeasurement(runs, ex, timeLimit, pMin, pMax, pScale); }
 
     /** Perform a parameterized single run experiment. */
     public static <T> Measurement measure(
@@ -74,8 +74,19 @@ public class Experiments {
     
     /** Perform a parameterized multi run experiment. */
     public static <T> Measurement measure(
-        IntFunction<Experiment<T>> ex, double timeLimit, int runs, int pMax) 
-        { return new ParameterizedMultiRunMeasurement(ex, timeLimit, runs, pMax); }
+        int runs, IntFunction<Experiment<T>> ex, double timeLimit, int pMax) 
+        { return new ParameterizedMultiRunMeasurement(runs, ex, timeLimit, pMax); }
+
+    /** Perform a parameterized single run experiment. */
+    public static <T> Measurement measure(
+        IntFunction<Experiment<T>> ex, double timeLimit, int pMin, int pMax) 
+        { return new ParameterizedSingleRunMeasurement(ex, timeLimit, pMin, pMax); }
+    
+    /** Perform a parameterized multi run experiment. */
+    public static <T> Measurement measure(
+        int runs, IntFunction<Experiment<T>> ex, double timeLimit, int pMin, int pMax) 
+        { return new ParameterizedMultiRunMeasurement(runs, ex, timeLimit, pMin, pMax); }
+
 
     
     /** Prints system info */
@@ -123,7 +134,7 @@ public class Experiments {
 
         System.out.println(Result.resultHeaders());
 
-        // ========== Experiment 1: Simple integer multiplication [multiple runs]
+        // ========== Experiment 1: Simple integer multiplication
 
         iEx = new Experiment<Integer>(i -> i, Experiments::multiply, i -> i);
         r = Experiments.measure(iEx, 0.1).analyze("multiply");
@@ -180,7 +191,7 @@ public class Experiments {
 
         // =========== Experiment 4: Complex mergesort [parameterized, multiple runs]
 
-        Experiments.measure(gen, 0.25, 10, 100, 100_000, 2.0)
+        Experiments.measure(10, gen, 0.25, 100, 100_000, 2.0)
                    .analyze("sort")
                    .print();
     }

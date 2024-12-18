@@ -111,7 +111,7 @@ final class MultiRunMeasurement extends Measurement {
     int runs;
     int repetitions;
 
-    <T> MultiRunMeasurement(Experiment<T> ex, int runs, int repetitions) {
+    <T> MultiRunMeasurement(int runs, Experiment<T> ex, int repetitions) {
         this.runs = runs;
         this.repetitions = repetitions;
         List<SingleRunMeasurement> x = new ArrayList<>();
@@ -120,8 +120,8 @@ final class MultiRunMeasurement extends Measurement {
         } obs = x;
     }
 
-    <T> MultiRunMeasurement(Experiment<T> ex, int runs, double timeLimit) {
-        this(ex, runs, new SingleRunMeasurement(ex, timeLimit).observations()); }
+    <T> MultiRunMeasurement(int runs, Experiment<T> ex, double timeLimit) {
+        this(runs, ex, new SingleRunMeasurement(ex, timeLimit).observations()); }
 
     public SingleResult analyze(String withTitle) {
         int count = 0;
@@ -150,9 +150,13 @@ final class ParameterizedSingleRunMeasurement extends Measurement {
 
     <T> ParameterizedSingleRunMeasurement(
         IntFunction<Experiment<T>> exGen, double timeLimit, int pMax
+    ) { this(exGen, timeLimit, 1, pMax); }
+
+    <T> ParameterizedSingleRunMeasurement(
+        IntFunction<Experiment<T>> exGen, double timeLimit, int pMin, int pMax
     ) {
         Map<Integer, SingleRunMeasurement> results = new TreeMap<>();
-        for (int p = 1; p <= pMax; p++) {
+        for (int p = pMin; p <= pMax; p++) {
             Experiment<T> ex = exGen.apply(p);
             results.put(p, new SingleRunMeasurement(ex, timeLimit));
         }
@@ -187,21 +191,25 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
     Map<Integer, MultiRunMeasurement> obs;
 
     <T> ParameterizedMultiRunMeasurement(
-        IntFunction<Experiment<T>> exGen, double timeLimit, int runs, int pMax
+        int runs, IntFunction<Experiment<T>> exGen, double timeLimit, int pMax
+    ) { this(runs, exGen, timeLimit, 1, pMax); }
+
+    <T> ParameterizedMultiRunMeasurement(
+        int runs, IntFunction<Experiment<T>> exGen, double timeLimit, int pMin, int pMax
     ) {
         Map<Integer, MultiRunMeasurement> results = new TreeMap<>();
 
-        for (int p = 1; p <= pMax; p++) {
+        for (int p = pMin; p <= pMax; p++) {
             Experiment<T> ex = exGen.apply(p);
             results.put(p, new MultiRunMeasurement(
-                ex, runs, new SingleRunMeasurement(ex, timeLimit).observations())
+                runs, ex, new SingleRunMeasurement(ex, timeLimit).observations())
             );
         }
         obs = results;
     }
 
     <T> ParameterizedMultiRunMeasurement(
-        IntFunction<Experiment<T>> exGen, double timeLimit, int runs,
+        int runs,IntFunction<Experiment<T>> exGen, double timeLimit, 
         int pMin, int pMax, double pScale
     ) {
         int limit = (int) (Integer.MAX_VALUE / pScale);
@@ -210,7 +218,7 @@ final class ParameterizedMultiRunMeasurement extends Measurement {
             Experiment<T> ex = exGen.apply(p);
             results.put(p, 
                 new MultiRunMeasurement(
-                    ex, runs, new SingleRunMeasurement(ex, timeLimit).observations())
+                    runs, ex, new SingleRunMeasurement(ex, timeLimit).observations())
             );
         }
         obs = results;
