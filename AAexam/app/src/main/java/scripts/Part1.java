@@ -3,6 +3,7 @@ package scripts;
 import experiments.Experiments;
 import experiments.Experiment;
 import experiments.Result;
+import experiments.Result.Key;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import sorting.Util;
 
 public class Part1 {
 
-    static final double LONGTIME = 0.5;
-    static final double MEDIUMTIME = 0.2;
-    static final double SHORTTIME = 0.1;
+    static final double LONGTIME = 1.0;
+    static final double MEDIUMTIME = 0.5;
+    static final double SHORTTIME = 0.2;
     static int n = 100_000;
 
     public static void print(String s) { System.out.println(s); }
@@ -48,8 +49,6 @@ public class Part1 {
         //task5();
         //task6();
         //task7();
-        //task7_1();
-        //task7_2();
     }
 
     // ==================================================================
@@ -439,6 +438,12 @@ public class Part1 {
 
         print();
         print("It seems the optimal zone is around the 20s");
+        print();
+
+        print("Meassuring at finer scale for n=100_000");
+        t4e2("t4e2_1",   100_000);
+        print();
+        print("Best value seems to lie around 25");
 
     }
 
@@ -461,6 +466,39 @@ public class Part1 {
         Result r = Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title);
         Experiments.measure(ex, SHORTTIME, 4).analyze(title).add(r).saveAsCSV().print();
 
+        print();
+
+    }
+
+    //More fine-grained version
+    public static void t4e2(String title, int n) {
+
+
+        //Define parameterized experiment (runs with different sizes of c for size n array, on random inputs)
+        IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
+            Handler.generate(n, i -> i),
+            data -> TopDownMergeSortCutoff.sort(data, parameterValue),
+            Handler::randomize
+        );
+
+        Experiment<Integer[]> control = new Experiment<>(
+            Handler.generate(n, i -> i), TopDownMergeSort::sort, Handler::randomize);
+
+        print("Size of array: " + n);
+
+        print(Result.resultHeaders());
+        // To get startup costs out of the way.
+        Experiments.measure(ex, LONGTIME, 1); 
+        //Our control meassure (Iterative Mergesort without cutoff-parameter)
+        
+
+        Result r = Experiments.measure(3, ex, MEDIUMTIME, 2, 40).analyze(title);
+        //Start at first point, (add c=1 as column (with put) so that the control-sequence will correspond to that), and add other values to file
+        Experiments.measure(3, control, MEDIUMTIME).analyze(title).put(Key.PARAMETER, 1.0).add(r).saveAsCSV().print();
+
+        //Result r =Experiments.measure(ex, LONGTIME, 5, 200, 1.3).analyze(title);
+        //Experiments.measure(ex, LONGTIME, 4).analyze(title).add(r).saveAsCSV().print();
+         
         print();
 
     }
@@ -533,54 +571,15 @@ public class Part1 {
         print("Compare your results for the recursive and iterative implementations.");
         print("=====================================================================");
         print();
+        task7_1();
     }
 
-    public static void task7_1() {
-        print();
-        print("Sorting random Integer-arrays of length 100_000 with cutoff-values from 1-30");
-        print();
-
-        //Creates an experiment that sorts an array of size 100_000 based on parameter cutoff-value c
-        //!!I'm adding 1 to the parameter, as 0 is an invalid cutoff-value
-        IntFunction<Experiment<Integer[]>> cutoffExperiment = c ->
-            new Experiment<Integer[]>(
-                Handler.generate(100000, i -> i),
-                a -> BottomUpMergeSortCutoff.sort(a, c + 1),
-                Handler::randomize
-        );
-
-        // Run, analyze and print the results of the experiment.
-        print(Result.resultHeaders());
-        Experiments.measure(cutoffExperiment, 1.0, 30)
-                   .analyze("t7e1")
-                   .saveAsCSV()
-                   .print();
-
-    }
-
-    public static void task7_2() {
-        print();
-        print("Sorting random size10-String-arrays of length 100_000 with cutoff-values from 1-30");
-        print();
-        //run the experiment above, but for random strings of length 10 rather than Integers
-        IntFunction<Experiment<String[]>> cutoffExperimentString = c ->
-            new Experiment<String[]>(
-                Handler.generate(100000, i -> Handler.randomString(10)),
-                a -> BottomUpMergeSortCutoff.sort(a, c + 1),
-                Handler::randomize
-        );
-
-        // Run, analyze and print the results of the experiment.
-        print(Result.resultHeaders());
-        Experiments.measure(cutoffExperimentString, 1.0, 30)
-                   .analyze("t7e2")
-                   .saveAsCSV()
-                   .print();
-    }
 
     //Version corresponding to proposed version of task4:
-    public static void t7e3(String title, int n) {
+    public static void t7e1(String title, int n) {
 
+
+        //Define parameterized experiment (runs with different sizes of c for size n array, on random inputs)
         IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
             Handler.generate(n, i -> i),
             data -> BottomUpMergeSortCutoff.sort(data, parameterValue),
@@ -593,25 +592,83 @@ public class Part1 {
         print("Size of array: " + n);
 
         print(Result.resultHeaders());
-        Experiments.measure(ex, SHORTTIME, 1); // To get startup costs out of the way.
-        Experiments.measure(control, SHORTTIME).analyze("control").print();
-        Experiments.measure(ex, SHORTTIME, 4).analyze(title).saveAsCSV().print();
-        Experiments.measure(ex, SHORTTIME, 5, 200, 1.3).analyze(title).saveAsCSV().print();
+        // To get startup costs out of the way.
+        Experiments.measure(ex, LONGTIME, 1); 
+        //Our control meassure (Iterative Mergesort without cutoff-parameter)
+        Experiments.measure(control, LONGTIME).analyze("control").print();
 
+        Result r =Experiments.measure(ex, LONGTIME, 5, 200, 1.3).analyze(title);
+        Experiments.measure(ex, LONGTIME, 4).analyze(title).add(r).saveAsCSV().print();
+         
         print();
 
     }
 
-    public static void task7_3() {
-        //My initial draft
-        t7e3("t7e3_1",       100);
-        t7e3("t7e3_2",     1_000);
-        t7e3("t7e3_3",    10_000);
-        t7e3("t7e3_4",   100_000);
-        t7e3("t7e3_5", 1_000_000);
-        t7e3("t7e3_6", 2_000_000);
+    //More fine-grained version
+    public static void t7e2(String title, int n) {
+
+
+        //Define parameterized experiment (runs with different sizes of c for size n array, on random inputs)
+        IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
+            Handler.generate(n, i -> i),
+            data -> BottomUpMergeSortCutoff.sort(data, parameterValue),
+            Handler::randomize
+        );
+
+        Experiment<Integer[]> control = new Experiment<>(
+            Handler.generate(n, i -> i), BottomUpMergeSort::sort, Handler::randomize);
+
+        print("Size of array: " + n);
+
+        print(Result.resultHeaders());
+        // To get startup costs out of the way.
+        Experiments.measure(ex, LONGTIME, 1); 
+        //Our control meassure (Iterative Mergesort without cutoff-parameter)
+        
+
+        Result r = Experiments.measure(3, ex, MEDIUMTIME, 2, 50).analyze(title);
+        //Start at first point, (add c=1 as column (with put) so that the control-sequence will correspond to that), and add other values to file
+        Experiments.measure(3, control, MEDIUMTIME).analyze(title).put(Key.PARAMETER, 1.0).add(r).saveAsCSV().print();
+
+        //Result r =Experiments.measure(ex, LONGTIME, 5, 200, 1.3).analyze(title);
+        //Experiments.measure(ex, LONGTIME, 4).analyze(title).add(r).saveAsCSV().print();
+         
+        print();
+
+    }
+
+    public static void task7_1() {
+        //Testing for general overview with different array sizes:
 
         print();
-        print("It seems the optimal zone is around 7-9");
+        print("Measuring large interval with multiple array sizes:");
+        ////t7e1("t7e1_1",       100);
+        //t7e1("t7e1_2",     1_000);
+        //t7e1("t7e1_3",    10_000);
+        //t7e1("t7e1_4",   100_000);
+        ////t7e1("t7e1_5", 1_000_000);
+        ////t7e1("t7e1_6", 2_000_000);
+
+
+        print();
+        print("Plot can be found in 't7p1.pdf'");
+        print("It seems in general across input-sizes that the optimal zone is around 7-15");
+        print();
+
+        //Making test at more fine-grained interval
+        print("Checking just for input size 100_000 for each c-value from 1-50");
+        t7e2("t7e2_1",     100_000);
+
+        print();
+        print("Plot can be found in 't7p2.pdf'");
+        print("While some deviations persist, around 10 seems to be a good value");
+        
+
+        
     }
+
+    
+
+    
+
 }

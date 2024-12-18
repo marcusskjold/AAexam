@@ -96,7 +96,7 @@ final class SingleResult extends Result {
 final class MultiResult extends Result {
     public final List<SingleResult> result;
 
-    public MultiResult(String title, List<SingleResult> results) { setTitle(title);   result = results; }
+    public MultiResult(String title, List<SingleResult> results) { setTitle(title);   result = new ArrayList<>(results); }
     public Result removeKeys(Collection<Key> ks) { for (SingleResult r : result) r.removeKeys(ks); return this; }
     public Result removeKey(Key k)               { for (SingleResult r : result) r.removeKey(k);   return this; }
     public Result put(Key k, Double d)           { for (SingleResult r : result) r.put(k, d);      return this; }
