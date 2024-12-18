@@ -120,6 +120,89 @@ def plot_task4():
     # ax.legend(algorithms)
     fig.savefig(filename)
 
+#Plot for large-scale analysis of c-value for iterative merge-sort
+def plot_task4_finegrained():
+    filename = PLOT + '/t4p2.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [100_000, 200_000, 300_000]
+    results = []
+    #Loops through files t7e2_1 to t7e3_3
+    for i in range(1, 2):
+        name = RES + '/t4e2_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[0].time
+        times = [(r.time / baseline) * 100 for r in res]
+        params = [r.param for r in res]
+        results.append((times, params))
+        ax.plot(params, times, label='array size ' + str(sizes[i-1]),
+                linestyle=':', marker='o', markersize='2', linewidth='1')
+
+    ax.legend(fontsize=8)
+    plt.ylim(ymax=120)
+    plt.xlim(xmax=50, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Time (percent)')
+    #ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+#Plot for large-scale analysis of c-value for iterative merge-sort
+def plot_task7_overview():
+    filename = PLOT + '/t7p1.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [100, 1000, 10000, 100000, 1000000]
+    results = []
+    #Loops through files t7e1_2 to t7e1_5
+    for i in range(2, 5):
+        name = RES + '/t7e1_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[0].time
+        times = [(r.time / baseline) * 100 for r in res]
+        params = [r.param for r in res]
+        results.append((times, params))
+        ax.plot(params, times, label='array size ' + str(sizes[i-1]),
+                linestyle=':', marker='o', markersize='2', linewidth='1')
+
+    ax.legend(fontsize=8)
+    plt.ylim(ymax=150)
+    plt.xlim(xmax=30, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Time (percent)')
+    ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+#Plot for large-scale analysis of c-value for iterative merge-sort
+def plot_task7_finegrained():
+    filename = PLOT + '/t7p2.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [100_000, 200_000, 300_000]
+    results = []
+    #Loops through files t7e2_1 to t7e3_3
+    for i in range(1, 2):
+        name = RES + '/t7e2_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[0].time
+        times = [(r.time / baseline) * 100 for r in res]
+        params = [r.param for r in res]
+        results.append((times, params))
+        ax.plot(params, times, label='array size ' + str(sizes[i-1]),
+                linestyle=':', marker='o', markersize='2', linewidth='1')
+
+    ax.legend(fontsize=8)
+    plt.ylim(ymax=120)
+    plt.xlim(xmax=50, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Time (percent)')
+    #ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
 
 
 
