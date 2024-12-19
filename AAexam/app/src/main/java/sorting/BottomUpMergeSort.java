@@ -1,6 +1,5 @@
 package sorting;
 
-import java.util.Arrays;
 import java.util.Stack;
 
 public class BottomUpMergeSort {
@@ -25,16 +24,13 @@ public class BottomUpMergeSort {
 
 
     private static <T extends Comparable<? super T>> int sort(T[] a, T[] aux) {
-        //counter for performed compares
-        int compares = 0;
-        //length of array
-        int n = a.length;
-        //If 1 or fewer elements in array, no need to sort
-        if(n<=1) return compares;
+        int compares = 0, n = a.length;
+        if(n <= 1) return compares;
 
         //Represents the stack of runs as an int, with a set bit corresponding to the length of a run.
         //The rightmost bit then represents the top of the stack
-        //For instance ...1101 would correspond to a run of length 1 in the top, followed by a run of length 4, and a run of length 8
+        //For instance ...1101 would correspond to a run of length 1 in the top,
+        //followed by a run of length 4, and a run of length 8
         //This utilizes the fact that the run lengths decreases by a factor of 2, when going up the stack
         int runStack = 0;
 
