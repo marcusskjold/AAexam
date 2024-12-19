@@ -639,6 +639,7 @@ public class Part1 {
     }
 
     //TODO: Just for experimenting a bit around for now
+    //TODO: Make sure randomizer is used here
     public static void t7e3(String title, int n) {
         print("check for patterns with respect to merge tree:");
         Random r = new Random(298092841098572l);

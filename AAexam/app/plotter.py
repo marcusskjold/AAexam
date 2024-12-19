@@ -242,7 +242,161 @@ if __name__ == '__main__':
     # plot_task4()
     # read_results('log/results.csv')
     #plot_task12()
-    plot_task7_experimental()
+    #plot_task7_experimental()
+
+####################PART 2################################3
+
+##Plot for random inputs, representing c vs compares for the 4 algorithms
+def plot_task9_random():
+    filename = PLOT + '/t9random.pdf'
+    (fig, ax) = plt.subplots()
+    # File paths and custom labels
+    file_labels = [
+        ("t9random1.csv", "Non-adaptive LevelSort"),
+        ("t9random2.csv", "Adaptive LevelSort"),
+        ("t9random3.csv", "Non-adaptive Binomial Sort"),
+        ("t9random4.csv", "Adaptive Binomial Sort"),
+    ]
+    # Create the plot
+    (fig, ax) = plt.subplots()
+    
+    # Loop through files
+    for csv_filename, label in file_labels:
+        # Full file path
+        filepath = f'{RES}/{csv_filename}'
+        
+        # Read data from the CSV file
+        res = read_single_parameterized(filepath)
+        
+        # Extract x and y values
+        params = [r.param for r in res]  # X-axis values
+        compares = [r.time for r in res]   # Y-axis values (actual compares)
+
+        # Plot each curve
+        ax.plot(params, compares, label=label,
+                linestyle='-', marker='o', markersize=4, linewidth=1.5)
+
+    ax.legend(fontsize=8)
+    #plt.ylim(ymax=3e7)
+    plt.xlim(xmax=30, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Compares')
+    #ax.set_xscale('log')
+    plt.ylim(auto=True)  # Let matplotlib set limits automatically
+    #plt.xlim(auto=True)
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
 
 
+##Plot for alternating input with min-length runs
+def plot_task9_minRuns():
+    filename = PLOT + '/t9minrun.pdf'
+    (fig, ax) = plt.subplots()
+    # File paths and custom labels
+    file_labels = [
+        ("t9minrun1.csv", "Non-adaptive LevelSort"),
+        ("t9minrun2.csv", "Adaptive LevelSort"),
+        ("t9minrun3.csv", "Non-adaptive Binomial Sort"),
+        ("t9minrun4.csv", "Adaptive Binomial Sort"),
+    ]
+    # Create the plot
+    (fig, ax) = plt.subplots()
+    
+    # Loop through files
+    for csv_filename, label in file_labels:
+        # Full file path
+        filepath = f'{RES}/{csv_filename}'
+        
+        # Read data from the CSV file
+        res = read_single_parameterized(filepath)
+        
+        # Extract x and y values
+        params = [r.param for r in res]  # X-axis values
+        compares = [r.time for r in res]   # Y-axis values (actual compares)
+
+        # Plot each curve
+        ax.plot(params, compares, label=label,
+                linestyle='-', marker='o', markersize=4, linewidth=1.5)
+
+    ax.legend(fontsize=8)
+    #plt.ylim(ymax=3e7)
+    plt.xlim(xmax=30, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Compares')
+    #ax.set_xscale('log')
+    plt.ylim(auto=True)  # Let matplotlib set limits automatically
+    #plt.xlim(auto=True)
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+
+def plot_parameterized(prefix, x_param_func, y_param_func, labels, xlabel, ylabel, output_filename):
+    """
+    Generalized plotting function for parameterized data.
+
+    :param prefix: The prefix for the CSV files (e.g., 't9random').
+    :param x_param_func: A function to extract the x-axis parameter from a ParamRes object.
+    :param y_param_func: A function to extract the y-axis parameter from a ParamRes object.
+    :param labels: A list of tuples [(file_suffix, label)] for the file suffixes and their corresponding labels.
+    :param xlabel: Label for the x-axis.
+    :param ylabel: Label for the y-axis.
+    :param output_filename: The name of the output PDF file.
+    """
+    (fig, ax) = plt.subplots()
+
+    # Loop through the provided file labels
+    for file_suffix, label in labels:
+        filepath = f'{RES}/{prefix}{file_suffix}.csv'
+
+        # Read data from the CSV file
+        res = read_single_parameterized(filepath)
+
+        # Extract x and y values using the provided parameter functions
+        x_values = [x_param_func(r) for r in res]
+        y_values = [y_param_func(r) for r in res]
+
+        # Plot each curve
+        ax.plot(x_values, y_values, label=label,
+                linestyle='-', marker='o', markersize=4, linewidth=1.5)
+
+    ax.legend(fontsize=8)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    plt.ylim(auto=True)
+    plt.xlim(auto=True)
+    fig.savefig(output_filename)
+
+
+if __name__ == '__main__':
+    part2Algorithms= [
+        ("1", "Non-adaptive LevelSort"),
+        ("2", "Adaptive LevelSort"),
+        ("3", "Non-adaptive Binomial Sort"),
+        ("4", "Adaptive Binomial Sort"),
+    ]
+
+    plot_parameterized(prefix="t9random",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9random_time_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9random",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9random_compares_plot.pdf"
+    )
+    #plot_task9_random()
+    #plot_task9_minRuns()
 
