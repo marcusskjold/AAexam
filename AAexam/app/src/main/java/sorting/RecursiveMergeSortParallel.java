@@ -4,33 +4,37 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
-import static sorting.Merge.merge;
-
 public class RecursiveMergeSortParallel {
-    private static ForkJoinPool executor = new ForkJoinPool();
+    private static ForkJoinPool ex = new ForkJoinPool();
+
+    public static <T extends Comparable<? super T>> int sort(T[] a, int c, int p, boolean measureSpan) {
+        return ex.invoke(new MergeSortTask<T>(a, a.clone(), 0, a.length-1, c, p, measureSpan)); }
+
+    public static <T extends Comparable<? super T>> int sort(T[] a, int c, int p) {
+        return ex.invoke(new MergeSortTask<T>(a, a.clone(), 0, a.length-1, c, p, false)); }
 
     public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
-        T[] aux = a.clone();
-        return executor.invoke(new MergeSortTask<T>(a, aux, 0, a.length-1, c));
-    }
+        return ex.invoke(new MergeSortTask<T>(a, a.clone(), 0, a.length-1, c, 0, false)); }
 
     public static class MergeSortTask<T extends Comparable<? super T>> extends RecursiveTask<Integer> {
-        private T[] a, aux;
-        int compares, low, high, c;
+        private final T[] a, aux;
+        private final int lo, hi, c, mid, p;
+        private final boolean measureSpan;
 
-        public MergeSortTask(T[] a, T[] aux, int lo, int hi, int c) {
-            this.a = a; low = lo; high = hi; this.c = c; this.aux = aux;
+        public MergeSortTask(T[] a, T[] aux, int lo, int hi, int c, int p, boolean measureSpan) {
+            this.a = a; this.aux = aux; this.lo = lo; this.hi = hi; this.c = c; this.p = p; this.measureSpan = measureSpan;
+            mid = lo + (hi - lo) / 2;
         }
 
         @Override protected Integer compute() {
-            if (high - low < c) return TopDownMergeSort.sort(a, aux, low, high);
-            int mid = low + (high - low) / 2;
-            ForkJoinTask<Integer> fork  = new MergeSortTask<T>(a, aux, low, mid, c).fork();
-            Integer r = new MergeSortTask<T>(a, aux, mid+1, high, c).invoke();
-            int l = fork.join();
-            int m = merge(a, aux, low, mid, high);
-
-            return r + l + m;
+            if (hi - lo < c) return TopDownMergeSort.sort(a, aux, lo, hi);
+            int nextP = (p == 1) ? 1 : p / 2;
+            ForkJoinTask<Integer> fork  = new MergeSortTask<T>(a, aux, lo, mid, c, nextP, measureSpan).fork();
+            int r                       = new MergeSortTask<T>(a, aux, mid+1, hi, c, nextP, measureSpan).invoke();
+            int l                       = fork.join();
+            int m = (p > 0) ? MergeParallel.merge(a, aux, lo, mid, hi, p, ex, measureSpan) : Merge.merge(a, aux, lo, mid, hi); 
+            
+            return ((measureSpan) ? Math.max(r, l) : r + l) + m;
         }
     }
 }

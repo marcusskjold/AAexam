@@ -31,11 +31,11 @@ public class Part3 {
         System.out.println();
 
         //task11(); 
-        task12();
+        //task12();
         //task13();
         //task14();
         //task15();
-        //task16();
+        task16();
         //task17();
     }
 
@@ -125,11 +125,13 @@ public class Part3 {
     }
 
     public static void task16() {
+        int activeThreads = Thread.activeCount();
+        int availableProcs = Runtime.getRuntime().availableProcessors();
+        print(String.format("active threads: %d. Available processors: %d", activeThreads, availableProcs));
 
     }
 
     public static void task17() {
 
     }
-
 }
