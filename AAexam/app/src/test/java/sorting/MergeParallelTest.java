@@ -32,7 +32,7 @@ public class MergeParallelTest {
     @Test void givenEvenSubarrays_whenMerge_thenReturnNumberOfCompares() {
         Integer[] a   = new Integer[]{3,4,1,2};
         Integer[] aux = a.clone();
-        assertEquals(2, merge(a, aux, 0, 1, 3, 2));
+        assertEquals(3, merge(a, aux, 0, 1, 3, 2));
     }
 
 
@@ -51,7 +51,7 @@ public class MergeParallelTest {
         Integer[] a = new Integer[]{7,2,3,5,4,6,5,4,3,2,1};
         Integer[] aux = a.clone();
         int compares = merge(a, aux, 1, 3, 5, 2);
-        assertEquals(4, compares);
+        assertEquals(5, compares);
     }
 
     //-----------------------------------

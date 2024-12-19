@@ -14,12 +14,17 @@ public class MergeParallel {
     public record IntPair(int a, int b) { }
 
 
-    public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi, int p, ForkJoinPool pool) {
+    public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi, int p, 
+                                                              ForkJoinPool pool, boolean measureSpan) {
         ex = pool;
-        return merge(a, aux, lo, mid, hi, p);
+        return merge(a, aux, lo, mid, hi, p, measureSpan);
     }
 
     public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi, int p) {
+        return merge(a, aux, lo, mid, hi, p, false); }
+
+    public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi, int p, 
+                                                              boolean measureSpan) {
         int n = hi - lo + 1, compares = 0;
         double increment = n / (double) p;
         p--;
@@ -34,8 +39,9 @@ public class MergeParallel {
         for (int i = 0; i < p; i++) {
             int k = (int)(i*increment);
             IntPair is = twoSequenceSelect(a, lo, mid, hi, k);
+            compares += is.b;
             int i_a = lo + is.a;
-            int i_b = mid + is.b + 1;
+            int i_b = mid + 1 + (k - is.a);
             int i_o = lo + k;
             int length = (int)((i+1)*increment)-k;
             //System.out.printf("Length = %d%n", length);
@@ -45,28 +51,34 @@ public class MergeParallel {
         int k = (int)(p*increment);
         //System.out.println("Hey");
         IntPair is = twoSequenceSelect(a, lo, mid, hi, k);
+        compares += is.b;
         int i_a = lo + is.a;
-        int i_b = mid + is.b + 1;
+        int i_b = (mid + 1) + (k - is.a);
         int i_o = lo + k;
         int length = (int)((p+1)*increment)-k;
         //System.out.printf("End Length = %d%n", length);
         tasks.add(() -> { return mergeEndTask(a, aux, i_a, i_b, i_o, length, mid, hi); });
         //System.out.println("Added task");
+        int maxCmp = 0;
         try {
-            for (Future<Integer> fut : ex.invokeAll(tasks)) compares += fut.get();
+            for (Future<Integer> fut : ex.invokeAll(tasks)) {
+                int cmp = fut.get(); 
+                if (measureSpan && cmp > maxCmp) maxCmp = cmp;
+                else compares += fut.get();
+            }
         } catch (InterruptedException e) { System.out.println("Interrupted: " + e);
         } catch (ExecutionException e)   { throw new RuntimeException(e.getCause()); }
-        return compares;
+        return (measureSpan) ? compares + maxCmp : compares;
     }
     
     public static <T extends Comparable<? super T>> int mergeEndTask(
         T[] a, T[] aux, int i_a, int i_b, int i_o, int length, int mid, int hi) {
         int compares = 0;
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("=============%n"));
-        sb.append(String.format("i_a = %d, i_b = %d, i_o = %d, length = %d%n", i_a, i_b, i_o, length));
+        //StringBuilder sb = new StringBuilder();
+        //sb.append(String.format("=============%n"));
+        //sb.append(String.format("i_a = %d, i_b = %d, i_o = %d, length = %d%n", i_a, i_b, i_o, length));
         int k, l = i_a, r = i_b, end = i_o+length;
-        sb.append(String.format("we will have %d loops%n", length));
+        //sb.append(String.format("we will have %d loops%n", length));
         //assert(hi == end-1);
         for (k = i_o; k < end; k++) {
             //sb.append(String.format("loop nr %d%n", k-i_o+1));
@@ -116,16 +128,17 @@ public class MergeParallel {
         //assert Util.isSorted(a, i_o, end - 1);
         return compares;
     }
-    public static <T extends Comparable<? super T>> IntPair twoSequenceSelect(T[] array, int lo, int mid, int hi, int k) {
+    public static <T extends Comparable<? super T>> IntPair twoSequenceSelect(T[] s, int lo, int mid, int hi, int k) {
         //System.out.println();
         //System.out.printf("k is %d ", k);
         final int l_a = mid - lo + 1;
-        //System.out.printf("l_a = %d%n", l_a);
         final int l_b = hi - mid;
+        //System.out.printf("l_a = %d%n", l_a);
+        int cmp = 0;
         if (k < 0 || k >= l_a + l_b) throw new IllegalArgumentException("k is out of bounds");
 
         int j_b, j_a;
-        boolean propA = false, propB = false;
+        //boolean propA = false, propB = false;
         int lo_a = 0, hi_a = k;
         //System.out.println();
         do  {
@@ -134,20 +147,31 @@ public class MergeParallel {
             j_b = k - j_a;
             //System.out.printf("%d, %d (lo %d, mid %d, hi %d) --> ", j_a, j_b, lo, mid, hi);
 
-            propA = (j_a == 0 || j_b >= l_b) ? true : (j_a < l_a+1 && (array[lo+j_a-1].compareTo(array[mid+1+j_b]) <= 0 ));
-            if (!propA) { hi_a = j_a-1; continue; }
+            if (!(j_a == 0 || j_b >= l_b)) {  // Is the first inequality is violated.
+                if (j_a > l_a)                                           {hi_a = j_a-1; continue;}
+                else if (s[lo+j_a-1].compareTo(s[mid+1+j_b]) > 0) {cmp++; hi_a = j_a-1; continue;}
+            }
+
+            if (!(j_b == 0 || j_a >= l_a)) {   // Is the second inequality violated.
+                if (j_b > l_b)                                           {lo_a = j_a+1; continue;}
+                else if (s[mid+1+j_b-1].compareTo(s[lo+j_a]) >= 0){cmp++; lo_a = j_a+1; continue;}
+            
+            }
+            break; // Both properties upheld
+            //propA = (j_a == 0 || j_b >= l_b) ? true : (j_a < l_a+1 && (s[lo+j_a-1].compareTo(s[mid+1+j_b]) <= 0 ));
+            //if (!propA) { hi_a = j_a-1; continue; }
             //System.out.printf("propA --> ");
-            propB = (j_b == 0 || j_a >= l_a) ? true : (j_b < l_b+1 && (array[mid+1+j_b-1].compareTo(array[lo+j_a]) < 0 ));
-            if (!propB) { lo_a = j_a+1; continue; }
+            //propB = (j_b == 0 || j_a >= l_a) ? true : (j_b < l_b+1 && (s[mid+1+j_b-1].compareTo(s[lo+j_a]) < 0 ));
+            //if (!propB) { lo_a = j_a+1; continue; }
             //System.out.printf("propB --> ");
-            break;
         } while (lo_a <= hi_a);
         //System.out.println("Done!");
-        //System.out.println(Arrays.toString(array));
+        //System.out.println(Arrays.toString(s));
         //System.out.println(j_a + ", " + j_b);
         //System.out.println();
-        return new IntPair(j_a, j_b);
+        return new IntPair(j_a, cmp);
     }
+
     public static void main(String[] args) {
         Integer[] n = {6, 5, 1, 4, 4, 2, 3, 4, 6};
         //                   0, 1, 2||0, 1, 2, 3
@@ -161,14 +185,9 @@ public class MergeParallel {
         //                       4 -> 2, 2 (a!4)
         //                       5 -> 3, 2 (b!4)
         //                       6 -> 3, 3 (b!6)
-        for (int i = 0; i < 7; i++) {
-            IntPair y = twoSequenceSelect(n, 2, 4, 8, i);
-        } 
 
         Integer[] aux = n.clone();
-        merge(n, aux, 2, 4, 8, 3);
-        //System.out.println(Arrays.toString(aux));
-        //System.out.println(Arrays.toString(n));
+        merge(n, aux, 2, 4, 8, 3, false);
     }
 }
 
