@@ -17,7 +17,7 @@ public class MergeParallel {
         int n = hi - lo + 1, compares = 0;
         double increment = n / (double) p;
         p--;
-        System.out.printf("Increment = %f, p = %d%n", increment, p);
+        //System.out.printf("Increment = %f, p = %d%n", increment, p);
         if (increment < 2) return Merge.merge(a, aux, lo, mid, hi);
         List<Callable<Integer>> tasks = new ArrayList<>();
         
@@ -29,17 +29,17 @@ public class MergeParallel {
             int r = mid + is.b + 1;
             int o = lo + k;
             int length = (int)((i+1)*increment)-k;
-            System.out.printf("Length = %d%n", length);
+            //System.out.printf("Length = %d%n", length);
             tasks.add(() -> { return mergeTask(a, aux, l, r, o, length); });
         }
         int k = (int)(p*increment);
-        System.out.println("Hey");
+        //System.out.println("Hey");
         IntPair is = twoSequenceSelect(a, lo, mid, hi, k);
         int l = lo + is.a;
         int r = mid + is.b + 1;
         int o = lo + k;
         int length = (int)((p+1)*increment)-k;
-        System.out.printf("End Length = %d%n", length);
+        //System.out.printf("End Length = %d%n", length);
             tasks.add(() -> { return mergeEndTask(a, aux, l, r, o, length, mid, hi); });
         try { for (Future<Integer> fut : ex.invokeAll(tasks)) compares += fut.get();
         } catch (InterruptedException exn) { System.out.println("Interrupted: " + exn);
@@ -50,8 +50,8 @@ public class MergeParallel {
     public static <T extends Comparable<? super T>> int mergeEndTask(
         T[] a, T[] aux, int i_a, int i_b, int i_o, int length, int mid, int hi) {
         int compares = 0;
-        System.out.println("Running!");
-        System.out.printf("i_a = %d, i_b = %d, i_o = %d, length = %d%n", i_a, i_b, i_o, length);
+        //System.out.println("Running!");
+        //System.out.printf("i_a = %d, i_b = %d, i_o = %d, length = %d%n", i_a, i_b, i_o, length);
 
         // We need to make it have output arrays – this might 
         // Or we need to return aux instead of a
@@ -60,16 +60,16 @@ public class MergeParallel {
 
         int k, l = i_a, r = i_b, end = i_o+length;
         for (k = i_o; k < end; k++) {
-            System.out.printf("k = %d, l = %d, r = %d - ", k, l, r);
-            if      (l > mid)                    aux[k] = a[r++]; 
-            else if (r > hi)                     aux[k] = a[l++]; 
-            else if (a[r].compareTo(a[l]) < 0 ) {aux[k] = a[r++]; compares++;}
-            else                                {aux[k] = a[l++]; compares++;}                            
-            System.out.println();
+            //System.out.printf("k = %d, l = %d, r = %d - ", k, l, r);
+            if      (l > mid)                        a[k] = aux[r++]; 
+            else if (r > hi)                         a[k] = aux[l++]; 
+            else if (aux[r].compareTo(aux[l]) < 0 ) {a[k] = aux[r++]; compares++;}
+            else                                    {a[k] = aux[l++]; compares++;}                            
+            //System.out.println();
         }
 
         // postcondition: a[lo .. hi] is sorted
-        assert Util.isSorted(aux, i_o, end - 1);
+        //assert Util.isSorted(a, i_o, end - 1);
         //return number of compares
         return compares;
     }
@@ -88,11 +88,11 @@ public class MergeParallel {
         //System.out.printf("i_o = %d, length = %d", i_o, length);
         for (k = i_o; k < end; k++) {
             //System.out.println("Jumpint!");
-            if (a[r].compareTo(a[l]) < 0 ) {aux[k] = a[r++]; compares++;}
-            else                           {aux[k] = a[l++]; compares++;}                            
+            if (aux[r].compareTo(aux[l]) < 0 ) {a[k] = aux[r++]; compares++;}
+            else                               {a[k] = aux[l++]; compares++;}                            
         }
 
-        assert Util.isSorted(aux, i_o, end - 1);
+        //assert Util.isSorted(a, i_o, end - 1);
         return compares;
     }
     public static <T extends Comparable<? super T>> IntPair twoSequenceSelect(T[] array, int lo, int mid, int hi, int k) {
@@ -119,6 +119,7 @@ public class MergeParallel {
             break;
         } while (lo_a <= hi_a);
         System.out.println("Done!");
+        System.out.println(Arrays.toString(array));
         System.out.println(j_a + ", " + j_b);
         return new IntPair(j_a, j_b);
     }
@@ -142,7 +143,7 @@ public class MergeParallel {
             if (!propB) { j_a = j_a*2; continue; }
             //System.out.printf("propB --> ");
         } while (!(propA && propB));
-        System.out.println(j_a + ", " + j_b);
+        //System.out.println(j_a + ", " + j_b);
         return new IntPair(j_a, j_b);
     }
 
@@ -166,8 +167,8 @@ public class MergeParallel {
 
         Integer[] aux = n.clone();
         merge(n, aux, 2, 4, 8, 3);
-        System.out.println(Arrays.toString(aux));
-        System.out.println(Arrays.toString(n));
+        //System.out.println(Arrays.toString(aux));
+        //System.out.println(Arrays.toString(n));
     }
 }
 
