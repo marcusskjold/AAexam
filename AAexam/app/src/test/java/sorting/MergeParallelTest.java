@@ -12,6 +12,12 @@ import static sorting.MergeParallel.merge;;
 
 public class MergeParallelTest {
 
+    @Test void teste() {
+        Integer[] a   = new Integer[]{1,2,-1,0};
+        Integer[] aux = a.clone();
+        merge(a, aux, 0, 1, 3, 2);
+        assertArrayEquals(new Integer[]{-1,0,1,2}, a);
+    }
 
     //-----------------------------------
     //Case: Subarrays of equal size
@@ -22,7 +28,7 @@ public class MergeParallelTest {
         merge(a, aux, 0, 1, 3, 2);
         assertArrayEquals(a, new Integer[]{1,2,3,4});
     }
-
+    
     @Test void givenEvenSubarrays_whenMerge_thenReturnNumberOfCompares() {
         Integer[] a   = new Integer[]{3,4,1,2};
         Integer[] aux = a.clone();

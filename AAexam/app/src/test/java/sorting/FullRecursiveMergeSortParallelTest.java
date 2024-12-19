@@ -26,9 +26,8 @@ public class FullRecursiveMergeSortParallelTest {
     // String tests
     // ====================================
 
-    @Disabled
     @Test void givenRandomStrings_whenSort_thenSorted() {
-        int n = 100, m = 20;
+        int n = 20, m = 2;
         String[] in = generate(n, i -> randomString(m));
         assertFalse(isSorted(in));
         sort(in, 10);
@@ -39,14 +38,12 @@ public class FullRecursiveMergeSortParallelTest {
     //-----------------------------------
     //Case: Empty array
     //-----------------------------------
-    @Disabled
     @Test void givenEmptyArray_whenMergeSort_thenEmptyArray() {
         Integer[] emptyArray = new Integer[0];
         sort(emptyArray, 4);
         assertArrayEquals(new Integer[]{}, emptyArray);
     }
 
-    @Disabled
     @Test void givenEmptyArray_whenMergeSort_thenReturnZeroCompares() {
         Integer[] emptyArray = new Integer[0];
         assertEquals(0, sort(emptyArray, 4));
@@ -55,14 +52,12 @@ public class FullRecursiveMergeSortParallelTest {
     //-----------------------------------
     //Case: Only one element
     //-----------------------------------
-    @Disabled
     @Test void givenSizeOneArray_whenMergeSort_thenIdenticalArray() {
         Integer[] sizeOneArray = new Integer[]{1};
         sort(sizeOneArray, 4);
         assertArrayEquals(new Integer[]{1}, sizeOneArray);
     }
 
-    @Disabled
     @Test void givenSizeOneArray_whenMergeSort_thenReturnZeroCompares() {
         Integer[] sizeOneArray = new Integer[]{1};
         assertEquals(0, sort(sizeOneArray, 4));
@@ -78,23 +73,20 @@ public class FullRecursiveMergeSortParallelTest {
         assertArrayEquals(new Integer[]{-1,0,1,2}, a);
     }
 
-    @Disabled
     @Test void givenDescendingArray_whenMergeSort_thenReturnNumberOfCompares() {
-        Integer[] descendingArray = new Integer[]{2,1,0,-1};
-        assertEquals(4, sort(descendingArray, 4));
+        Integer[] a = new Integer[]{2,1,0,-1};
+        assertEquals(4, sort(a, 4));
     }
 
     //-----------------------------------
     //Case: Odd amount of elements
     //-----------------------------------
-    @Disabled
     @Test void givenOddSizeArray_whenMergeSort_thenSortsArray() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
         sort(oddSizeArray, 4);
         assertArrayEquals(new Integer[]{0,1,2,3,4,5,6,7,8,9,10}, oddSizeArray);
     }
 
-    @Disabled
     @Test void givenOddSizeArray_whenMergeSort_thenReturnNumberOfCompares() {
         Integer[] oddSizeArray = new Integer[]{9,1,2,0,7,4,3,8,5,6,10};
         assertEquals(29, sort(oddSizeArray, 4));
@@ -105,14 +97,12 @@ public class FullRecursiveMergeSortParallelTest {
     //Case: all elements equal value (using Testdata tuples with identical values and distinct id's)
     //As such, if not identical would imply that some tuples with equal value were switched (e.g. try value = -i)
     //-----------------------------------
-    @Disabled
     @Test void givenIdenticalElementsArray_whenMergeSort_thenPreserveStability() {
         TestData[] identicalElementsArray = generate(10, i -> new TestData(i,0));
         sort(identicalElementsArray, 4);
         assertArrayEquals(generate(10, i -> new TestData(i,0)), identicalElementsArray);
     }
 
-    @Disabled
     @Test void givenIdenticalElementsArray_whenMergeSort_thenReturnNumberOfCompares() {
         TestData[] identicalElementsArray = generate(10, i -> new TestData(i,0));
         assertEquals(19, sort(identicalElementsArray, 6));
@@ -121,7 +111,6 @@ public class FullRecursiveMergeSortParallelTest {
     //-----------------------------------
     //Case: small array contains duplicates (for easier readability compared to medium array)
     //-----------------------------------
-    @Disabled
     @Test void givenDuplicateElementsArray_whenMergeSort_thenSortsArrayStably() {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
         TestData::from); 
@@ -131,7 +120,6 @@ public class FullRecursiveMergeSortParallelTest {
         assertArrayEquals(expectedArray, duplicateElementsArray);
     }
 
-    @Disabled
     @Test void givenDuplicateElementsArray_whenMergeSort_thenReturnNumberOfCompares() {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElems.TestData.in"), 
         TestData::from); 
@@ -143,7 +131,6 @@ public class FullRecursiveMergeSortParallelTest {
     //-----------------------------------
     //TODO: Important! When one of the files are modified, it doesn't seem to be updated in the read array (a cache seems to be used) (Maybe okay and because it has to be built also?)
     //changing name and back can solve this ish
-    @Disabled
     @Test void givenDuplicateElementsArrayMedium_whenMergeSort_thenSortsArrayStably() {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
         TestData::from); 
@@ -162,7 +149,6 @@ public class FullRecursiveMergeSortParallelTest {
         assertArrayEquals(expectedArray, duplicateElementsArray);
     }    
 
-    @Disabled
     @Test void givenDuplicateElementsArrayMedium_whenMergeSort_thenReturnNumberOfCompares() {
         TestData[] duplicateElementsArray = Handler.readData(Handler.streamFile("unittest/duplicateElemsMedium.TestData.in"), 
         TestData::from); 
@@ -170,7 +156,6 @@ public class FullRecursiveMergeSortParallelTest {
         assertEquals(23, sort(duplicateElementsArray, 4));
     }    
 
-    @Disabled
     @RepeatedTest(200) void givenLargeArray_whenSort_thenIdenticalResultToSequential() {
         Integer[] actual   = randomize(generate(10_000, i -> i));
         Integer[] expected = actual.clone();
