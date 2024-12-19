@@ -207,10 +207,42 @@ def plot_task7_finegrained():
 
 
 
+def plot_task7_experimental():
+    filename = PLOT + '/t7p3.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [10_000, 200_000, 300_000]
+    results = []
+    #Loops through files t7e2_1 to t7e3_3
+    for i in range(1, 2):
+        name = RES + '/t7e3_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[0].time
+        times = [(r.time / baseline) * 100 for r in res]
+        params = [r.param for r in res]
+        results.append((times, params))
+        ax.plot(params, times, label='array size ' + str(sizes[i-1]),
+                linestyle=':', marker='o', markersize='2', linewidth='1')
+
+    ax.legend(fontsize=8)
+    plt.ylim(ymax=120, ymin=1)
+    plt.xlim(xmax=400, xmin=2)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Time (percent)')
+    #ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+
 
 if __name__ == '__main__':
     raw_results = read_single_parameterized(FILENAME_CSV)
     # plot_task2()
     # plot_task4()
     # read_results('log/results.csv')
-    plot_task12()
+    #plot_task12()
+    plot_task7_experimental()
+
+
+
