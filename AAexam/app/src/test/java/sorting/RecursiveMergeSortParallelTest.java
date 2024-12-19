@@ -324,5 +324,18 @@ public class RecursiveMergeSortParallelTest {
         
     }
 
+    @Test void givenParallelSortSeqMerge_whenMeasureSpan_ReturnSpan() {
+        Integer[] a = {4,2,3,1,5,6,7};
+        Integer[] aux = a.clone();
+        int span = sort(a, 4, 0, true);
+        int lc = TopDownMergeSort.sort(new Integer[]{4,2,3,1});
+        int rc = TopDownMergeSort.sort(new Integer[]{5,6,7});
+        int mc = Merge.merge(a, aux, 0, 3, 6);
+        int expectedcmp = Math.max(lc, rc) + mc;
+        System.out.printf("Spans: %d %d %d %d%n", lc,rc,mc,span);
+
+        assertEquals(expectedcmp, span);
+    }
+
 }
         
