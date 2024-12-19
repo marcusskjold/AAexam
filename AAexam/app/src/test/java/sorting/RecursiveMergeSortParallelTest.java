@@ -12,6 +12,7 @@ import static sorting.RecursiveMergeSortParallel.sort;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
