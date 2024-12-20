@@ -108,12 +108,10 @@ final class SingleRunMeasurement extends Measurement {
 
 final class MultiRunMeasurement extends Measurement {
     List<SingleRunMeasurement> obs;
-    int runs;
-    int repetitions;
+    int runs, repetitions;
 
     <T> MultiRunMeasurement(int runs, Experiment<T> ex, int repetitions) {
-        this.runs = runs;
-        this.repetitions = repetitions;
+        this.runs = runs; this.repetitions = repetitions;
         List<SingleRunMeasurement> x = new ArrayList<>();
         for (int i = 0; i < runs; i++) {
             x.add(new SingleRunMeasurement(ex, repetitions));

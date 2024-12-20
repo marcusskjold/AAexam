@@ -56,6 +56,6 @@ public class BinomialSortAdaptive {
         }
 
         assert isSorted(a);
-        return compares - 1;
+        return compares - 1; // The final exploreRun() call will return one too much.
     }
 }

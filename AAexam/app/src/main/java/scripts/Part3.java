@@ -30,13 +30,13 @@ public class Part3 {
         Experiments.systemInfo();
         System.out.println();
 
-        //task11(); 
-        //task12();
-        //task13();
-        //task14();
-        //task15();
+        task11(); 
+        task12();
+        task13();
+        task14();
+        task15();
         task16();
-        //task17();
+        task17();
     }
 
     // ==================================================================
