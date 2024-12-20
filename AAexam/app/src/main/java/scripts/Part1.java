@@ -5,7 +5,6 @@ import experiments.Experiment;
 import experiments.Result;
 import experiments.Result.Key;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
@@ -50,6 +49,7 @@ public class Part1 {
         task5();
         task6();
         task7();
+
     }
 
     // ==================================================================
@@ -600,6 +600,7 @@ public class Part1 {
 
         Result r =Experiments.measure(ex, MEDIUMTIME, 5, 200, 1.3).analyze(title);
         Experiments.measure(ex, MEDIUMTIME, 4).analyze(title).add(r).saveAsCSV().print();
+
          
         print();
 
@@ -607,7 +608,6 @@ public class Part1 {
 
     //More fine-grained version
     public static void t7e2(String title, int n) {
-        
 
         //Define parameterized experiment (runs with different sizes of c for size n array, on random inputs)
         IntFunction<Experiment<Integer[]>> ex = parameterValue -> new Experiment<>(
@@ -624,16 +624,14 @@ public class Part1 {
         print(Result.resultHeaders());
         // To get startup costs out of the way.
         Experiments.measure(ex, LONGTIME, 1); 
-        
-
         Result r = Experiments.measure(3, ex, MEDIUMTIME, 2, 50).analyze(title);
         //Start at first point, (add c=1 as column (with put) so that the control-sequence will correspond to that), and add other values to file
         Experiments.measure(3, control, MEDIUMTIME).analyze(title).put(Key.PARAMETER, 1.0).add(r).saveAsCSV().print();
+
          
         print();
 
     }
-
 
     public static void task7_1() {
         ////Testing for general overview with different array sizes:
@@ -652,40 +650,14 @@ public class Part1 {
         print("It seems in general across input-sizes that the optimal zone is around 7-15");
         print();
 
-        ////Making test at more fine-grained interval
+
+        //Making test at more fine-grained interval
         print("Checking just for input size 100_000 for each c-value from 1-50");
         t7e2("t7e2_1",     100_000);
 
         print();
         print("Plot can be found in 't7p2.pdf'");
         print("While some deviations persist, around 10 seems to be a good value");
-
-        
-        
-
-        
-    }
-
-
-
-    //TODO: deprecated test:
-    //public static void t7e3(String title, int n) {
-    //    print("check for patterns with respect to merge tree:");
-    //    Random r = new Random(298092841098572l);
-    //    //Integer[] a = Handler.generate(n, i -> r.nextInt());
-    //    //Does approximation of binary search tree matter?
-    //    IntFunction<Experiment<Integer[]>> sameArrayDifferentc = c -> new Experiment<>(
-    //        Handler.generate(n, i -> r.nextInt()),
-    //        i -> BottomUpMergeSortCutoff.sort(i, c),
-    //        Handler::randomize
-    //    );
-    //    Experiment<Integer[]> control = new Experiment<>(
-    //        Handler.generate(n, i -> r.nextInt()), BottomUpMergeSort::sort);
-    //    Experiments.measure(control, LONGTIME).analyze("control").print();
-//
-    //    Experiments.measure(sameArrayDifferentc, SHORTTIME, 1, 30).analyze(title).saveAsCSV().print();
-//
-    //}
     
 
     
