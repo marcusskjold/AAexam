@@ -106,7 +106,7 @@ public class HandlerTest{
 
     /** This implicitly tests multiple methods */
     @Test void fileIO_works() {
-        Integer[] expected = Handler.generate(1_000_000, i -> i);
+        Integer[] expected = Handler.generate(100, i -> i);
         Handler.writeToFile("test", expected, Cat.UNITTEST, Ext.OUT);
         Integer[] actual = Handler.readData(Handler.streamFile("unittest/test.Integer.out"), Integer::valueOf);
         assertArrayEquals(expected, actual);

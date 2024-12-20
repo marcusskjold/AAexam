@@ -1,37 +1,29 @@
 package sorting;
 
-/**
- * A class for variuous utility-methods for
+/** A class for variuous utility-methods for
  * our sorting algorithms.
  * Contains methods for checking that an array or
- * subarrays are sorted.
- */
+ * subarrays are sorted. */
 public class Util {
     
-    /**
-     * Checks that array a is sorted
+    /** Checks that array a is sorted
      * @param a the array to be checked
-     * @return a boolean indicating whether the array is sorted or not
-     */
+     * @return a boolean indicating whether the array is sorted or not */
     public static <T extends Comparable<? super T>> boolean isSorted(T[] a) {
-        return isSorted(a, 0, a.length - 1);
-    }
+        return isSorted(a, 0, a.length - 1); }
 
-    /**
-     * Checks whether the subarray a[lo..hi] is sorted
+    /** Checks whether the subarray a[lo..hi] is sorted
      * @param a the array to be checked
      * @param lo the initial index of the subarray (inclusive)
      * @param hi the final index of the subarray (inclusive)
-     * @return
-     */
+     * @return */
     public static <T extends Comparable<? super T>> boolean isSorted(T[] a, int lo, int hi) {
         for (int i = lo + 1; i <= hi; i++)
             if (a[i].compareTo(a[i-1]) < 0 ) return false;
         return true;
     }
     
-    /**
-     * Explore a run, by locating the longest weakly increasing
+    /** Explore a run, by locating the longest weakly increasing
      * or strictly decreasing sequence, starting from index {@code first} in array {@code a},
      * from left to right, and returning the last index of said sequence.
      * If the sequence is strictly decreasing, it is reversed.
@@ -43,20 +35,16 @@ public class Util {
      * As such, the latter will only be the case for the last run in {@code a}.
      * @param a the array to explore the run in
      * @param first the initial index of the run
-     * @return the last index of the run
-     */
+     * @return the last index of the run */
     public static <T extends Comparable<? super T>> int exploreRun(T[] a, int first) {
         int n = a.length;
-        assert(first >=0 && first < a.length);
-        //if first is the last index of a, run starts and ends at first
-        if(n == first + 1) return first;
+        assert (first >= 0 && first < n);
+        if (n == first + 1) return first; //if first is the last index of a, run starts and ends at first
+        int last = first + 1;            //else define last index of run (starting at first + 1)
 
-        //else define last index of run (starting at first + 1)
-        int last = first + 1;
         //If weakly increasing: find the end of weakly increasing sequence
         if(a[first].compareTo(a[last]) <= 0) last = findIncreasing(a, last);
-        //If strictly decreasing: find the end of strictly increasing run and reverse
-        else {
+        else {                           //If strictly decreasing: find the end of strictly increasing run and reverse
             last = findDecreasing(a, last);
             reverseSequence(a, first, last);
         }
@@ -91,21 +79,18 @@ public class Util {
         }
     }
 
-
     //--------------------------------------------------------------------------------------------
     //ONLY FOR TESTING COMPARES
     //--------------------------------------------------------------------------------------------
 
-    /**
-     * Test-version of exploreRun. Only to be used for Tests.
+    /** Test-version of exploreRun. Only to be used for Tests.
      * Instead of returning last index, return tuple of last index
      * and number of compares performed
      * performed during run-exploration
      * @param a the array to explore the run in
      * @param first the initial index of the run
      * @return length two int[] where int[0]= last index of run
-     * and int[1]= number of compares
-     */
+     * and int[1]= number of compares */
     public static <T extends Comparable<? super T>> int[] exploreRunDebug(T[] a, int first) {
         int n = a.length;
         assert(first >=0 && first < a.length);

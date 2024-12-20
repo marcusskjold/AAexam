@@ -49,7 +49,6 @@ public class Part1 {
         task5();
         task6();
         task7();
-
     }
 
     // ==================================================================
@@ -659,7 +658,5 @@ public class Part1 {
         print("Plot can be found in 't7p2.pdf'");
         print("While some deviations persist, around 10 seems to be a good value");
     
-
-    
-
+    }
 }

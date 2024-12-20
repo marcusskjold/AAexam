@@ -8,6 +8,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
 public class MergeParallel {
+    private MergeParallel() { }
     private static ForkJoinPool ex = new ForkJoinPool();
     
     /** Generic inner utility data structure */

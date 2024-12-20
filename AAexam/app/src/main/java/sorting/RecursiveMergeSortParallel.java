@@ -5,6 +5,7 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
 public class RecursiveMergeSortParallel {
+    private RecursiveMergeSortParallel() { }
     private static ForkJoinPool ex = new ForkJoinPool();
 
     public static <T extends Comparable<? super T>> int sort(T[] a, int c, int p, boolean measureSpan) {
