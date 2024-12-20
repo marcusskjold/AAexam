@@ -1,12 +1,7 @@
 package experiments;
 
 
-import java.util.List;
 import java.util.function.IntFunction;
-
-import data.Handler;
-import sorting.TopDownMergeSort;
-import experiments.Result.Key;
 
 /** The main class to access the experiments library.
  * <p>Provides the {@code measure()} function to run experiments.

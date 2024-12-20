@@ -31,13 +31,12 @@ public class Part2 {
         task8();
         task9();
         task10();
-
-
     }
 
-//----------------------------------------------
-//TASK 8
-//----------------------------------------------
+    //==============================================
+    //TASK 8
+    //==============================================
+
     public static void task8() {
         print("=====================================================================");
         print("Task 8: Implement adpative and non-adaptive variants of Level Sort and Binomial Sort.");
@@ -97,8 +96,10 @@ public class Part2 {
                  + comparisons + " comparisons");
          print();
     }
-//----------------------------------------------
-//----------------------------------------------
+
+    // =====================================================================
+    // Task 9
+    // =====================================================================
 
     public static void task9() {
         print("=====================================================================");
@@ -123,51 +124,48 @@ public class Part2 {
     //EXPERIMENT COMPARING ALGORITHMS ON RANDOM ARRAYS
     //  We expect adptiveness to play a negliable role
     public static void t9Random(String title, int n) {
-        //input:
         Random r = new Random(298092841098572l);
         
         //Non-adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlNonAdaptiveRandom = c -> new Experiment<>(
             Handler.generate(n, i -> r.nextInt()),
             i -> LevelSort.sort(i, c),
-            Handler::randomize
-        );
+            Handler::randomize);
 
         //Adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlAdaptiveRandom = c -> new Experiment<>(
             Handler.generate(n, i -> r.nextInt()),
             i -> LevelSortAdaptive.sort(i, c),
-            Handler::randomize
-        );
+            Handler::randomize);
 
         //Non-adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomNonAdaptiveRandom = c -> new Experiment<>(
             Handler.generate(n, i -> r.nextInt()),
             i -> BinomialSort.sort(i, c),
-            Handler::randomize
-        );
+            Handler::randomize);
 
         //Adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomAdaptiveRandom = c -> new Experiment<>(
             Handler.generate(n, i -> r.nextInt()),
             i -> BinomialSortAdaptive.sort(i, c),
-            Handler::randomize
-        );
+            Handler::randomize);
 
-        //The experiment run:
-        int pMin= 1;
-        int pMax= 30;
+        int pMin= 1, pMax= 30;
         double time= SHORTTIME;
 
-        measurePart2Variants(title, lvlNonAdaptiveRandom, lvlAdaptiveRandom, binomNonAdaptiveRandom, binomAdaptiveRandom, pMin, pMax, time, 0.0);
+        //The experiment run:
+        measurePart2Variants(title, lvlNonAdaptiveRandom, lvlAdaptiveRandom, binomNonAdaptiveRandom, 
+                             binomAdaptiveRandom, pMin, pMax, time, 0.0);
         
 
         print();
-        print("Compare-wise it seems that the adaptive versions perform more compares for smaller values of c (about up to 10)");
-        print("afterwards they perform about the same, as could be expected ( since cost of exploring runs is lower compared to insertionsort");
-        print("since probability of finding runs with that length is lower)");
+        print("Compare-wise it seems that the adaptive versions perform more compares for smaller values of c (about up to 10).");
+        print("afterwards they perform about the same, as could be expected"); 
+        print("(since cost of exploring runs is lower compared to insertionsort since probability of finding");
+        print("runs with that length is lower)");
         print("Time-wise, results follow about the same pattern, but results are more volatile");
-        print("In general it seems that low values of c around 5-20 could give some improvements (depending on the algorithm), but not noticeable much");
+        print("In general it seems that low values of c around 5-20 could give some improvements (depending on");
+        print("the algorithm), but not noticeable much");
         print("This makes sense to us, as the length of runs in a random input usually isn't very high");
         print("There are certain spikes, especially for the Binomial-sort-variants, around c-values that roughly amounts to n");
         print("when multiplied by a factor of 2. This could pertain to the skewedness of the resulting binary merge-tree");
@@ -183,29 +181,25 @@ public class Part2 {
         IntFunction<Experiment<Integer[]>> lvlNonAdaptiveRandom = c -> new Experiment<>(
             alternatingMinRuns.clone(),
             i -> LevelSort.sort(i, c),
-            data -> alternatingMinRuns.clone()
-        );
+            data -> alternatingMinRuns.clone());
 
         //Adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlAdaptiveRandom = c -> new Experiment<>(
             alternatingMinRuns.clone(),
             i -> LevelSortAdaptive.sort(i, c),
-            data -> alternatingMinRuns.clone()
-        );
+            data -> alternatingMinRuns.clone());
 
         //Non-adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomNonAdaptiveRandom = c -> new Experiment<>(
             alternatingMinRuns.clone(),
             i -> BinomialSort.sort(i, c),
-            data -> alternatingMinRuns.clone()
-        );
+            data -> alternatingMinRuns.clone());
 
         //Adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomAdaptiveRandom = c -> new Experiment<>(
             alternatingMinRuns.clone(),
             i -> BinomialSortAdaptive.sort(i, c),
-            data -> alternatingMinRuns.clone()
-        );
+            data -> alternatingMinRuns.clone());
 
         //The experiment run:
         int pMin= 1;
@@ -238,39 +232,33 @@ public class Part2 {
             }
         }
 
-
         //Non-adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlNonAdaptiveRandom = c -> new Experiment<>(
             moreRuns.clone(),
             i -> LevelSort.sort(i, c),
-            data -> moreRuns.clone()
-        );
+            data -> moreRuns.clone());
 
         //Adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlAdaptiveRandom = c -> new Experiment<>(
             moreRuns.clone(),
             i -> LevelSortAdaptive.sort(i, c),
-            data -> moreRuns.clone()
-        );
+            data -> moreRuns.clone());
 
         //Non-adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomNonAdaptiveRandom = c -> new Experiment<>(
             moreRuns.clone(),
             i -> BinomialSort.sort(i, c),
-            data -> moreRuns.clone()
-        );
+            data -> moreRuns.clone());
 
         //Adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomAdaptiveRandom = c -> new Experiment<>(
             moreRuns.clone(),
             i -> BinomialSortAdaptive.sort(i, c),
-            data -> moreRuns.clone()
-        );
+            data -> moreRuns.clone());
 
         //The experiment run:
         int pMin= 1;
         int pMax= 30;
-        double pScale= 1.5;
         double time= SHORTTIME;
 
         measurePart2Variants(title, lvlNonAdaptiveRandom, lvlAdaptiveRandom, binomNonAdaptiveRandom, binomAdaptiveRandom, pMin, pMax, time, 0.0);
@@ -290,29 +278,25 @@ public class Part2 {
         IntFunction<Experiment<Integer[]>> lvlNonAdaptiveRandom = r -> new Experiment<>(
             a.clone(),
             i -> LevelSort.sort(i, c),
-            data -> createRunsArray(data, r)
-        );
+            data -> createRunsArray(data, r));
 
         //Adaptive LevelSort
         IntFunction<Experiment<Integer[]>> lvlAdaptiveRandom = r -> new Experiment<>(
             a.clone(),
             i -> LevelSortAdaptive.sort(i, c),
-            data -> createRunsArray(data, r)
-        );
+            data -> createRunsArray(data, r));
 
         //Non-adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomNonAdaptiveRandom = r -> new Experiment<>(
             a.clone(),
             i -> BinomialSort.sort(i, c),
-            data -> createRunsArray(data, r)
-        );
+            data -> createRunsArray(data, r));
 
         //Adaptive BinomialSort
         IntFunction<Experiment<Integer[]>> binomAdaptiveRandom = r -> new Experiment<>(
             a.clone(),
             i -> BinomialSortAdaptive.sort(i, c),
-            data -> createRunsArray(data, r)
-        );
+            data -> createRunsArray(data, r));
 
         //The experiment run:
         int pMin= 1;
@@ -320,7 +304,9 @@ public class Part2 {
         double pScale= 2;
         double time= SHORTTIME;
 
-        measurePart2Variants(title, lvlNonAdaptiveRandom, lvlAdaptiveRandom, binomNonAdaptiveRandom, binomAdaptiveRandom, pMin, pMax, time, pScale);
+        measurePart2Variants(title, lvlNonAdaptiveRandom, lvlAdaptiveRandom, 
+                            binomNonAdaptiveRandom, binomAdaptiveRandom, 
+                            pMin, pMax, time, pScale);
 
         print();
         print("Now we keep a constant c value of 10 and split the array into increasingly many runs");
@@ -367,22 +353,18 @@ public class Part2 {
      * @param pScale scaling of parameter for each run (if increments rather than scaling, choose 0)
      */
     public static void measurePart2Variants(String title, 
-    IntFunction<Experiment<Integer[]>> lvlNonExp,
-    IntFunction<Experiment<Integer[]>> lvlAdaptExp, 
-    IntFunction<Experiment<Integer[]>> binomNonExp,
-    IntFunction<Experiment<Integer[]>> binomAdaptExp,
-    int pMin,
-    int pMax,
-    double time,
-    double pScale) {
+                                            IntFunction<Experiment<Integer[]>> lvlNonExp,
+                                            IntFunction<Experiment<Integer[]>> lvlAdaptExp, 
+                                            IntFunction<Experiment<Integer[]>> binomNonExp,
+                                            IntFunction<Experiment<Integer[]>> binomAdaptExp,
+                                            int pMin, int pMax, double time, double pScale) {
         if(pScale == 0.0) {
             print(Result.resultHeaders());
             Experiments.measure(lvlNonExp, time, pMin, pMax).analyze(title + 1).saveAsCSV().print();
             Experiments.measure(lvlAdaptExp, time, pMin, pMax).analyze(title + 2).saveAsCSV().print();
             Experiments.measure(binomNonExp, time, pMin, pMax).analyze(title + 3).saveAsCSV().print();
             Experiments.measure(binomAdaptExp, time, pMin, pMax).analyze(title + 4).saveAsCSV().print();
-        }
-        else {
+        } else {
             print(Result.resultHeaders());
             Experiments.measure(lvlNonExp, time, pMin, pMax, pScale).analyze(title + 1).saveAsCSV().print();
             Experiments.measure(lvlAdaptExp, time, pMin, pMax, pScale).analyze(title + 2).saveAsCSV().print();
@@ -392,8 +374,9 @@ public class Part2 {
     }
     
 
-//----------------------------------------------
-//----------------------------------------------
+    // =====================================================================
+    // Task 10
+    // =====================================================================
 
     public static void task10() {
         print("=====================================================================");
@@ -411,7 +394,6 @@ public class Part2 {
     }
 
     public static void t10random(String title) {
-        //input:
         Random r = new Random(298092841098572l);
         
         //Adaptive LevelSort
@@ -428,7 +410,7 @@ public class Part2 {
             Handler::randomize
         );
 
-        ////Insertion-Sort
+        ////Insertion-Sort   // Too slow
         //IntFunction<Experiment<Integer[]>> insSortRandom = n -> new Experiment<>(
         //    Handler.generate(n, i -> r.nextInt()),
         //    i -> InsertionSort.sort(i),
@@ -455,12 +437,9 @@ public class Part2 {
         double pScale= 1.1;
         double time= SHORTTIME;
 
-        measureTask10Variants(title, lvlAdaptiveRandom, binomAdaptiveRandom, arraysSortRandom, mergeSortRandom, pMin, pMax, time, pScale);
+        measureTask10Variants(title, lvlAdaptiveRandom, binomAdaptiveRandom,
+                              arraysSortRandom, mergeSortRandom, pMin, pMax, time, pScale);
 
-    }
-
-    public static void t10minRuns() {
-        
     }
 
     public static void t10MoreRuns(String title, int n, int c) {
@@ -503,23 +482,18 @@ public class Part2 {
         measurePart2Variants(title, lvlAdaptiveRuns, binomAdaptiveRuns, arraysSortRuns, mergeSortRuns, pMin, pMax, time, pScale);
     }
 
-    public static void measureTask10Variants(String title, 
-    IntFunction<Experiment<Integer[]>> lvlAdaptExp, 
-    IntFunction<Experiment<Integer[]>> binomAdaptExp,
-    IntFunction<Experiment<Integer[]>> arraysSort,
-    IntFunction<Experiment<Integer[]>> plainmergeSort,
-    int pMin,
-    int pMax,
-    double time,
-    double pScale) {
+    public static void measureTask10Variants(String title, IntFunction<Experiment<Integer[]>> lvlAdaptExp, 
+                                             IntFunction<Experiment<Integer[]>> binomAdaptExp,
+                                             IntFunction<Experiment<Integer[]>> arraysSort,
+                                             IntFunction<Experiment<Integer[]>> plainmergeSort,
+                                             int pMin, int pMax, double time, double pScale) {
         if(pScale == 0.0) {
             print(Result.resultHeaders());
             Experiments.measure(lvlAdaptExp, time, pMin, pMax).analyze(title + 1).saveAsCSV().print();
             Experiments.measure(binomAdaptExp, time, pMin, pMax).analyze(title + 2).saveAsCSV().print();
             Experiments.measure(arraysSort, time, pMin, pMax).analyze(title + 3).saveAsCSV().print();
             Experiments.measure(plainmergeSort, time, pMin, pMax).analyze(title + 4).saveAsCSV().print();
-        }
-        else {
+        } else {
             print(Result.resultHeaders());
             Experiments.measure(lvlAdaptExp, time, pMin, pMax, pScale).analyze(title + 1).saveAsCSV().print();
             Experiments.measure(binomAdaptExp, time, pMin, pMax, pScale).analyze(title + 2).saveAsCSV().print();

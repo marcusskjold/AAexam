@@ -228,7 +228,6 @@ public class RecursiveMergeSortParallelTest {
     @Test void givenDescendingArray_whenFullyParallelMergeSort__thenAscendingArray() {
         Integer[] a = new Integer[]{2,1,0,-1};
         sort(a, 4);
-        System.out.println(Arrays.toString(a));
         assertArrayEquals(new Integer[]{-1,0,1,2}, a);
     }
 
@@ -332,7 +331,6 @@ public class RecursiveMergeSortParallelTest {
         int rc = TopDownMergeSort.sort(new Integer[]{5,6,7});
         int mc = Merge.merge(a, aux, 0, 3, 6);
         int expectedcmp = Math.max(lc, rc) + mc;
-        System.out.printf("Spans: %d %d %d %d%n", lc,rc,mc,span);
 
         assertEquals(expectedcmp, span);
     }
