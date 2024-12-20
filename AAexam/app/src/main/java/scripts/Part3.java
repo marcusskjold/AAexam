@@ -30,13 +30,13 @@ public class Part3 {
         Experiments.systemInfo();
         System.out.println();
 
-        //task11(); 
+        task11(); 
         task12();
-        //task13();
-        //task14();
-        //task15();
-        //task16();
-        //task17();
+        task13();
+        task14();
+        task15();
+        task16();
+        task17();
     }
 
     // ==================================================================
@@ -44,7 +44,7 @@ public class Part3 {
     // ==================================================================
     public static void task11() {
         print("=====================================================================");
-        print("Task 11: Implement a parallel versuin of the recursive MergeSort from Task 1");
+        print("Task 11: Implement a parallel version of the recursive MergeSort from Task 1");
         print("=====================================================================");
         print();
 
@@ -112,8 +112,16 @@ public class Part3 {
         print();
     }
 
+    // ==================================================================
+    // Task 13
+    // ==================================================================
     public static void task13() {
+        print("=====================================================================");
+        print("Task 13: Implement twoSequenceSelect() with binary search.");
+        print("=====================================================================");
+        print();
 
+        print("Our implementation has the signature MergeParallel.twoSequenceSelect(int)");
     }
 
     public static void task14() {
@@ -125,11 +133,13 @@ public class Part3 {
     }
 
     public static void task16() {
+        int activeThreads = Thread.activeCount();
+        int availableProcs = Runtime.getRuntime().availableProcessors();
+        print(String.format("active threads: %d. Available processors: %d", activeThreads, availableProcs));
 
     }
 
     public static void task17() {
 
     }
-
 }

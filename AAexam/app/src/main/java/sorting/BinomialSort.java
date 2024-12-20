@@ -6,6 +6,7 @@ import static sorting.Util.isSorted;
 
 
 public class BinomialSort {
+    private BinomialSort() {}
     
     public static <T extends Comparable<? super T>> int sort(T[] a, int c) {
         final int n  = a.length;

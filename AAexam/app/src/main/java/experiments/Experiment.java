@@ -6,6 +6,8 @@ import java.util.function.UnaryOperator;
 
 /** <p>An experiment is a collection of input, a run function, and a setup function.</p>
  *
+ * <p>Experiments has convenience methods for applying its constituent function in a more natural language.</p>
+ *
  * <p>Experiments should either have some randomness in the setup function or have an input generation function
  * that makes use of the integer input, to avoid the compiler caching the result of the experiment.
  * Input is by default a generator, such that it takes the repetition counter as input (from 0 .. repetitions)</p>
