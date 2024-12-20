@@ -20,7 +20,7 @@ public class MergeParallel {
      * @param lo The first index of the first sorted sequence.
      * @param mid The final index of the first sorted sequence. {@code mid + 1} is the first index of the second sorted sequence.
      * @param hi The final index of the second sorted sequence.
-     * @param p The number of parallel tasks to spread the work across evenly.
+     * @param p The number of parallel tasks to spread the work across evenly. If 1
      * @param pool a pool for the tasks to avoid creating many competing pools when called by a recursive merge sorting algorithm.
      * @param measureSpan a flag if the returned value should reflect the span of comparisons rather than the sum. 
      *                    That means that the highest comparison count returned by one of the tasks will chosen.
@@ -52,6 +52,7 @@ public class MergeParallel {
      */
     public static <T extends Comparable<? super T>> int merge(T[] a, T[] aux, int lo, int mid, int hi, int p, 
                                                               boolean measureSpan) {
+        if (p < 1) throw new IllegalArgumentException("p must be > 0");
         int n = hi - lo + 1, compares = 0;                  // Setup
         double increment = n / (double) p;
         for (int k = lo; k <= hi; k++) { aux[k] = a[k]; }
@@ -119,6 +120,8 @@ public class MergeParallel {
      * before putting the element at index {@code k} in the output sequence.
      * The output sequence has its index 0 at index {@code lo} in the {@code in} array.
      * Therefor {@code k} would be placed at {@code in[lo+k]}.
+     * The binary search keeps searching untill the two inequalities {@code a[i_a-1] <= b[i_b]} and {@code a[i_b-1] < a[i_a]}
+     * are respected for a pair of candidates for {@code i_a} and {@code i_b}.
      * {@code a} is a sequence with index 0 at {@code in[lo]} in the input array and with its final index at {@code in[mid]}.
      * {@code b} is a sequence with index 0 at {@code in[mid+1]}, and its final index at {@code in[hi]}.
      * {@code i_a} is the index in {@code a} that would have been reached by a sequential merge when considering {@code k}.
