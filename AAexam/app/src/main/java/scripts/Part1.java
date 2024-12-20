@@ -5,9 +5,9 @@ import experiments.Experiment;
 import experiments.Result;
 import experiments.Result.Key;
 
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
@@ -39,16 +39,16 @@ public class Part1 {
         // Todo: maybe add a global switch to set the scope of our experiments (e.g. by doing multiple runs, with a longer max time)
         //       This is so we can run the experiments quickly and well enough, but at the end we can just let the computer cook
         //       and hopefully get better results.
-        //task1();
-        //task2();
-        //task2_1();
-        //task2_2();
-        //task2_3();
-        //task2_4();
-        //task3();
-        //task4();
-        //task5();
-        //task6();
+        task1();
+        task2();
+        task2_1();
+        task2_2();
+        task2_3();
+        task2_4();
+        task3();
+        task4();
+        task5();
+        task6();
         task7();
     }
 
@@ -302,7 +302,7 @@ public class Part1 {
         print();
         print(Result.resultHeaders());
 
-        Experiments.measure(exString, LONGTIME, 20)
+        Experiments.measure(exString, MEDIUMTIME, 20)
                    .analyze("t2e3_1")
                    .saveAsCSV()
                    .print();
@@ -321,7 +321,7 @@ public class Part1 {
             Handler::randomize
         );
 
-        Experiments.measure(exString, LONGTIME, 20)
+        Experiments.measure(exString, MEDIUMTIME, 20)
                    .analyze("t2e3_2")
                    .saveAsCSV()
                    .print();
@@ -594,12 +594,12 @@ public class Part1 {
 
         print(Result.resultHeaders());
         // To get startup costs out of the way.
-        Experiments.measure(ex, LONGTIME, 1); 
+        Experiments.measure(ex, MEDIUMTIME, 1); 
         //Our control meassure (Iterative Mergesort without cutoff-parameter)
-        Experiments.measure(control, LONGTIME).analyze("control").print();
+        Experiments.measure(control, MEDIUMTIME).analyze("control").print();
 
-        Result r =Experiments.measure(ex, LONGTIME, 5, 200, 1.3).analyze(title);
-        Experiments.measure(ex, LONGTIME, 4).analyze(title).add(r).saveAsCSV().print();
+        Result r =Experiments.measure(ex, MEDIUMTIME, 5, 200, 1.3).analyze(title);
+        Experiments.measure(ex, MEDIUMTIME, 4).analyze(title).add(r).saveAsCSV().print();
          
         print();
 
@@ -624,71 +624,68 @@ public class Part1 {
         print(Result.resultHeaders());
         // To get startup costs out of the way.
         Experiments.measure(ex, LONGTIME, 1); 
-        //Our control meassure (Iterative Mergesort without cutoff-parameter)
         
 
         Result r = Experiments.measure(3, ex, MEDIUMTIME, 2, 50).analyze(title);
         //Start at first point, (add c=1 as column (with put) so that the control-sequence will correspond to that), and add other values to file
         Experiments.measure(3, control, MEDIUMTIME).analyze(title).put(Key.PARAMETER, 1.0).add(r).saveAsCSV().print();
-
-        //Result r =Experiments.measure(ex, LONGTIME, 5, 200, 1.3).analyze(title);
-        //Experiments.measure(ex, LONGTIME, 4).analyze(title).add(r).saveAsCSV().print();
          
         print();
 
     }
 
-    //TODO: Just for experimenting a bit around for now
-    //TODO: Make sure randomizer is used here
-    public static void t7e3(String title, int n) {
-        print("check for patterns with respect to merge tree:");
-        Random r = new Random(298092841098572l);
-        //Integer[] a = Handler.generate(n, i -> r.nextInt());
-        //Does approximation of binary search tree matter?
-        IntFunction<Experiment<Integer[]>> sameArrayDifferentc = c -> new Experiment<>(
-            Handler.generate(n, i -> r.nextInt()),
-            i -> BottomUpMergeSortCutoff.sort(i, c)
-        );
-        Experiment<Integer[]> control = new Experiment<>(
-            Handler.generate(n, i -> r.nextInt()), BottomUpMergeSort::sort);
-        Experiments.measure(control, LONGTIME).analyze("control").print();
-
-        Experiments.measure(sameArrayDifferentc, SHORTTIME, 2, 10000, 1.5).analyze(title).saveAsCSV().print();
-
-    }
 
     public static void task7_1() {
         ////Testing for general overview with different array sizes:
-//
-        //print();
-        //print("Measuring large interval with multiple array sizes:");
-        //////t7e1("t7e1_1",       100);
-        ////t7e1("t7e1_2",     1_000);
-        ////t7e1("t7e1_3",    10_000);
-        ////t7e1("t7e1_4",   100_000);
-        //////t7e1("t7e1_5", 1_000_000);
-        //////t7e1("t7e1_6", 2_000_000);
-//
-//
-        //print();
-        //print("Plot can be found in 't7p1.pdf'");
-        //print("It seems in general across input-sizes that the optimal zone is around 7-15");
-        //print();
-//
-        ////Making test at more fine-grained interval
-        //print("Checking just for input size 100_000 for each c-value from 1-50");
-        //t7e2("t7e2_1",     100_000);
-//
-        //print();
-        //print("Plot can be found in 't7p2.pdf'");
-        //print("While some deviations persist, around 10 seems to be a good value");
 
-        t7e3("t7e3_1", 1_000_000);
+        print();
+        print("Measuring large interval with multiple array sizes:");
+        
+        t7e1("t7e1_2",     1_000);
+        t7e1("t7e1_3",    10_000);
+        t7e1("t7e1_4",   100_000);
+        
+
+
+        print();
+        print("Plot can be found in 't7p1.pdf'");
+        print("It seems in general across input-sizes that the optimal zone is around 7-15");
+        print();
+
+        ////Making test at more fine-grained interval
+        print("Checking just for input size 100_000 for each c-value from 1-50");
+        t7e2("t7e2_1",     100_000);
+
+        print();
+        print("Plot can be found in 't7p2.pdf'");
+        print("While some deviations persist, around 10 seems to be a good value");
+
+        
         
 
         
     }
 
+
+
+    //TODO: deprecated test:
+    //public static void t7e3(String title, int n) {
+    //    print("check for patterns with respect to merge tree:");
+    //    Random r = new Random(298092841098572l);
+    //    //Integer[] a = Handler.generate(n, i -> r.nextInt());
+    //    //Does approximation of binary search tree matter?
+    //    IntFunction<Experiment<Integer[]>> sameArrayDifferentc = c -> new Experiment<>(
+    //        Handler.generate(n, i -> r.nextInt()),
+    //        i -> BottomUpMergeSortCutoff.sort(i, c),
+    //        Handler::randomize
+    //    );
+    //    Experiment<Integer[]> control = new Experiment<>(
+    //        Handler.generate(n, i -> r.nextInt()), BottomUpMergeSort::sort);
+    //    Experiments.measure(control, LONGTIME).analyze("control").print();
+//
+    //    Experiments.measure(sameArrayDifferentc, SHORTTIME, 1, 30).analyze(title).saveAsCSV().print();
+//
+    //}
     
 
     
