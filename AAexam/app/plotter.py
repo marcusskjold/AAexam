@@ -120,7 +120,9 @@ def plot_task4():
     # ax.legend(algorithms)
     fig.savefig(filename)
 
-#Plot for large-scale analysis of c-value for iterative merge-sort
+# Plot for large-scale analysis of c-value for iterative merge-sort
+
+
 def plot_task4_finegrained():
     filename = PLOT + '/t4p2.pdf'
     (fig, ax) = plt.subplots()
@@ -148,7 +150,8 @@ def plot_task4_finegrained():
     # ax.legend(algorithms)
     fig.savefig(filename)
 
-#Plot for large-scale analysis of c-value for iterative merge-sort
+# Plot for large-scale analysis of c-value for iterative merge-sort
+
 def plot_task7_overview():
     filename = PLOT + '/t7p1.pdf'
     (fig, ax) = plt.subplots()
@@ -229,26 +232,23 @@ def plot_task7_experimental():
     plt.grid(axis='y', linewidth=0.3, linestyle='--')
     ax.set_xlabel('value of cutoff $c$')
     ax.set_ylabel('Time (percent)')
-    #ax.set_xscale('log')
+    # ax.set_xscale('log')
     # ax.set_yscale('log')
     # ax.legend(algorithms)
     fig.savefig(filename)
 
 
-
 if __name__ == '__main__':
     raw_results = read_single_parameterized(FILENAME_CSV)
-    # plot_task2()
-    # plot_task4()
-    # read_results('log/results.csv')
-    #plot_task12()
-    plot_task7_experimental()
+    plot_task2()
+    plot_task4()
+    plot_task7_overview()
+    plot_task7_finegrained()
+    plot_task12()
 
-####################PART 2################################3
+# ###################PART 2################################3
 
-
-
-##Plotting function for task9
+# Plotting function for task9
 
 def plot_parameterized(prefix, x_param_func, y_param_func, labels, xlabel, ylabel, output_filename):
     """
@@ -288,7 +288,8 @@ def plot_parameterized(prefix, x_param_func, y_param_func, labels, xlabel, ylabe
     fig.savefig(output_filename)
 
 
-####Plots for task9
+# Plots for task9
+
 if __name__ == '__main__':
     part2Algorithms= [
         ("1", "Non-adaptive LevelSort"),
@@ -298,76 +299,68 @@ if __name__ == '__main__':
     ]
 
     plot_parameterized(prefix="t9random",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t9random_time_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Time",
+                       output_filename=f"{PLOT}/t9random_time_plot.pdf")
 
     plot_parameterized(prefix="t9random",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Compares",
-    output_filename=f"{PLOT}/t9random_compares_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Compares",
+                       output_filename=f"{PLOT}/t9random_compares_plot.pdf")
 
     plot_parameterized(prefix="t9minrun",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Compares",
-    output_filename=f"{PLOT}/t9minrun_compares_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Compares",
+                       output_filename=f"{PLOT}/t9minrun_compares_plot.pdf")
 
     plot_parameterized(prefix="t9minrun",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t9minrun_time_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Time",
+                       output_filename=f"{PLOT}/t9minrun_time_plot.pdf")
 
     plot_parameterized(prefix="t9runs",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Compares",
-    output_filename=f"{PLOT}/t9more_runs_compares_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Compares",
+                       output_filename=f"{PLOT}/t9more_runs_compares_plot.pdf")
 
     plot_parameterized(prefix="t9runs",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="value of cutoff $c$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t9more_runs_time_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="value of cutoff $c$",
+                       ylabel="Time",
+                       output_filename=f"{PLOT}/t9more_runs_time_plot.pdf")
 
     plot_parameterized(prefix="t9differentRuns",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="amount of runs $r$",
-    ylabel="Compares",
-    output_filename=f"{PLOT}/t9diff_runs_compares_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="amount of runs $r$",
+                       ylabel="Compares",
+                       output_filename=f"{PLOT}/t9diff_runs_compares_plot.pdf")
 
     plot_parameterized(prefix="t9differentRuns",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=part2Algorithms,
-    xlabel="amount of runs $r$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t9diff_runs_time_plot.pdf"
-    )
+                       x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                       y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                       labels=part2Algorithms,
+                       xlabel="amount of runs $r$",
+                       ylabel="Time",
+                       output_filename=f"{PLOT}/t9diff_runs_time_plot.pdf")
 
 
 
@@ -410,9 +403,10 @@ def plot_parameterized_task10(prefix, x_param_func, y_param_func, labels, xlabel
     fig.savefig(output_filename)
 
 
-####Plots for task10
+# Plots for task10
+
 if __name__ == '__main__':
-    task10Algorithms= [
+    task10Algorithms = [
         ("1", "Adaptive LevelSort"),
         ("2", "Adaptive Binomial Sort"),
         ("3", "Arrays.sort()"),
@@ -420,21 +414,17 @@ if __name__ == '__main__':
     ]
 
     plot_parameterized_task10(prefix="t10random",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=task10Algorithms,
-    xlabel="size of arrays $n$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t10diff_sizes_time_plot.pdf"
-    )
-
+                              x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                              y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                              labels=task10Algorithms,
+                              xlabel="size of arrays $n$",
+                              ylabel="Time",
+                              output_filename=f"{PLOT}/t10diff_sizes_time_plot.pdf")
 
     plot_parameterized_task10(prefix="t10runs",
-    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
-    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
-    labels=task10Algorithms,
-    xlabel="number of runs $r$",
-    ylabel="Time",
-    output_filename=f"{PLOT}/t10runs_time_plot.pdf"
-    )
-
+                              x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+                              y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+                              labels=task10Algorithms,
+                              xlabel="number of runs $r$",
+                              ylabel="Time",
+                              output_filename=f"{PLOT}/t10runs_time_plot.pdf")
