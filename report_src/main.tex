@@ -4,12 +4,13 @@
 \usepackage{graphicx}
 
 
-\title{AA Final Exam}
+\title{AA Final Exam\footnote{All experiments in our results-file and depicted in following figures are run on a MacBook Pro 2023 with 24 GB unified memory and an M3 chip, except for Figure \ref{fig:descRuns} and \ref{fig:adaptComp}, which came from experiment ran on system equipped with an Intel(R) Core(TM) i7-8665U CPU running at 1.90GHz, 16.0 GB RAM (15.2 GB usable) and 256 GB SSD}}
 \author{Andreas Riget Bagge \& Marcus Skjold Pedersen}
 \date{2024-12-20}
 
 \begin{document}
 \maketitle
+
 
 \section{Part 1}
 
@@ -35,13 +36,13 @@ However, we ran many other experiments (See scripts.Task1.task2\_2) to investiga
 
 \subsection{Task 3}
 
-We have implemented a version of recursive mergesort with a base-case of insertion-sort for a parameter \verb|c| in \verb|TopDownMergeSortCutoff|. Rather than stopping the recursion for subarrays of size $\leq 1$, it stops at subarrays of sizes $c$ or less, and switches to Insertion-sort for the subarray instead.\footnote{As such, running the cutoff-variant (as well as the one in Task6) with c=1, corresponds to having no cutoff-value. However, to keeps tasks separate, we keep the two variants in different classes} We have implemented Insertion-sort in class \verb|Insertion-sort|, also inspired by \cite{Sedgewick_Wayne_2011}. 
+We have implemented a version of recursive mergesort with a base-case of insertion-sort for a parameter \verb|c| in \verb|TopDownMergeSortCutoff|. Rather than stopping the recursion for subarrays of size $\leq 1$, it stops at subarrays of sizes $c$ or less, and switches to Insertion-sort for the subarray instead. We have implemented Insertion-sort in class \verb|Insertion-sort|, also inspired by \cite{Sedgewick_Wayne_2011}. 
 
 We have tested that it handles cases where $c\leq 0$, throwing an error rather than looping indefinitely, and that it just performs insertionsort for $c\geq$ \verb|a.length|.
 
 \subsection{Task 4}
 
-We conducted an experiment to find the optimal cutoff value for $c$. We ran the algorithm with varying cutoff-values for varying array-sizes as seen in figure \ref{fig:runtimes}. The optimal $c$-value seems to lie around 10.
+We conducted an experiment to find the optimal cutoff value for $c$. We ran the algorithm with varying cutoff-values for varying array-sizes as seen in Figure \ref{fig:runtimes}. The optimal $c$-value seems to lie around 10.
 
 \begin{figure}[h]
   \begin{center}
@@ -60,7 +61,7 @@ When the end of \verb|a| has been reached, the stack of runs are merged together
 
 As the stack only holds runs of length $2^n, n\in \mathbf{N}$, with lengths of runs strictly decreasing, we have modeled the stack as a binary number, where a run of length $2^n$ is represented as the $n$'th bit being set. The position of runs in the stack can then be calculated based on this representation, simulating stack behavior.
 
- We have made tests to cover different cases of how the stack is filled and used for merges.
+ We have made tests covering different cases of how the stack is filled and used for merges.
 
 \subsection{Task 6}
 
@@ -98,12 +99,12 @@ We have tested different cases of the stack, such as inputs giving a run with th
 
 We first ran our implementations on random inputs and inputs with minimum run sizes. Differences between adaptive and non-adaptive variants were minor here, indicating that adaptiveness plays a minor role in random input. For all algorithms the optimal $c$-value lied around 10-20.
 
-We also tried input split into descending runs as seen in figure \ref{fig:descRuns}. Here the adaptive versions of our algorithms performed considerably better than the non-adaptive ones. This is expected, as the non-adaptive variants have to use insertion-sort on the reversed sequence, which is a worst case for insertion-sort. For our adaptive versions the c-value played a minor role, as long as it didn't exceed the length of runs in the input.
+We also tried input split into descending runs as seen in Figure \ref{fig:descRuns}. Here the adaptive versions of our algorithms performed considerably better than the non-adaptive ones. This is expected, as the non-adaptive variants have to use insertion-sort on the reversed sequence, which is a worst case for insertion-sort. For our adaptive versions the c-value played a minor role, as long as it didn't exceed the length of runs in the input.
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=\textwidth]{plot/t9more_runs_time_plot.pdf}
-    \caption{Comparrison of adaptive vs. non-adaptive levelsort/binomialsort on input of descending runs}
+    \caption{Comparrison of adaptive vs. non-adaptive levelsort/binomialsort on input of descending runs in terms of running time (in ns) }
     \label{fig:descRuns}
   \end{center}
 \end{figure}
@@ -115,12 +116,12 @@ We conducteda an experiment, comparing our (Adaptive) Levelsort and Implementati
 
 We ran all the algorithms on random arrays of varying sizes.  Insertion-sort was clearly outperformed by the other algorithms. there was a general trend that \verb|Arrays.sort()| performed consistently better than the other implementations. This make sense as this method doesn't sort stably. The three other algorithms seemed to follow each other largely \textit{Task 9}.
 
-We also tried to run the algorithms on input split up into runs as seen in figure \ref{fig:adaptComp}. Here, our implementations were, again outperformed by the library variant. However, they seemed to consistently perform better than recursive merge-sort. 
+We also tried to run the algorithms on input split up into runs as seen in Figure \ref{fig:adaptComp}. Here, our implementations were, again outperformed by the library variant. However, they seemed to consistently perform better than recursive merge-sort. 
 
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=\textwidth]{plot/t10runs_time_plot.pdf}
-    \caption{Comparrison of LevelSort and BinomialSort to Arrays.sort() and TopDown MergeSort for input split into different amount of runs}
+    \caption{Comparrison of LevelSort and BinomialSort to Arrays.sort() and TopDown MergeSort for input split into different amount of runs in terms of running time (in ns)}
     \label{fig:adaptComp}
   \end{center}
 \end{figure}
@@ -135,22 +136,22 @@ Further tests are for parallel-specific cases.
 
 \subsection{Task 11}
 
-Out parallel recursive merge sort (with sequential merge) is \texttt{Recursive\-MergeSort\-Parallel}. It has a cutoff value for switching to sequential sorting, and is implemented as \texttt{Recursive\-Task}'s in a \texttt{Fork\-Join\-Pool}.
+Out parallel recursive merge sort (with sequential merge) is \texttt{Recursive\-MergeSort\-Parallel}. It has a cutoff value for switching to sequential sorting, and is implemented as \texttt{Recursive\-Task}'s in a \texttt{Fork\-Join\-Pool}. No shared values in the recursive structure ensures thread-safety.
 
 \subsection{Task 12}
 
-We see pretty clearly that the results improve up until the point where the ratio between
-the size of the array and the cutoff parameter exceeds the number of available processors.
+We see clearly that the results improve up until the point where the ratio between
+the size of the array and the cutoff parameter exceeds the number of available processors,
 $n / c \leq available processors$.
 This is in line with expectations: Parallelism should give improvement up until around the point where there are as many tasks ready as processors available.
-This behavior is consistent across a range of array sizes for randomized sequences (see \ref{fig:t12p1}.
+This behavior is consistent across a range of array sizes for randomized sequences (see Figure \ref{fig:t12p1}.
 Results on our machines suggest that the speedup is stronger for higher array sizes.
 
 \textbf{Potential speedup}: Set the parallel cutoff automatically relative to cores and n.
 
-\textbf{Potential speedup}: Run sequential mergesort with an optimal cutoff (see Task 4).
+\textbf{Potential speedup}: Use optimal $c$-cutoff for the sequential mergesort (see Task 4).
 
-The implementation is further tests with a repeated test to increase the chance of finding an undiscovered problematic interleaving.
+The implementation is further tested with a repeated test to increase the chance of detecting race conditions.
 
 \begin{figure}[h]
   \begin{center}
