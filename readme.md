@@ -14,8 +14,8 @@ This can take a very long time. The results are saved as csv files in AAexam/app
 **To run a specific experiment**, edit `scripts.Main`, comment out the unrelated Parts, go into the specific part `scripts.PartX`,
 comment out all the unrelated tasks from `PartX.main()`, save, then `./gradlew run`.
 
-**To re-generate all graphs**, move to AAexam/app/ and run the plotter.py python script.
-Graphs are found in AAexam/app/data/plots.
+**To re-generate all plots**, move to AAexam/app/ and run the plotter.py python script.
+Plots are found in AAexam/app/data/plots.
 
 **To run all tests**, perform the gradle test task in the project folder.
 

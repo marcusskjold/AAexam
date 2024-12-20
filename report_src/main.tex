@@ -65,13 +65,7 @@ As the stack only holds runs of length $2^n, n\in \mathbf{N}$, with lengths of r
 
 \subsection{Task 6}
 
-We have made a variant of the algorithm in task 5, \verb|BottomUpMergeSortCutoff|, that makes new runs of size $c$ (using insertion sort) for a given integer $c\geq1$, rather than size 1. If less than $c$ elements remain in the array, insertion-sort is used on the remaining elements. 
-
-This variant works similarly to the one in Task 5, however the stack is now scaled by $c$ when finding positions of runs, and also the array is iterated through in intervals of $c$, making runs with insertion-sort. Length $>c$ residues are computed with insertion-sort, and the final merge is then done similarly to Task 5.
-
-We have implemented three variations of this algorithm and use by default the best performing of them. 
-
-We have tested for special cases mentioned for the cutoff-variant in task 3. We have also made sure especially to test for cases where the last computed run is of length $<c$. 
+We have made a variant of the algorithm in task 5, \verb|BottomUpMergeSortCutoff|, that makes new runs of size $c$ (using insertion sort) for a given integer $c\geq1$, rather than size 1. If less than $c$ elements remain in the array, insertion-sort is used on the remaining elements. This variant works similarly to the one in Task 5, however the stack is now scaled by $c$ when finding positions of runs, and also the array is iterated through in intervals of $c$, making runs with insertion-sort. Length $>c$ residues are computed with insertion-sort, and the final merge is then done similarly to Task 5. We have implemented three variations of this algorithm and use by default the best performing of them. We have tested for special cases mentioned for the cutoff-variant in task 3. We have also made sure especially to test for cases where the last computed run is of length $<c$. 
 
 \subsection{Task 7}
 
@@ -187,7 +181,8 @@ We see that in no case does our implementation beat \texttt{Arrays.parallelSort(
 
 \subsection{Task 17}
 
-We have implemented the functionality for calculating the span. But we ran out of time while designing the experiment. We have written a test case showing that the correct span is returned in the test file and in the script file.
+We have implemented the functionality for calculating the span. But we ran out of time while designing the experiment. We have written a test case showing that the correct span is returned in the test file and in the script file. The span of a recursive merge sort task is equal to the highest span of its two children plus the span of the following merge action. The span of a parallel merge action is the highest of the p parts. The base case (n below cutoff c) the span is the resulting comparisons of the sequential sort function call. Our preliminary experimentation and intuition suggests that the span is only a good predictor in the cases where the number of tasks is equal to or below the available processes.
+This should be true for both the recursive sort tasks and the parallel merge tasks at any given time.
 
 \newpage
 \bibliographystyle{plain}
