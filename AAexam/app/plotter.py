@@ -182,7 +182,7 @@ def plot_task7_finegrained():
     (fig, ax) = plt.subplots()
     sizes = [100_000, 200_000, 300_000]
     results = []
-    #Loops through files t7e2_1 to t7e3_3
+    #Loops through files t7e2_1
     for i in range(1, 2):
         name = RES + '/t7e2_{}.csv'.format(i)
         res = read_single_parameterized(name)
@@ -207,10 +207,234 @@ def plot_task7_finegrained():
 
 
 
+def plot_task7_experimental():
+    filename = PLOT + '/t7p3.pdf'
+    (fig, ax) = plt.subplots()
+    sizes = [10_000, 200_000, 300_000]
+    results = []
+    #Loops through files t7e2_1 to t7e3_3
+    for i in range(1, 2):
+        name = RES + '/t7e3_{}.csv'.format(i)
+        res = read_single_parameterized(name)
+        baseline = res[0].time
+        times = [(r.time / baseline) * 100 for r in res]
+        params = [r.param for r in res]
+        results.append((times, params))
+        ax.plot(params, times, label='array size ' + str(sizes[i-1]),
+                linestyle=':', marker='o', markersize='2', linewidth='1')
+
+    ax.legend(fontsize=8)
+    plt.ylim(ymax=120, ymin=85)
+    plt.xlim(xmax=50, xmin=1)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel('value of cutoff $c$')
+    ax.set_ylabel('Time (percent)')
+    #ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # ax.legend(algorithms)
+    fig.savefig(filename)
+
+
 
 if __name__ == '__main__':
     raw_results = read_single_parameterized(FILENAME_CSV)
     # plot_task2()
     # plot_task4()
     # read_results('log/results.csv')
-    plot_task12()
+    #plot_task12()
+    plot_task7_experimental()
+
+####################PART 2################################3
+
+
+
+##Plotting function for task9
+
+def plot_parameterized(prefix, x_param_func, y_param_func, labels, xlabel, ylabel, output_filename):
+    """
+    Generalized plotting function for parameterized data.
+
+    :param prefix: The prefix for the CSV files (e.g., 't9random').
+    :param x_param_func: A function to extract the x-axis parameter from a ParamRes object.
+    :param y_param_func: A function to extract the y-axis parameter from a ParamRes object.
+    :param labels: A list of tuples [(file_suffix, label)] for the file suffixes and their corresponding labels.
+    :param xlabel: Label for the x-axis.
+    :param ylabel: Label for the y-axis.
+    :param output_filename: The name of the output PDF file.
+    """
+    (fig, ax) = plt.subplots()
+
+    # Loop through the provided file labels
+    for file_suffix, label in labels:
+        filepath = f'{RES}/{prefix}{file_suffix}.csv'
+
+        # Read data from the CSV file
+        res = read_single_parameterized(filepath)
+
+        # Extract x and y values using the provided parameter functions
+        x_values = [x_param_func(r) for r in res]
+        y_values = [y_param_func(r) for r in res]
+
+        # Plot each curve
+        ax.plot(x_values, y_values, label=label,
+                linestyle='-', marker='o', markersize=4, linewidth=1.5)
+
+    ax.legend(fontsize=8)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    plt.ylim(auto=True)
+    plt.xlim(auto=True)
+    fig.savefig(output_filename)
+
+
+####Plots for task9
+if __name__ == '__main__':
+    part2Algorithms= [
+        ("1", "Non-adaptive LevelSort"),
+        ("2", "Adaptive LevelSort"),
+        ("3", "Non-adaptive Binomial Sort"),
+        ("4", "Adaptive Binomial Sort"),
+    ]
+
+    plot_parameterized(prefix="t9random",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9random_time_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9random",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Compares",
+    output_filename=f"{PLOT}/t9random_compares_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9minrun",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Compares",
+    output_filename=f"{PLOT}/t9minrun_compares_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9minrun",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9minrun_time_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9runs",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Compares",
+    output_filename=f"{PLOT}/t9more_runs_compares_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9runs",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="value of cutoff $c$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9more_runs_time_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9differentRuns",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.res,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="amount of runs $r$",
+    ylabel="Compares",
+    output_filename=f"{PLOT}/t9diff_runs_compares_plot.pdf"
+    )
+
+    plot_parameterized(prefix="t9differentRuns",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=part2Algorithms,
+    xlabel="amount of runs $r$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t9diff_runs_time_plot.pdf"
+    )
+
+
+
+##Plotting function for task10
+def plot_parameterized_task10(prefix, x_param_func, y_param_func, labels, xlabel, ylabel, output_filename):
+    """
+    Generalized plotting function for parameterized data, especially for task10.
+
+    :param prefix: The prefix for the CSV files (e.g., 't9random').
+    :param x_param_func: A function to extract the x-axis parameter from a ParamRes object.
+    :param y_param_func: A function to extract the y-axis parameter from a ParamRes object.
+    :param labels: A list of tuples [(file_suffix, label)] for the file suffixes and their corresponding labels.
+    :param xlabel: Label for the x-axis.
+    :param ylabel: Label for the y-axis.
+    :param output_filename: The name of the output PDF file.
+    """
+    (fig, ax) = plt.subplots()
+
+    # Loop through the provided file labels
+    for file_suffix, label in labels:
+        filepath = f'{RES}/{prefix}{file_suffix}.csv'
+
+        # Read data from the CSV file
+        res = read_single_parameterized(filepath)
+
+        # Extract x and y values using the provided parameter functions
+        x_values = [x_param_func(r) for r in res]
+        y_values = [y_param_func(r) for r in res]
+
+        # Plot each curve
+        ax.plot(x_values, y_values, label=label,
+                linestyle='-', marker='o', markersize=4, linewidth=1.5)
+
+    ax.legend(fontsize=8)
+    plt.grid(axis='y', linewidth=0.3, linestyle='--')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    plt.ylim(auto=True)
+    plt.xlim(auto=True)
+    fig.savefig(output_filename)
+
+
+####Plots for task10
+if __name__ == '__main__':
+    task10Algorithms= [
+        ("1", "Adaptive LevelSort"),
+        ("2", "Adaptive Binomial Sort"),
+        ("3", "Arrays.sort()"),
+        ("4", "Plain Merge Sort"),
+    ]
+
+    plot_parameterized_task10(prefix="t10random",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=task10Algorithms,
+    xlabel="size of arrays $n$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t10diff_sizes_time_plot.pdf"
+    )
+
+
+    plot_parameterized_task10(prefix="t10runs",
+    x_param_func=lambda r: r.param,  # X-axis: 'param' attribute
+    y_param_func=lambda r: r.time,  # Y-axis: 'time' attribute
+    labels=task10Algorithms,
+    xlabel="number of runs $r$",
+    ylabel="Time",
+    output_filename=f"{PLOT}/t10runs_time_plot.pdf"
+    )
+
